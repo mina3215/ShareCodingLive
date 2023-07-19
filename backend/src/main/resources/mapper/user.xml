@@ -14,5 +14,7 @@
     <select id="emailCheck" >
         select email from user where email = #{email}
     </select>
-
+    <select id="nicknameCheck" >
+        select nickname from user where nickname = #{nickname}
+    </select>
 </mapper>

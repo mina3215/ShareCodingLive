@@ -39,4 +39,14 @@ public class UserServiceImpl implements UserService{
             return true;
         }
     }
+
+    @Override
+    public boolean nickNameCheck(String nickname) {
+        List<UserDao> userDaoList = userMapper.nickNameCheck(nickname);
+        if(userDaoList.size()>0){
+            return false;
+        } else{
+            return true;
+        }
+    }
 }

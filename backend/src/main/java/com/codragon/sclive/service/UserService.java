@@ -10,4 +10,6 @@ public interface UserService {
     void signup(UserDao userDao);
 
     boolean emailCheck(String email);
+
+    boolean nickNameCheck(String nickname);
 }

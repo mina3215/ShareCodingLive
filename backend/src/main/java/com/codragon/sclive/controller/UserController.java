@@ -73,6 +73,21 @@ public class UserController {
             return ResponseEntity.status(200).body("good");
         }
     }
-    //닉네임 중복 검사
+
+
+    @ApiOperation(value = "닉네임 중복 검사", notes = "{nickname}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/nickcheck")
+    public ResponseEntity<String> nicknameCheck(@RequestParam String nickname){
+        boolean isNotDuplicated = userService.nickNameCheck(nickname);
+        if(isNotDuplicated){
+            return ResponseEntity.status(200).body("bad");
+        } else{
+            return ResponseEntity.status(200).body("good");
+        }
+    }
     //회원 탈퇴
 }
