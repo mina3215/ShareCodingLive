@@ -16,4 +16,6 @@ public interface UserMapper {
     List<UserDao> emailCheck(String email);
 
     List<UserDao> nickNameCheck(String nickname);
+
+    void deleteUser(String email);
 }

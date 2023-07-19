@@ -12,4 +12,6 @@ public interface UserService {
     boolean emailCheck(String email);
 
     boolean nickNameCheck(String nickname);
+
+    void deleteUser(String email);
 }

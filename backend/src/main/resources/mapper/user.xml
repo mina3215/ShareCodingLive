@@ -17,4 +17,7 @@
     <select id="nicknameCheck" >
         select nickname from user where nickname = #{nickname}
     </select>
+    <delete id="deleteUser">
+        delete from user where email = #{email}
+    </delete>
 </mapper>

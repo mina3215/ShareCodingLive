@@ -74,7 +74,6 @@ public class UserController {
         }
     }
 
-
     @ApiOperation(value = "닉네임 중복 검사", notes = "{nickname}")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
@@ -89,5 +88,17 @@ public class UserController {
             return ResponseEntity.status(200).body("good");
         }
     }
-    //회원 탈퇴
+
+    @ApiOperation(value = "회원 탈퇴", notes = "")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/withdrawal")
+    public ResponseEntity<String> updateUserInfo(){
+        //auth에서 email 추출
+        String email = "hello@gmail.com";
+        userService.deleteUser(email);
+        return ResponseEntity.status(200).body("Success");
+    }
 }
