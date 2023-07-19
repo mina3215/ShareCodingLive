@@ -1,7 +1,6 @@
 package com.codragon.sclive.jwt;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
@@ -53,5 +52,36 @@ public class Jwt {
                 .compact();
 
         return accessToken;
+    }
+
+    public String validateToken(String token) {
+        Jws<Claims> jws = null;
+
+        try {
+            jws = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (JwtException e) {
+            System.err.println("유효하지 않은 토큰입니다...");
+            // TODO: 유효하지 않음 return 쳐야함
+        }
+
+        Date expDate = jws.getBody().getExpiration();
+        Date now = new Date();
+        // 만요일이 현재 시간보다 이전인 경우
+        if (expDate.compareTo(now) < 0) {
+            // TODO: 만료시간 관련 return 처리
+        }
+
+        String nickname = (String) jws.getBody().get("nickname");
+        return nickname;
+    }
+
+    public static void main(String[] args) {
+        Jwt jwt = new Jwt();
+
+        System.out.println(jwt.validateToken(jwt.createAccessToken("this", "is valid?")));
+
     }
 }
