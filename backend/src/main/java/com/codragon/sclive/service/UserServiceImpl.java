@@ -22,4 +22,9 @@ public class UserServiceImpl implements UserService{
     public void updateUserInfo(UserDao userDao) {
         userMapper.updateUserInfo(userDao);
     }
+
+    @Override
+    public void signup(UserDao userDao) {
+        userMapper.signup(userDao);
+    }
 }

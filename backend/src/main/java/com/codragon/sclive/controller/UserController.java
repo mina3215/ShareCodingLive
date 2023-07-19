@@ -20,8 +20,18 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    //회원가입
 
+    @ApiOperation(value = "회원가입", notes = "{email password nickname}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(UserReqDto userReqDto){
+        UserDao userDao = userReqDto.UserDtoToDao();
+        userService.signup(userDao);
+        return ResponseEntity.status(200).body("Success");
+    }
     //로그인
 
     //로그아웃
@@ -29,20 +39,20 @@ public class UserController {
     @ApiOperation(value = "비밀번호 변경", notes = "<strong>비밀번호</strong>를 변경한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/password")
     public ResponseEntity<String> updatePassword(UserReqDto userReqDto) { //Auth와 password
-
         UserDao userDao = userReqDto.UserDtoToDao();
         userService.updatePassword(userDao);
-
         return ResponseEntity.status(200).body("Success");
     }
-
-    @GetMapping("/userinfo")
+    @ApiOperation(value = "회원정보 수정", notes = "{nickname, email}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PostMapping("/userinfo")
     public ResponseEntity<String> updateUserInfo(UserReqDto userReqDto){
         UserDao userDao = userReqDto.UserDtoToDao();
         userService.updateUserInfo(userDao);

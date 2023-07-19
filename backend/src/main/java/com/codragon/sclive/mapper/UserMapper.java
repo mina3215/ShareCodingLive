@@ -8,4 +8,6 @@ public interface UserMapper {
     void updatePassword(UserDao userDao);
 
     void updateUserInfo(UserDao userDao);
+
+    void signup(UserDao userDao);
 }

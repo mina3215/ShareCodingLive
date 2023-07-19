@@ -6,4 +6,6 @@ public interface UserService {
     void updatePassword(UserDao userDao);
 
     void updateUserInfo(UserDao userDao);
+
+    void signup(UserDao userDao);
 }
