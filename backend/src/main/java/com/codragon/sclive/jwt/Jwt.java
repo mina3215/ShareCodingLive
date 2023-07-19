@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Jwt {
     // 현재 시간
-    private Date now = new Date();
+    private final Date now = new Date();
 
     // 헤더 설정
     private final HashMap<String, Object> headerMap = new HashMap<>() {{
