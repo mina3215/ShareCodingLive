@@ -8,4 +8,6 @@ public interface UserService {
     void updateUserInfo(UserDao userDao);
 
     void signup(UserDao userDao);
+
+    boolean emailCheck(String email);
 }

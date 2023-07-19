@@ -8,10 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 @Api(value = "유저 API", tags = {"User"})
 @RestController
 @RequestMapping("/user")
@@ -32,6 +30,7 @@ public class UserController {
         userService.signup(userDao);
         return ResponseEntity.status(200).body("Success");
     }
+
     //로그인
 
     //로그아웃
@@ -47,6 +46,7 @@ public class UserController {
         userService.updatePassword(userDao);
         return ResponseEntity.status(200).body("Success");
     }
+
     @ApiOperation(value = "회원정보 수정", notes = "{nickname, email}")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
@@ -59,4 +59,20 @@ public class UserController {
         return ResponseEntity.status(200).body("Success");
     }
 
+    @ApiOperation(value = "이메일 중복 검사", notes = "{email}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/emailcheck")
+    public ResponseEntity<String> emailCheck(@RequestParam String email){
+        boolean isNotDuplicated = userService.emailCheck(email);
+        if(isNotDuplicated){
+            return ResponseEntity.status(200).body("bad");
+        } else{
+            return ResponseEntity.status(200).body("good");
+        }
+    }
+    //닉네임 중복 검사
+    //회원 탈퇴
 }
