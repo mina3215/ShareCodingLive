@@ -1,17 +1,26 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dto.UserReqDto;
+import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
-    public UserServiceImpl(UserMapper userMapper) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -60,5 +69,30 @@ public class UserServiceImpl implements UserService {
     public UserDao getUserInfo(String email) {
         UserDao userDao = userMapper.getUserInfo(email);
         return userDao;
+    }
+
+    @Override
+    public ResponseEntity login(UserReqDto userReqDto, HttpServletResponse response) {
+        String email = userReqDto.getEmail();
+        String password = userReqDto.getPassword();
+        UserDao userDao = this.getUserInfo(email);
+
+        // 입력된 비번과 디비의 암호화된 비번이 같은지 확인.
+        boolean passwordMatched = passwordEncoder.matches(password, userDao.getPassword());
+
+        if(passwordMatched){ //유효한 패스워드이다.
+            Jwt jwt = new Jwt();
+            String accessToken = jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
+            String refreshToken = jwt.createRefreshToken(userDao.getEmail(), userDao.getNickname());
+            //토큰 발급
+            response.addHeader("AccessToken", accessToken);
+            Cookie cookie = new Cookie("RefreshToken", refreshToken);
+            response.addCookie(cookie);
+            //헤더에 포함
+            //redis에 RefreshToken 저장
+            return ResponseEntity.status(200).body("Success");
+        } else{
+            return ResponseEntity.status(200).body("Fail");
+        }
     }
 }

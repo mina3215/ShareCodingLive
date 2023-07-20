@@ -3,19 +3,26 @@ package com.codragon.sclive.controller;
 import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.dto.UserReqDto;
 import com.codragon.sclive.dto.UserResDto;
+import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @Api(value = "유저 API", tags = {"User"})
 @RestController
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -32,7 +39,16 @@ public class UserController {
         return ResponseEntity.status(200).body("Success");
     }
 
-    //로그인
+    @ApiOperation(value = "로그인", notes = "{email password}")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PostMapping("/login")
+    public ResponseEntity<String> login(UserReqDto userReqDto, HttpServletResponse response){
+        ResponseEntity responseEntity = userService.login(userReqDto,response);
+        return responseEntity;
+    }
 
     //로그아웃
 
