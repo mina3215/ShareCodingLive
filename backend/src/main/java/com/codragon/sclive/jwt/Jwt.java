@@ -1,5 +1,7 @@
 package com.codragon.sclive.jwt;
 
+import com.codragon.sclive.exception.CustomException;
+import com.codragon.sclive.exception.JWTErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
@@ -54,34 +56,31 @@ public class Jwt {
         return accessToken;
     }
 
-    public String validateToken(String token) {
+    public String validateToken(String token) throws CustomException{
         Jws<Claims> jws = null;
 
+        // 유효한 토큰인지 확인
         try {
             jws = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
-        } catch (JwtException e) {
+        } catch (Exception e) {
             System.err.println("유효하지 않은 토큰입니다...");
-            // TODO: 유효하지 않음 return 쳐야함
+            // JWTErrorCode enum의 상수인 NOT_VALID_TOKEN에 대한 객체가 생성
+            throw new CustomException(JWTErrorCode.NOT_VALID_TOKEN);
         }
 
+        // 만료된 토큰인지 확인
         Date expDate = jws.getBody().getExpiration();
         Date now = new Date();
         // 만요일이 현재 시간보다 이전인 경우
         if (expDate.compareTo(now) < 0) {
-            // TODO: 만료시간 관련 return 처리
+            throw new CustomException(JWTErrorCode.EXPIRED_TOKEN);
         }
 
         String nickname = (String) jws.getBody().get("nickname");
         return nickname;
     }
 
-    public static void main(String[] args) {
-        Jwt jwt = new Jwt();
-
-        System.out.println(jwt.validateToken(jwt.createAccessToken("this", "is valid?")));
-
-    }
 }
