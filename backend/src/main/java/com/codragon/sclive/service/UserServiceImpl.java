@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
+
     public UserServiceImpl(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
@@ -32,20 +33,20 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean emailCheck(String email) {
-        List<UserDao> userDaoList = userMapper.emailCheck(email);
-        if(userDaoList.size()>0){
+        List<UserDao> userDaoList = userMapper.emailCheck(email);//같은 이메일을 가진 회원 목록 조회
+        if (userDaoList.size() > 0) {//해당하는 회원이 0명 이상이면 중복된 이메일
             return false;
-        } else{
+        } else {
             return true;
         }
     }
 
     @Override
     public boolean nickNameCheck(String nickname) {
-        List<UserDao> userDaoList = userMapper.nickNameCheck(nickname);
-        if(userDaoList.size()>0){
+        List<UserDao> userDaoList = userMapper.nickNameCheck(nickname); //같은 닉네임을 가진 회원 목록 조회
+        if (userDaoList.size() > 0) { //해당하는 회원이 0명 이상이면 중복된 닉네임
             return false;
-        } else{
+        } else {
             return true;
         }
     }
@@ -53,5 +54,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteUser(String email) {
         userMapper.deleteUser(email);
+    }
+
+    @Override
+    public UserDao getUserInfo(String email) {
+        UserDao userDao = userMapper.getUserInfo(email);
+        return userDao;
     }
 }

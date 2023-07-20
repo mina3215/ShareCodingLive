@@ -20,4 +20,7 @@
     <delete id="deleteUser">
         delete from user where email = #{email}
     </delete>
+    <select id="getUserInfo" parameterType="String">
+        select nickname, email from user where email = #{email}
+    </select>
 </mapper>

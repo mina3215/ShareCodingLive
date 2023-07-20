@@ -2,6 +2,7 @@ package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.dto.UserReqDto;
+import com.codragon.sclive.dto.UserResDto;
 import com.codragon.sclive.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -100,5 +101,19 @@ public class UserController {
         String email = "hello@gmail.com";
         userService.deleteUser(email);
         return ResponseEntity.status(200).body("Success");
+    }
+
+    @ApiOperation(value = "회원 정보 조회", notes = "")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/userinfo")
+    public ResponseEntity<UserResDto> getUserInfo(){
+        //auth에서 email 추출
+        String email = "hello@gmail.com";
+        UserDao userDao = userService.getUserInfo(email);
+        UserResDto userResDto = userDao.getUserdaoToDto();
+        return ResponseEntity.status(200).body(userResDto);
     }
 }
