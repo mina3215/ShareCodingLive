@@ -28,7 +28,7 @@ class JWTUtilTest {
 
     @Test
     @DisplayName("토큰 안의 닉네임 반환 테스트")
-    void checkKey() {
+    void checkNickname() {
         String result = "Test";
 
         String accessToken = jwt.createAccessToken("test", "Test");
@@ -36,5 +36,16 @@ class JWTUtilTest {
         log.info("result: {}, actual: {}", nickname, result);
 
         Assertions.assertEquals(nickname, result);
+    }
+    @Test
+    @DisplayName("토큰 안의 이메일 반환 테스트")
+    void checkEmail() {
+        String result = "Test";
+
+        String accessToken = jwt.createAccessToken("Test", "1234");
+        String email = jwt.getEmailFromToken(accessToken);
+        log.info("result: {}, actual: {}", email, result);
+
+        Assertions.assertEquals(email, result);
     }
 }
