@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 !**/src/main/resources/application.yml
+# merge를 위한 주석 (aws 이후 application.yaml 삭)
 
 ### STS ###
 .apt_generated
