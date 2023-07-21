@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(UserDao userDao) {
-        String encodedPW = "asdfasdf";
+        String encodedPW = passwordEncoder.encode(userDao.getPassword());
         userDao.setPassword(encodedPW);
         userMapper.updatePassword(userDao);
     }
@@ -41,23 +40,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean emailCheck(String email) {
-        List<UserDao> userDaoList = userMapper.emailCheck(email);//같은 이메일을 가진 회원 목록 조회
-        if (userDaoList.size() > 0) {//해당하는 회원이 0명 이상이면 중복된 이메일
-            return false;
-        } else {
-            return true;
-        }
+    public int emailCheck(String email) {
+        int emailCnt = userMapper.emailCheck(email);//같은 이메일을 가진 회원 목록 조회
+        return emailCnt;
     }
 
     @Override
-    public boolean nickNameCheck(String nickname) {
-        List<UserDao> userDaoList = userMapper.nickNameCheck(nickname); //같은 닉네임을 가진 회원 목록 조회
-        if (userDaoList.size() > 0) { //해당하는 회원이 0명 이상이면 중복된 닉네임
-            return false;
-        } else {
-            return true;
-        }
+    public int nickNameCheck(String nickname) {
+        int nicknameCnt = userMapper.nickNameCheck(nickname); //같은 닉네임을 가진 회원 목록 조회
+        return nicknameCnt;
     }
 
     @Override

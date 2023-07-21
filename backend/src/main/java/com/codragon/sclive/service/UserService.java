@@ -13,9 +13,9 @@ public interface UserService {
 
     void signup(UserDao userDao);
 
-    boolean emailCheck(String email);
+    int emailCheck(String email);
 
-    boolean nickNameCheck(String nickname);
+    int nickNameCheck(String nickname);
 
     void deleteUser(String email);
 
