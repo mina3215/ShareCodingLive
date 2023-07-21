@@ -14,6 +14,8 @@ spring:
       matching-strategy: ant_path_matcher
   application:
     name: BackendApplication
+  auth:
+    secretKey: 6v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-
 
 mybatis:
   type-aliases-package: com.codragon.sclive.dao
@@ -22,3 +24,4 @@ mybatis:
 logging:
   level:
     com.codragon.sclive: INFO
+
