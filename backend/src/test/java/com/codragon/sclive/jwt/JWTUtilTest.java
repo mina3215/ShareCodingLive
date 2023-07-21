@@ -16,7 +16,6 @@ class JWTUtilTest {
     @Test
     @DisplayName("JWT 검증")
     void createAccessToken() {
-
         final boolean result = true;
 
         String accessToken = jwt.createAccessToken("test", "test");
