@@ -99,6 +99,16 @@ public class Jwt {
         return nickname;
     }
 
+    public String getEmailFromToken(String token) {
+        String email = (String) Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody().get("email");
+
+        return email;
+    }
+
     private long getCurrentTime() {
         Date date = new Date(System.currentTimeMillis());
         return date.getTime();
