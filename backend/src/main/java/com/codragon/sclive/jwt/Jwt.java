@@ -4,15 +4,20 @@ import com.codragon.sclive.exception.CustomException;
 import com.codragon.sclive.exception.JWTErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 
+@Component
 public class Jwt {
-    // 현재 시간
-    private final Date now = new Date();
 
+    private final int FIVE_MINUTES = 1000 * 60 * 5;
+    private final int THREE_DAYS = 1000 * 60 * 60 * 24 * 3;
     // 헤더 설정
     private final HashMap<String, Object> headerMap = new HashMap<>() {{
         put("alg", "HS256");
@@ -20,17 +25,21 @@ public class Jwt {
     }};
 
     // 시크릿 키 생성
-    private final String random256BitKey = "6v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-";
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes());
+    @Value("${spring.auth.secretKey}")
+    private String random256BitKey;
+    private SecretKey secretKey;
+    @PostConstruct
+    private void generateSecretKey() {
+        secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes());
+    }
 
     public String createRefreshToken(String email, String nickname) {
-        // 100*60*60 - 1시간
-        Date exp = new Date(now.getTime() + 1000*60*60*24*30*3);
+        Date exp = new Date(getCurrentTime() + THREE_DAYS);
 
         String refreshToken = Jwts.builder()
                 .setHeaderParams(headerMap)
                 .setExpiration(exp)
-                .setIssuedAt(now)
+                .setIssuedAt(exp)
                 .claim("email", email)
                 .claim("nickname", nickname)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -41,13 +50,12 @@ public class Jwt {
 
 
     public String createAccessToken(String email, String nickname) {
-        // 100*60*60 - 1시간
-        Date exp = new Date(now.getTime() + 1000*60*60);
+        Date exp = new Date(getCurrentTime()  + FIVE_MINUTES);
 
         String accessToken = Jwts.builder()
                 .setHeaderParams(headerMap)
                 .setExpiration(exp)
-                .setIssuedAt(now)
+                .setIssuedAt(exp)
                 .claim("email", email)
                 .claim("nickname", nickname)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
@@ -56,8 +64,8 @@ public class Jwt {
         return accessToken;
     }
 
-    public String validateToken(String token) throws CustomException{
-        Jws<Claims> jws = null;
+    public boolean validateToken(String token) throws CustomException{
+        Jws<Claims> jws;
 
         // 유효한 토큰인지 확인
         try {
@@ -74,13 +82,35 @@ public class Jwt {
         // 만료된 토큰인지 확인
         Date expDate = jws.getBody().getExpiration();
         Date now = new Date();
-        // 만요일이 현재 시간보다 이전인 경우
-        if (expDate.compareTo(now) < 0) {
+        if (expDate.compareTo(now) < 0) { // 만료일이 현재 시간보다 이전인 경우
             throw new CustomException(JWTErrorCode.EXPIRED_TOKEN);
         }
 
-        String nickname = (String) jws.getBody().get("nickname");
+        return true;
+    }
+
+    public String getNicknameFromToken(String token) {
+        String nickname = (String) Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody().get("nickname");
+
         return nickname;
     }
 
+    public String getEmailFromToken(String token) {
+        String email = (String) Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody().get("email");
+
+        return email;
+    }
+
+    private long getCurrentTime() {
+        Date date = new Date(System.currentTimeMillis());
+        return date.getTime();
+    }
 }

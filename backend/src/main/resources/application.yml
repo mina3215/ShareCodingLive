@@ -1,0 +1,27 @@
+
+# ============================= #
+# ====== Local Database ======= #
+# ============================= #
+# TODO: URL, username, ddl-auto ????
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    username: ssafy
+    password: ssafy
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  application:
+    name: BackendApplication
+  auth:
+    secretKey: 6v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-
+
+mybatis:
+  type-aliases-package: com.codragon.sclive.dao
+  mapper-locations: classpath:mapper/*.xml
+
+logging:
+  level:
+    com.codragon.sclive: INFO
+
