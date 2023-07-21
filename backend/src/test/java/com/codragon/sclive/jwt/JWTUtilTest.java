@@ -37,6 +37,7 @@ class JWTUtilTest {
 
         Assertions.assertEquals(nickname, result);
     }
+
     @Test
     @DisplayName("토큰 안의 이메일 반환 테스트")
     void checkEmail() {
