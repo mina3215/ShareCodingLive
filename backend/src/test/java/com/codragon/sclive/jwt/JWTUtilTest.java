@@ -48,4 +48,13 @@ class JWTUtilTest {
 
         Assertions.assertEquals(email, result);
     }
+
+    @Test
+    @DisplayName("JWT access 토큰 발급")
+    void getAccessToken() {
+
+        String accessToken = jwt.createAccessToken("ssafy@ssafy.com", "ssafy");
+        System.out.println(accessToken);
+        log.debug("refresh: {}", accessToken);
+    }
 }

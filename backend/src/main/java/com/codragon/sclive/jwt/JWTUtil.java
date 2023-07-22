@@ -66,4 +66,24 @@ public class JWTUtil {
 
         return userRefreshToken;
     }
+    /**
+     * 파라미터로 전달된 이메일의 유저 Refresh Token 반환
+     *
+     * @param userEmail 유저 이메일
+     * @return 0이면 실패, 1이면 성공
+     */
+    public int deleteUserRefreshToken(String userEmail) {
+
+        if (isNull(userEmail)) {
+            return 0;
+        }
+
+        Boolean isDeleted = redisTemplate.delete(userEmail);
+
+        if (isDeleted) {
+            log.info("delete '{}'", userEmail);
+            return 1;
+        }
+        return 0;
+    }
 }

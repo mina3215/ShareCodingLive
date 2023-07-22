@@ -111,17 +111,18 @@ public class UserController {
         return ResponseEntity.status(200).body(result);
     }
 
-    @ApiOperation(value = "회원 탈퇴", notes = "")
+    @ApiOperation(value = "회원 탈퇴", notes = "(Header) Authorization : access 토큰")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/withdrawal")
-    public ResponseEntity<String> updateUserInfo(){
-        //auth에서 email 추출
-        String email = "hello@gmail.com";
-        userService.deleteUser(email);
-        return ResponseEntity.status(200).body("Success");
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String accessToken){
+        int isDeleted = userService.deleteUser(accessToken);
+        if (isDeleted == 1) {
+            return ResponseEntity.status(200).body("Success");
+        }
+        return ResponseEntity.status(500).body("ERROR");
     }
 
     @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.\n" +
