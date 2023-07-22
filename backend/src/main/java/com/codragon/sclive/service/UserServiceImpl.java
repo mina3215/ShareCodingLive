@@ -2,6 +2,7 @@ package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.dto.UserReqDto;
+import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
-
+    private final Jwt jwt;
+    private final JWTUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserMapper userMapper, Jwt jwt, JWTUtil jwtUtil, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
+        this.jwt = jwt;
+        this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -52,8 +56,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String email) {
+    public int deleteUser(String accessToken) {
+        String email = jwt.getEmailFromToken(accessToken);
+        int isDeleted = jwtUtil.deleteUserRefreshToken(email);
         userMapper.deleteUser(email);
+        return isDeleted;
+        // TODO:redis에러, mysql 삭제 트랜잭션 처리
     }
 
     @Override

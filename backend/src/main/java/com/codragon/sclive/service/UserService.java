@@ -17,7 +17,7 @@ public interface UserService {
 
     int nickNameCheck(String nickname);
 
-    void deleteUser(String email);
+    int deleteUser(String accesstoken);
 
     UserDao getUserInfo(String email);
 
