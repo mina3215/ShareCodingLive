@@ -2,6 +2,7 @@ package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.dto.UserReqDto;
+import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     private final PasswordEncoder passwordEncoder;
+
+    private JWTUtil jwtUtil;
 
     public UserServiceImpl(UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userMapper = userMapper;
@@ -72,15 +75,19 @@ public class UserServiceImpl implements UserService {
         boolean passwordMatched = passwordEncoder.matches(password, userDao.getPassword());
 
         if(passwordMatched){ //유효한 패스워드이다.
+            //토큰 발급
             Jwt jwt = new Jwt();
             String accessToken = jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
             String refreshToken = jwt.createRefreshToken(userDao.getEmail(), userDao.getNickname());
-            //토큰 발급
+
+            //헤더에 포함
             response.addHeader("AccessToken", accessToken);
             Cookie cookie = new Cookie("RefreshToken", refreshToken);
+            cookie.setMaxAge(60 * 60 * 24 * 3);
             response.addCookie(cookie);
-            //헤더에 포함
+
             //redis에 RefreshToken 저장
+            jwtUtil.saveUserRefreshToken(userDao.getEmail(), refreshToken);
             return ResponseEntity.status(200).body("Success");
         } else{
             return ResponseEntity.status(200).body("Fail");
