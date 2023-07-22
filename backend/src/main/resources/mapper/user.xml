@@ -2,22 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.codragon.sclive.mapper.UserMapper">
-    <insert id="signup">
+    <insert id="signup" parameterType="UserDao">
         insert into user values(#{email},#{nickname},#{password}, "USER")
     </insert>
-    <update id="updatePassword" >
+    <update id="updatePassword" parameterType="UserDao">
         update user set password=#{password} where email = #{email}
     </update>
-    <update id="updateUserInfo" >
-        update user set email = #{changedEmail}, nickname = #{nickname}  where email = #{email}
+    <update id="updateUserInfo" parameterType="UserDao">
+        update user set nickname = #{nickname}  where email = #{email}
     </update>
-    <select id="emailCheck" resultType="int">
+    <select id="emailCheck" parameterType="String" resultType="int">
         select count(email) from user where email = #{email}
     </select>
-    <select id="nickNameCheck" resultType="int">
+    <select id="nickNameCheck" parameterType="String" resultType="int">
         select count(nickname) from user where nickname = #{nickname}
     </select>
-    <delete id="deleteUser">
+    <delete id="deleteUser" parameterType="String">
         delete from user where email = #{email}
     </delete>
     <select id="getUserInfo" parameterType="String">

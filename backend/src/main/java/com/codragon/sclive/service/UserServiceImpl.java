@@ -40,6 +40,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signup(UserDao userDao) {
+        String encodedPW = passwordEncoder.encode(userDao.getPassword());
+        userDao.setPassword(encodedPW);
         userMapper.signup(userDao);
     }
 
@@ -81,14 +83,13 @@ public class UserServiceImpl implements UserService {
 
         if(passwordMatched){ //유효한 패스워드이다.
             //토큰 발급
-            Jwt jwt = new Jwt();
             String accessToken = jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
             String refreshToken = jwt.createRefreshToken(userDao.getEmail(), userDao.getNickname());
 
             //헤더에 포함
             response.addHeader("AccessToken", accessToken);
             Cookie cookie = new Cookie("RefreshToken", refreshToken);
-            cookie.setMaxAge(60 * 60 * 24 * 3);
+            cookie.setMaxAge(60 * 60 * 24 * 3); //3일
             response.addCookie(cookie);
 
             //redis에 RefreshToken 저장

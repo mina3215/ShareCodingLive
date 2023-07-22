@@ -23,7 +23,8 @@ public class UserController {
     private Jwt jwt;
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(Jwt jwt, UserService userService) {
+        this.jwt = jwt;
         this.userService = userService;
     }
 
@@ -33,7 +34,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserReqDto userReqDto){ //role,, security???
+    public ResponseEntity<String> signup(@RequestBody UserReqDto userReqDto) { //role,, security???
         System.out.println(userReqDto.toString());
         UserDao userDao = userReqDto.UserDtoToDao();
         userService.signup(userDao);
@@ -46,8 +47,8 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserReqDto userReqDto, HttpServletResponse response){
-        ResponseEntity responseEntity = userService.login(userReqDto,response);
+    public ResponseEntity<String> login(@RequestBody UserReqDto userReqDto, HttpServletResponse response) {
+        ResponseEntity responseEntity = userService.login(userReqDto, response);
         return responseEntity;
     }
 
@@ -65,23 +66,20 @@ public class UserController {
         return ResponseEntity.status(200).body("Success");
     }
 
-    @ApiOperation(value = "닉네임 수정", notes = "{AccessToken, nickname}")
+    @ApiOperation(value = "닉네임 수정", notes = "{nickname,\nAccessToken이 header에 존재해야 한다.}")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "닉네임 변경 실패"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/update")
-    public ResponseEntity<String> updateUserInfo(@RequestParam String nickname, @RequestHeader("AccessToken")String accessToken){
-        //if(jwt.validateToken(accessToken)){
-            UserDao userDao = new UserDao();
-            userDao.setNickname(nickname);
-            userDao.setEmail(jwt.getEmailFromToken(accessToken));
-            userService.updateUserInfo(userDao);
-            return ResponseEntity.status(200).body("성공");
-        //} else{
-//            return ResponseEntity.status(401).body("닉네임 변경 실패");
-        //}
+    public ResponseEntity<String> updateUserInfo(@RequestParam String nickname, @RequestHeader("AccessToken") String accessToken) {
+        System.out.println("저기요!!!!!!!!!!");
+        UserDao userDao = new UserDao();
+        userDao.setNickname(nickname);
+        userDao.setEmail(jwt.getEmailFromToken(accessToken));
+        userService.updateUserInfo(userDao);
+        return ResponseEntity.status(200).body("성공");
     }
 
     @ApiOperation(value = "이메일 중복 검사", notes = "email : 중복 검사하고 싶은 이메일\n" +
@@ -92,9 +90,9 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/emailcheck")
-    public ResponseEntity<Integer> emailCheck(@RequestParam String email){
+    public ResponseEntity<Integer> emailCheck(@RequestParam String email) {
         int sameEmailCnt = userService.emailCheck(email);
-        int result = sameEmailCnt==0?1:0;
+        int result = sameEmailCnt == 0 ? 1 : 0;
         return ResponseEntity.status(200).body(result);
     }
 
@@ -105,9 +103,9 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/nickcheck")
-    public ResponseEntity<Integer> nicknameCheck(@RequestParam String nickname){
+    public ResponseEntity<Integer> nicknameCheck(@RequestParam String nickname) {
         int sameNicknameCnt = userService.nickNameCheck(nickname);
-        int result = sameNicknameCnt==0?1:0;
+        int result = sameNicknameCnt == 0 ? 1 : 0;
         return ResponseEntity.status(200).body(result);
     }
 
@@ -117,7 +115,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/withdrawal")
-    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String accessToken){
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String accessToken) {
         int isDeleted = userService.deleteUser(accessToken);
         if (isDeleted == 1) {
             return ResponseEntity.status(200).body("Success");
@@ -125,22 +123,17 @@ public class UserController {
         return ResponseEntity.status(500).body("ERROR");
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.\n" +
-            "")
+    @ApiOperation(value = "회원 정보 조회", notes = "AccessToken이 header에 존재해야 한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "회원 정보 조회 실패"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/userinfo")
-    public ResponseEntity<UserResDto> getUserInfo(@RequestHeader("AccessToken")String accessToken){
-//        if(jwt.validateToken(accessToken)){
-            String email = jwt.getEmailFromToken(accessToken);
-            UserDao userDao = userService.getUserInfo(email);
-            UserResDto userResDto = userDao.getUserdaoToDto();
-            return ResponseEntity.status(200).body(userResDto);
-//        } else{
-//            return ResponseEntity.status(401).body(null);
-//        }
+    public ResponseEntity<UserResDto> getUserInfo(@RequestHeader("AccessToken") String accessToken) {
+        String email = jwt.getEmailFromToken(accessToken);
+        UserDao userDao = userService.getUserInfo(email);
+        UserResDto userResDto = userDao.getUserdaoToDto();
+        return ResponseEntity.status(200).body(userResDto);
     }
 }
