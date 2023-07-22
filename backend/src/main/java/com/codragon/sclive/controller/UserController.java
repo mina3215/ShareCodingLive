@@ -84,7 +84,9 @@ public class UserController {
         //}
     }
 
-    @ApiOperation(value = "이메일 중복 검사", notes = "email : 중복 검사하고 싶은 이메일")
+    @ApiOperation(value = "이메일 중복 검사", notes = "email : 중복 검사하고 싶은 이메일\n" +
+            "이메일이 중복인 경우 0, 아니면 1")
+
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
@@ -96,7 +98,8 @@ public class UserController {
         return ResponseEntity.status(200).body(result);
     }
 
-    @ApiOperation(value = "닉네임 중복 검사", notes = "nickname : 중복 검사하고 싶은 닉네임")
+    @ApiOperation(value = "닉네임 중복 검사", notes = "nickname : 중복 검사하고 싶은 닉네임\n" +
+            "이메일이 중복인 경우 0, 아니면 1")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
@@ -121,14 +124,15 @@ public class UserController {
         return ResponseEntity.status(200).body("Success");
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "")
+    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.\n" +
+            "")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "회원 정보 조회 실패"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/userinfo")
-    public ResponseEntity<UserResDto> getUserInfo(@RequestBody UserReqDto userReqDto, @RequestHeader("AccessToken")String accessToken){
+    public ResponseEntity<UserResDto> getUserInfo(@RequestHeader("AccessToken")String accessToken){
 //        if(jwt.validateToken(accessToken)){
             String email = jwt.getEmailFromToken(accessToken);
             UserDao userDao = userService.getUserInfo(email);

@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.codragon.sclive.mapper.UserMapper">
     <insert id="signup">
-        insert into user values(#{email},#{nickname},#{password})
+        insert into user values(#{email},#{nickname},#{password}, "USER")
     </insert>
     <update id="updatePassword" >
         update user set password=#{password} where email = #{email}
@@ -14,7 +14,7 @@
     <select id="emailCheck" resultType="int">
         select count(email) from user where email = #{email}
     </select>
-    <select id="nicknameCheck" resultType="int">
+    <select id="nickNameCheck" resultType="int">
         select count(nickname) from user where nickname = #{nickname}
     </select>
     <delete id="deleteUser">
