@@ -74,7 +74,6 @@ public class UserController {
     })
     @GetMapping("/update")
     public ResponseEntity<String> updateUserInfo(@RequestParam String nickname, @RequestHeader("AccessToken") String accessToken) {
-        System.out.println("저기요!!!!!!!!!!");
         UserDao userDao = new UserDao();
         userDao.setNickname(nickname);
         userDao.setEmail(jwt.getEmailFromToken(accessToken));
