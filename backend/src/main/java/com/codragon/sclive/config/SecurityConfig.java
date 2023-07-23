@@ -21,7 +21,7 @@ public class SecurityConfig {
         // Todo : hasRole Security 구현
         http
                 .csrf().disable()
-                .antMatcher("/**")
+                .antMatcher("/user/*")
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
