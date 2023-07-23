@@ -18,8 +18,8 @@ class JWTUtilTest {
     void createAccessToken() {
         final boolean result = true;
 
-        String accessToken = jwt.createAccessToken("test", "test");
-        boolean valid = jwt.validateToken(accessToken);
+//        String accessToken = jwt.createAccessToken("test", "test");
+        boolean valid = jwt.validateToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTAzNDQwMjAsImlhdCI6MTY5MDM0NDAyMCwiZW1haWwiOiJzc2FmeUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImhlbGxvc3NhZnkifQ.Pg3E0VI1pzsjMyaNOJD83r6j6M-GBGyNB-kqdWAWXRg");
 
         log.debug("result: {}, actual: {}", valid, true);
         Assertions.assertEquals(valid, result);
@@ -53,7 +53,7 @@ class JWTUtilTest {
     @DisplayName("JWT access 토큰 발급")
     void getAccessToken() {
 
-        String accessToken = jwt.createAccessToken("ssafy@ssafy.com", "ssafy");
+        String accessToken = jwt.createRefreshToken("ssafy@ssafy.com", "hellossafy");
         System.out.println(accessToken);
         log.debug("refresh: {}", accessToken);
     }

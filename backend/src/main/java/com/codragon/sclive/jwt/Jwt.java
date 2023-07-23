@@ -25,13 +25,13 @@ public class Jwt {
     }};
 
     // 시크릿 키 생성
-    @Value("${spring.auth.secretKey}")
-    private String random256BitKey;
-    private SecretKey secretKey;
-    @PostConstruct
-    private void generateSecretKey() {
-        secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes());
-    }
+//    @Value("${spring.auth.secretKey}")
+    private String random256BitKey = "6v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-";
+    private SecretKey secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes());
+//    @PostConstruct
+//    private void generateSecretKey() {
+//        secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes());
+//    }
 
     public String createRefreshToken(String email, String nickname) {
         Date exp = new Date(getCurrentTime() + THREE_DAYS);
@@ -50,7 +50,7 @@ public class Jwt {
 
 
     public String createAccessToken(String email, String nickname) {
-        Date exp = new Date(getCurrentTime()  + FIVE_MINUTES);
+        Date exp = new Date(getCurrentTime() + FIVE_MINUTES);
 
         String accessToken = Jwts.builder()
                 .setHeaderParams(headerMap)
@@ -64,7 +64,7 @@ public class Jwt {
         return accessToken;
     }
 
-    public boolean validateToken(String token) throws CustomException{
+    public boolean validateToken(String token) throws CustomException {
         Jws<Claims> jws;
 
         // 유효한 토큰인지 확인
@@ -91,10 +91,10 @@ public class Jwt {
 
     public String getNicknameFromToken(String token) {
         String nickname = (String) Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody().get("nickname");
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody().get("nickname");
 
         return nickname;
     }
