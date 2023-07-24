@@ -1,8 +1,11 @@
 package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserUpdatePWDao;
+import com.codragon.sclive.dto.UserLoginReqDto;
 import com.codragon.sclive.dto.UserReqDto;
 import com.codragon.sclive.dto.UserResDto;
+import com.codragon.sclive.dto.UserUpdatePWReqDto;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.service.UserService;
 import io.swagger.annotations.Api;
@@ -40,21 +43,21 @@ public class UserController {
         return ResponseEntity.status(200).body("Success");
     }
 
-    @ApiOperation(value = "로그인", notes = "email : 로그인 할 이메일\npassword : 로그인 할 비밀번호")
+    @ApiOperation(value = "로그인", notes = "email, password")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserReqDto userReqDto, HttpServletResponse response) {
-        UserDao userDao = userReqDto.UserDtoToDao();
+    public ResponseEntity<String> login(@RequestBody UserLoginReqDto userLoginReqDto, HttpServletResponse response) {
+        UserDao userDao = userLoginReqDto.UserDtoToDao();
         ResponseEntity responseEntity = userService.login(userDao, response);
         return responseEntity;
     }
 
-    //로그아웃
+    //Todo : 로그아웃
 
-    @ApiOperation(value = "비밀번호 변경", notes = "<strong>비밀번호</strong>를 변경한다.")
+    @ApiOperation(value = "비밀번호 변경", notes = "password") //Todo : 비밀번호 변경 로직 구현
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
