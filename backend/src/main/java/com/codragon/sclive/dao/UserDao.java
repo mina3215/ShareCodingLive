@@ -3,9 +3,11 @@ package com.codragon.sclive.dao;
 import com.codragon.sclive.dto.UserResDto;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class UserDao {
 
     String email;

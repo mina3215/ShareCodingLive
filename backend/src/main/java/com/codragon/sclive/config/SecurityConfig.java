@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,13 +17,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter authenticationFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Todo : hasRole Security 구현
         http
                 .csrf().disable()
-                .antMatcher("/user/*")
-                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests()
+                .antMatchers("/user/**",
+                        // Swagger 허용 URL
+                        "/v2/api-docs", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources",
+                        "/swagger-resources/**", "/configuration/ui", "/configuration/security", "/swagger-ui/**",
+                        "/webjars/**", "/swagger-ui.html"
+                ).permitAll()
+                .anyRequest()
+                .authenticated();
 
         return http.build();
     }

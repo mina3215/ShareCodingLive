@@ -1,7 +1,6 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
-import com.codragon.sclive.dto.UserReqDto;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,5 +20,5 @@ public interface UserService {
 
     UserDao getUserInfo(String email);
 
-    ResponseEntity login(UserReqDto userReqDto, HttpServletResponse response);
+    ResponseEntity login(UserDao userDao, HttpServletResponse response);
 }

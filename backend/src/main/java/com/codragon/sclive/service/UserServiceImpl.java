@@ -1,17 +1,17 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
-import com.codragon.sclive.dto.UserReqDto;
 import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
     public void signup(UserDao userDao) {
         String encodedPW = passwordEncoder.encode(userDao.getPassword());
         userDao.setPassword(encodedPW);
+        log.info(userDao.toString());
         userMapper.signup(userDao);
     }
 
@@ -73,11 +74,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity login(UserReqDto userReqDto, HttpServletResponse response) {
-        String email = userReqDto.getEmail();
-        String password = userReqDto.getPassword();
-        UserDao userDao = this.getUserInfo(email);
-
+    public ResponseEntity login(UserDao userDao, HttpServletResponse response) {
+        String email = userDao.getEmail();
+        String password = userDao.getPassword();
+        UserDao user = this.getUserInfo(email);
         // 입력된 비번과 디비의 암호화된 비번이 같은지 확인.
         boolean passwordMatched = passwordEncoder.matches(password, userDao.getPassword());
 

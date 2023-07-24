@@ -34,8 +34,7 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody UserReqDto userReqDto) { //role,, security???
-        System.out.println(userReqDto.toString());
+    public ResponseEntity<String> signup(@RequestBody UserReqDto userReqDto) {
         UserDao userDao = userReqDto.UserDtoToDao();
         userService.signup(userDao);
         return ResponseEntity.status(200).body("Success");
@@ -48,7 +47,8 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserReqDto userReqDto, HttpServletResponse response) {
-        ResponseEntity responseEntity = userService.login(userReqDto, response);
+        UserDao userDao = userReqDto.UserDtoToDao();
+        ResponseEntity responseEntity = userService.login(userDao, response);
         return responseEntity;
     }
 
