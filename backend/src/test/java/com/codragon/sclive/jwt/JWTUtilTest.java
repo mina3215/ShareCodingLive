@@ -1,9 +1,16 @@
 package com.codragon.sclive.jwt;
 
+import io.jsonwebtoken.InvalidClaimException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 
 @Slf4j
 @SpringBootTest
@@ -52,9 +59,8 @@ class JWTUtilTest {
     @Test
     @DisplayName("JWT access 토큰 발급")
     void getAccessToken() {
-
         String accessToken = jwt.createAccessToken("ssafy@ssafy.com", "ssafy");
-        System.out.println(accessToken);
-        log.debug("refresh: {}", accessToken);
+        log.info("access: {}", accessToken);
     }
+
 }

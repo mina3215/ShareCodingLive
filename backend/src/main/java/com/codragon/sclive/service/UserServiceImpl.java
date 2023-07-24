@@ -2,16 +2,21 @@ package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.dto.UserReqDto;
+import com.codragon.sclive.exception.CustomDBException;
+import com.codragon.sclive.exception.DBErrorCode;
 import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
@@ -56,12 +61,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int deleteUser(String accessToken) {
+    public void deleteUser(String accessToken){
         String email = jwt.getEmailFromToken(accessToken);
-        int isDeleted = jwtUtil.deleteUserRefreshToken(email);
+        jwtUtil.deleteUserRefreshToken(email);
+
+        // 이미 탈퇴한 회원이라면
+        UserDao mysqlInfo = this.getUserInfo(email);
+        if (mysqlInfo == null) {
+            throw new CustomDBException(DBErrorCode.ALREADY_DELETED);
+        }
         userMapper.deleteUser(email);
-        return isDeleted;
-        // TODO:redis에러, mysql 삭제 트랜잭션 처리
     }
 
     @Override
