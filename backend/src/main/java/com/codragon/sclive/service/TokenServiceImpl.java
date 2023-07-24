@@ -22,7 +22,8 @@ public class TokenServiceImpl implements TokenService{
     public String getAccessTokenByRefreshToken(String refreshToken) {
         // TODO: redis에서 유저 정보 가져오기
         String userEmail;
-        UserDao userDao = userMapper.getUserInfo(userEmail);
-        return jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
+//        UserDao userDao = userMapper.getUserInfo(userEmail);
+//        return jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
+        return "";
     }
 }

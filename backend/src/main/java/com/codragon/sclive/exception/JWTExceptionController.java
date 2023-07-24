@@ -27,8 +27,8 @@ public class JWTExceptionController {
         return new ResponseEntity<>(map, responseHeaders, httpStatus);
     }
 
-    @ExceptionHandler(value = CustomException.class)
-    public ResponseEntity<Map<String, String>> handleCustomException(CustomException e) {
+    @ExceptionHandler(value = CustomJWTException.class)
+    public ResponseEntity<Map<String, String>> handleCustomException(CustomJWTException e) {
         // CustomException 클래스의 jwtErrorCode 멤버 변수를 반환
         return makeErrorMsg(e.getJwtErrorCode());
     }

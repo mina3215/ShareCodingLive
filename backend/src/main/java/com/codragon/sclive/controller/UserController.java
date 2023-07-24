@@ -115,8 +115,7 @@ public class UserController {
     @ApiOperation(value = "회원 탈퇴", notes = "(Header) Authorization : access 토큰")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
-            @ApiResponse(code = 204, message = "이미 탈퇴 처리가 된 회원"),
-            @ApiResponse(code = 400, message = "처리 중 문제가 생겨 롤백, 다시 요청 요망"),
+            @ApiResponse(code = 404, message = "이미 탈퇴한 회원"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/withdrawal")

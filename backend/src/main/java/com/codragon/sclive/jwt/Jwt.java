@@ -1,15 +1,15 @@
 package com.codragon.sclive.jwt;
 
-import com.codragon.sclive.exception.CustomException;
+import com.codragon.sclive.exception.CustomJWTException;
 import com.codragon.sclive.exception.JWTErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -30,7 +30,7 @@ public class Jwt {
     private SecretKey secretKey;
     @PostConstruct
     private void generateSecretKey() {
-        secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes());
+        secretKey = Keys.hmacShaKeyFor(random256BitKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createRefreshToken(String email, String nickname) {
@@ -64,7 +64,7 @@ public class Jwt {
         return accessToken;
     }
 
-    public boolean validateToken(String token) throws CustomException{
+    public boolean validateToken(String token) throws CustomJWTException {
         Jws<Claims> jws;
 
         // 유효한 토큰인지 확인
@@ -73,17 +73,12 @@ public class Jwt {
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
-        } catch (Exception e) {
-            System.err.println("유효하지 않은 토큰입니다...");
-            // JWTErrorCode enum의 상수인 NOT_VALID_TOKEN에 대한 객체가 생성
-            throw new CustomException(JWTErrorCode.NOT_VALID_TOKEN);
-        }
-
-        // 만료된 토큰인지 확인
-        Date expDate = jws.getBody().getExpiration();
-        Date now = new Date();
-        if (expDate.compareTo(now) < 0) { // 만료일이 현재 시간보다 이전인 경우
-            throw new CustomException(JWTErrorCode.EXPIRED_TOKEN);
+        } catch (ExpiredJwtException e) {
+            // 유효 기간이 지난 토큰
+            throw new CustomJWTException(JWTErrorCode.EXPIRED_TOKEN);
+        } catch (CompressionException | MalformedJwtException | UnsupportedJwtException e) {
+            // 압축 오류, 키 틀림 오류, 해당 토큰과 맞지 않는 토큰 타입 오류
+            throw new CustomJWTException(JWTErrorCode.NOT_VALID_TOKEN);
         }
 
         return true;

@@ -9,8 +9,8 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 @AllArgsConstructor
 public enum JWTErrorCode {
-    EXPIRED_TOKEN(NOT_ACCEPTABLE, "만료된 토큰입니다."),
-    NOT_VALID_TOKEN(UNAUTHORIZED, "유효하지 않은 토큰입니다!!!!");
+    EXPIRED_TOKEN(NOT_ACCEPTABLE, "유효 기간이 지난 토큰입니다"),
+    NOT_VALID_TOKEN(UNAUTHORIZED, "잘못 만들어진 토큰입니다! (해킹 위험)");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -1,7 +1,7 @@
 package com.codragon.sclive.controller;
 
 
-import com.codragon.sclive.exception.CustomException;
+import com.codragon.sclive.exception.CustomJWTException;
 import com.codragon.sclive.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,10 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 @Api(value = "토큰 API", tags = {"Token"})
 @RestController
@@ -38,7 +34,7 @@ public class TokenController {
             if (isValid) {
                 return ResponseEntity.status(200).body("VALID ACCESS TOKEN ");
             }
-        } catch (CustomException e) {
+        } catch (CustomJWTException e) {
             throw e;
         }
         return ResponseEntity.status(500).body("ERROR");
@@ -59,7 +55,7 @@ public class TokenController {
             if (isValid) {
                 return ResponseEntity.status(200).body("VALID REFRESH TOKEN ");
             }
-        } catch (CustomException e) {
+        } catch (CustomJWTException e) {
             throw e;
         }
         return ResponseEntity.status(500).body("ERROR");
