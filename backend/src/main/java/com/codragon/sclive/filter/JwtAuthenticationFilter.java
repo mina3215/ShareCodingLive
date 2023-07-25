@@ -3,7 +3,11 @@ package com.codragon.sclive.filter;
 import com.codragon.sclive.jwt.Jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,36 +17,64 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@RequiredArgsConstructor
+
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final Jwt jwt;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("필터 진입 완료!!!!!!!!!!!!!!!!!!!!!!");
-        String path = request.getServletPath();
-        log.info("servletPath : " + path);
 
-        //헤더에서 AccessToken을 받아온다.
-        String accessToken = request.getHeader("AccessToken");
+        /*
+        현재 Request 및 Client 정보 출력
+        - 요청된 URL
+        - 요청된 HTTP Method
+         */
+        final String URL = request.getServletPath();
+        final String METHOD = request.getMethod();
 
-        //엑세스 토큰이 없는 경우 검증 과정을 거치지 않는다.
-        if (accessToken == null) {
+        log.debug("enter JwtAuthenticationFilter");
+        log.debug("[{}] get Request to '{}'", METHOD, URL);
+
+        // Header에서 AccessToken 받기
+        final String authenticationToken = request.getHeader("AccessToken");
+
+        // AccessToken이 없거나, 'Bearer '로 시작하지 않는 경우
+        if (authenticationToken == null || !authenticationToken.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("토큰 검증 완료!!!!!!!!!!!!!!");
 
-        //토큰을 검증한다.
-        jwt.validateToken(accessToken); //이상한 토큰, 유효기간 만료 토큰은 error 발생 -> error handler로
-        // Fixme : 정상 토큰을 넣어도 유효하지 않은 토큰으로 나옴 -> 해결 : 키를 value로 가져오지 않으면 괜찮다.
+        final String accessToken = authenticationToken.substring(7);
 
-        // Todo : UserDetails 구현하기, accessToken으로 authentication 객체 생성하기, hasRole 검사
-//         Authentication authentication = jwt.getAuthentication(newAccessToken);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);// SecurityContext에 Authentication 객체 저장
-//        response.addHeader("Authorization", newAccessToken);
+        /*
+        Access Token 검증 단계
+        조작된 Token 및 유효 기간이 만료된 Token은
+        Exception Handler로 Error 처리
+         */
+        if (jwt.validateToken(accessToken)) {
+
+            final String userEmail = jwt.getEmailFromToken(accessToken);
+            UserDetails findUserDetails = userDetailsService.loadUserByUsername(userEmail);
+            log.info("find UserDetails of Client: {}", findUserDetails);
+
+            UsernamePasswordAuthenticationToken userAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    findUserDetails,
+                    null,
+                    findUserDetails.getAuthorities()
+            );
+
+            userAuthenticationToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(userAuthenticationToken);
+        }
+
         filterChain.doFilter(request, response);
     }
 }
