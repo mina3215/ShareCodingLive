@@ -1,7 +1,6 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
-import com.codragon.sclive.dto.UserReqDto;
 import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.exception.DBErrorCode;
 import com.codragon.sclive.jwt.JWTUtil;
@@ -65,6 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String accessToken) {
+
         String email = jwt.getEmailFromToken(accessToken);
         jwtUtil.deleteUserRefreshToken(email);
 

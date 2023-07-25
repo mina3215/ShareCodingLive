@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
 @Slf4j
 @SpringBootTest
 @DisplayName("JWT Util 서비스")
@@ -27,24 +28,7 @@ class JWTUtilTest {
     Jwt jwt;
 
     @Test
-<<<<<<< HEAD
-    @DisplayName("JWT 검증")
-    void createAccessToken() {
-        final boolean result = true;
-
-//        String accessToken = jwt.createAccessToken("test", "test");
-        boolean valid = jwt.validateToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTAzNDQwMjAsImlhdCI6MTY5MDM0NDAyMCwiZW1haWwiOiJzc2FmeUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImhlbGxvc3NhZnkifQ.Pg3E0VI1pzsjMyaNOJD83r6j6M-GBGyNB-kqdWAWXRg");
-
-        log.debug("result: {}, actual: {}", valid, true);
-        Assertions.assertEquals(valid, result);
-    }
-
-    @Test
-    @DisplayName("토큰 안의 닉네임 반환 테스트")
-    void checkNickname() {
-=======
     void 토큰에서_닉네임_반환_테스트() {
->>>>>>> origin/10-member-BE-heesom
         String result = "Test";
 
         String accessToken = jwt.createAccessToken("test", "Test");
@@ -66,14 +50,6 @@ class JWTUtilTest {
     }
 
     @Test
-<<<<<<< HEAD
-    @DisplayName("JWT access 토큰 발급")
-    void getAccessToken() {
-
-        String accessToken = jwt.createRefreshToken("ssafy@ssafy.com", "hellossafy");
-        System.out.println(accessToken);
-        log.debug("refresh: {}", accessToken);
-=======
     void access_토큰_발급() {
         String accessToken = jwt.createAccessToken("ssafy@ssafy.com", "ssafy");
         log.info("access: {}", accessToken);
@@ -118,6 +94,5 @@ class JWTUtilTest {
 
         // when
         assertThat(token1).isNotEqualTo(token2);
->>>>>>> origin/10-member-BE-heesom
     }
 }

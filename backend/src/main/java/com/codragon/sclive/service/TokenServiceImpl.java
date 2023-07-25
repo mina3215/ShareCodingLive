@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class TokenServiceImpl implements TokenService {
+
     private final Jwt jwt;
     private final UserMapper userMapper;
     private final JWTUtil jwtUtil;
