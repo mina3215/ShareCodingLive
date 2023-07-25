@@ -3,6 +3,7 @@ package com.codragon.sclive.controller;
 import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.dto.UserReqDto;
 import com.codragon.sclive.dto.UserResDto;
+import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.service.UserService;
 import io.swagger.annotations.Api;
@@ -114,18 +115,20 @@ public class UserController {
     @ApiOperation(value = "회원 탈퇴", notes = "(Header) Authorization : access 토큰")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 404, message = "이미 탈퇴한 회원"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/withdrawal")
     public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String accessToken){
-        int isDeleted = userService.deleteUser(accessToken);
-        if (isDeleted == 1) {
-            return ResponseEntity.status(200).body("Success");
+        try {
+            userService.deleteUser(accessToken);
+            return ResponseEntity.status(200).body("SUCCESS");
+        } catch (CustomDBException e) {
+            throw e;
         }
-        return ResponseEntity.status(500).body("ERROR");
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.\n" +
+    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다." +
             "")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),

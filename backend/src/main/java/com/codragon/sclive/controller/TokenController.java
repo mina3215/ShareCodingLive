@@ -1,7 +1,8 @@
 package com.codragon.sclive.controller;
 
 
-import com.codragon.sclive.exception.CustomException;
+import com.codragon.sclive.exception.CustomJWTException;
+import com.codragon.sclive.exception.JWTErrorCode;
 import com.codragon.sclive.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 @Api(value = "토큰 API", tags = {"Token"})
 @RestController
@@ -38,7 +37,7 @@ public class TokenController {
             if (isValid) {
                 return ResponseEntity.status(200).body("VALID ACCESS TOKEN ");
             }
-        } catch (CustomException e) {
+        } catch (CustomJWTException e) {
             throw e;
         }
         return ResponseEntity.status(500).body("ERROR");
@@ -59,7 +58,7 @@ public class TokenController {
             if (isValid) {
                 return ResponseEntity.status(200).body("VALID REFRESH TOKEN ");
             }
-        } catch (CustomException e) {
+        } catch (CustomJWTException e) {
             throw e;
         }
         return ResponseEntity.status(500).body("ERROR");
@@ -72,12 +71,10 @@ public class TokenController {
             @ApiResponse(code = 500, message = "서버 오류 (서버 관리자에게 알려주세요)")
     })
 
-    @PostMapping("/create/access")
-    public ResponseEntity<String> getAccessTokenByRefreshToken (@CookieValue(value = "refreshToken") String refreshToken) {
-        if (refreshToken == null) {
-            return ResponseEntity.status(400).body("NO REFRESH TOKEN");
-        }
+    @PostMapping("/create")
+    public ResponseEntity<String> getAccessTokenByRefreshToken (@CookieValue(value = "refreshToken") String refreshToken, HttpServletResponse response) {
         String accessToken = tokenService.getAccessTokenByRefreshToken(refreshToken);
+        response.addHeader("accessToken", accessToken);
         return ResponseEntity.status(200).body(accessToken);
     }
 
