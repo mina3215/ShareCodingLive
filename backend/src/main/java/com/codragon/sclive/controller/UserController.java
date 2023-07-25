@@ -1,11 +1,9 @@
 package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
-import com.codragon.sclive.dao.UserUpdatePWDao;
 import com.codragon.sclive.dto.UserLoginReqDto;
 import com.codragon.sclive.dto.UserReqDto;
 import com.codragon.sclive.dto.UserResDto;
-import com.codragon.sclive.dto.UserUpdatePWReqDto;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.service.UserService;
 import io.swagger.annotations.Api;
@@ -17,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+
 
 @Api(value = "유저 API", tags = {"User"})
 @RestController
@@ -114,18 +113,21 @@ public class UserController {
     @ApiOperation(value = "회원 탈퇴", notes = "(Header) Authorization : access 토큰")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 404, message = "이미 탈퇴한 회원"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/withdrawal")
     public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String accessToken) {
-        int isDeleted = userService.deleteUser(accessToken);
-        if (isDeleted == 1) {
-            return ResponseEntity.status(200).body("Success");
-        }
-        return ResponseEntity.status(500).body("ERROR");
+//        int isDeleted = userService.deleteUser(accessToken);
+//        if (isDeleted == 1) {
+//            return ResponseEntity.status(200).body("Success");
+//        }
+
+        userService.deleteUser(accessToken);
+        return ResponseEntity.status(200).body("Success");
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "AccessToken이 header에 존재해야 한다.")
+    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "회원 정보 조회 실패"),

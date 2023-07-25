@@ -12,9 +12,9 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class JWTExceptionController {
+public class CustomDBExceptionController {
 
-    private ResponseEntity<Map<String, String>> makeErrorMsg(JWTErrorCode error) {
+    private ResponseEntity<Map<String, String>> makeErrorMsg(DBErrorCode error) {
 
         HttpHeaders responseHeaders = new HttpHeaders();
         HttpStatus httpStatus = error.getHttpStatus();
@@ -27,9 +27,8 @@ public class JWTExceptionController {
         return new ResponseEntity<>(map, responseHeaders, httpStatus);
     }
 
-    @ExceptionHandler(value = CustomJWTException.class)
-    public ResponseEntity<Map<String, String>> handleCustomException(CustomJWTException e) {
-        // CustomException 클래스의 jwtErrorCode 멤버 변수를 반환
-        return makeErrorMsg(e.getJwtErrorCode());
+    @ExceptionHandler(value = CustomDBException.class)
+    public ResponseEntity<Map<String, String>> handleCustomException(CustomDBException e) {
+        return makeErrorMsg(e.getDbErrorCode());
     }
 }
