@@ -1,33 +1,83 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.domain.UserEntity;
+import com.codragon.sclive.dto.TokenDto;
 import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.exception.DBErrorCode;
 import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
+
     private final UserMapper userMapper;
     private final Jwt jwt;
     private final JWTUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public UserServiceImpl(UserMapper userMapper, Jwt jwt, JWTUtil jwtUtil, PasswordEncoder passwordEncoder) {
+    @Override
+    public TokenDto login(UserDao userDao) {
+
+        boolean isLoginSuccessful = true;
+        Authentication authenticatedUser = null;
+        TokenDto tokenDto = new TokenDto();
+
+        String email = userDao.getEmail();
+        String password = userDao.getPassword();
+
+        try {
+            authenticatedUser = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+        } catch (BadCredentialsException e) {
+            // TODO: 추후에 예외 처리 하기!
+            isLoginSuccessful = false;
+            tokenDto.setLoginSuccessful(isLoginSuccessful);
+            log.error("아이디 혹인 비밀번호가 틀립니다.");
+        }
+
+        if (isLoginSuccessful) {
+
+            UserEntity loginUser = (UserEntity) authenticatedUser.getPrincipal();
+            String nickname = loginUser.getUserNickname();
+
+            String accessToken = jwt.createAccessToken(email, nickname);
+            String refreshToken = jwt.createRefreshToken(email, nickname);
+
+            log.debug("로그인 성공");
+            log.debug("user: {}", loginUser);
+            log.debug("Access-Token: {}", accessToken);
+            log.debug("Refresh-Token: {}", refreshToken);
+
+            tokenDto.setLoginSuccessful(true);
+            tokenDto.setACCESS_TOKEN(accessToken);
+            tokenDto.setREFRESH_TOKEN(refreshToken);
+
+            // redis에 RefreshToken 저장
+            jwtUtil.saveUserRefreshToken(userDao.getEmail(), refreshToken);
+        }
+
+        return tokenDto;
+    }
+
+    public UserServiceImpl(UserMapper userMapper, Jwt jwt, JWTUtil jwtUtil, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.userMapper = userMapper;
         this.jwt = jwt;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -69,7 +119,7 @@ public class UserServiceImpl implements UserService {
         jwtUtil.deleteUserRefreshToken(email);
 
         // 이미 탈퇴한 회원이라면
-        UserDao mysqlInfo = this.getUserInfo(email);
+        UserDao mysqlInfo = this.getUserInfoByEmail(email);
         if (mysqlInfo == null) {
             throw new CustomDBException(DBErrorCode.ALREADY_DELETED);
         }
@@ -77,35 +127,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDao getUserInfo(String email) {
+    public UserDao getUserInfoByEmail(String email) {
         UserDao userDao = userMapper.getUserInfo(email);
         return userDao;
-    }
-
-    @Override
-    public ResponseEntity login(UserDao userDao, HttpServletResponse response) {
-        String email = userDao.getEmail();
-        String password = userDao.getPassword();
-        UserDao user = this.getUserInfo(email);
-        // 입력된 비번과 디비의 암호화된 비번이 같은지 확인.
-        boolean passwordMatched = passwordEncoder.matches(password, userDao.getPassword());
-
-        if (passwordMatched) { //유효한 패스워드이다.
-            //토큰 발급
-            String accessToken = jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
-            String refreshToken = jwt.createRefreshToken(userDao.getEmail(), userDao.getNickname());
-
-            //헤더에 포함
-            response.addHeader("AccessToken", accessToken);
-            Cookie cookie = new Cookie("RefreshToken", refreshToken);
-            cookie.setMaxAge(60 * 60 * 24 * 3); //3일
-            response.addCookie(cookie);
-
-            //redis에 RefreshToken 저장
-            jwtUtil.saveUserRefreshToken(userDao.getEmail(), refreshToken);
-            return ResponseEntity.status(200).body("Success");
-        } else {
-            return ResponseEntity.status(200).body("Fail");
-        }
     }
 }

@@ -10,13 +10,15 @@ import lombok.ToString;
 @ToString
 public class UserDao {
 
-    String email;
+    private String email;
 
-    String changedEmail;
+    private String changedEmail;
 
-    String nickname;
+    private String nickname;
 
-    String password;
+    private String password;
+
+    private String role;
 
     public UserResDto getUserdaoToDto() {
         UserResDto userResDto = new UserResDto();

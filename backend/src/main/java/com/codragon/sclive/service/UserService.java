@@ -1,6 +1,7 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dto.TokenDto;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +19,7 @@ public interface UserService {
 
     void deleteUser(String accesstoken);
 
-    UserDao getUserInfo(String email);
+    UserDao getUserInfoByEmail(String email);
 
-    ResponseEntity login(UserDao userDao, HttpServletResponse response);
+    TokenDto login(UserDao userDao);
 }

@@ -1,9 +1,7 @@
 package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
-import com.codragon.sclive.dto.UserLoginReqDto;
-import com.codragon.sclive.dto.UserReqDto;
-import com.codragon.sclive.dto.UserResDto;
+import com.codragon.sclive.dto.*;
 import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.service.UserService;
@@ -15,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -23,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
+
     private Jwt jwt;
     private final UserService userService;
 
@@ -49,10 +49,40 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginReqDto userLoginReqDto, HttpServletResponse response) {
+    public ResponseEntity<UserLoginResDto> login(@RequestBody UserLoginReqDto userLoginReqDto, HttpServletResponse response) {
+
         UserDao userDao = userLoginReqDto.UserDtoToDao();
-        ResponseEntity responseEntity = userService.login(userDao, response);
-        return responseEntity;
+        TokenDto tokenDto = userService.login(userDao);
+
+        UserLoginResDto responseDto = null;
+
+        // FIXME: 로그인 예외 처리 Refactoring 하기
+        if (tokenDto.isLoginSuccessful()) {
+
+            final String accessToken = tokenDto.getACCESS_TOKEN();
+            final String refreshToken = tokenDto.getREFRESH_TOKEN();
+
+            Cookie cookie = new Cookie("Refresh-Token", refreshToken);
+            // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
+            cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+
+            response.addHeader("Access-Token", accessToken);
+            response.addCookie(cookie);
+
+            responseDto = UserLoginResDto.builder()
+                    .httpStatusCode(200)
+                    .message("정상적으로 로그인이 완료됐습니다.")
+                    .build();
+        } else {
+            responseDto = UserLoginResDto.builder()
+                    .httpStatusCode(401)
+                    .message("아이디 혹은 비밀번호가 잘못 됐습니다.")
+                    .build();
+        }
+
+        return ResponseEntity.status(responseDto.getHttpStatusCode()).body(responseDto);
     }
 
     //Todo : 로그아웃
@@ -134,9 +164,9 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/userinfo")
-    public ResponseEntity<UserResDto> getUserInfo(@RequestHeader("AccessToken") String accessToken) {
+    public ResponseEntity<UserResDto> getUserInfo(@RequestHeader("Authorization") String accessToken) {
         String email = jwt.getEmailFromToken(accessToken);
-        UserDao userDao = userService.getUserInfo(email);
+        UserDao userDao = userService.getUserInfoByEmail(email);
         UserResDto userResDto = userDao.getUserdaoToDto();
         return ResponseEntity.status(200).body(userResDto);
     }
