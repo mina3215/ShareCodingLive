@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDao getUserInfoByEmail(String email) {
-        UserDao userDao = userMapper.getUserInfo(email);
+        UserDao userDao = userMapper.getUserByEmail(email);
         return userDao;
     }
 }

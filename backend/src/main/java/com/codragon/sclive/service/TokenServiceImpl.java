@@ -35,7 +35,7 @@ public class TokenServiceImpl implements TokenService {
         jwt.validateToken(refreshToken);
         String userEmail = jwt.getEmailFromToken(refreshToken);
 
-        UserDao userDao = userMapper.getUserInfo(userEmail);
+        UserDao userDao = userMapper.getUserByEmail(userEmail);
 
         return jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
     }

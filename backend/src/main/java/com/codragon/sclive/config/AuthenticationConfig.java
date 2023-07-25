@@ -27,7 +27,7 @@ public class AuthenticationConfig {
     public UserDetailsService userDetailsService() {
 
         return userEmail -> {
-            UserDao findUser = userMapper.getUserInfo(userEmail);
+            UserDao findUser = userMapper.getUserByEmail(userEmail);
 
             log.debug("get User {} in loadUserByUsername", findUser);
 
