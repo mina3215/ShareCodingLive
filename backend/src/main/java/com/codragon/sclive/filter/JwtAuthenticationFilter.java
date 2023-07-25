@@ -1,5 +1,6 @@
 package com.codragon.sclive.filter;
 
+import com.codragon.sclive.exception.CustomJWTException;
 import com.codragon.sclive.jwt.Jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("[{}] get Request to '{}'", METHOD, URL);
 
         // Header에서 AccessToken 받기
-        final String authenticationToken = request.getHeader("AccessToken");
+        final String authenticationToken = request.getHeader("Authorization");
 
         // AccessToken이 없거나, 'Bearer '로 시작하지 않는 경우
         if (authenticationToken == null || !authenticationToken.startsWith("Bearer ")) {
+
+            log.error("token is null or not JWT token");
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         조작된 Token 및 유효 기간이 만료된 Token은
         Exception Handler로 Error 처리
          */
-        if (jwt.validateToken(accessToken)) {
+        if (jwt.validateToken(accessToken, request)) {
 
             final String userEmail = jwt.getEmailFromToken(accessToken);
             UserDetails findUserDetails = userDetailsService.loadUserByUsername(userEmail);

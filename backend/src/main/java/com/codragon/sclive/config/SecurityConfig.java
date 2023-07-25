@@ -1,5 +1,7 @@
 package com.codragon.sclive.config;
 
+import com.codragon.sclive.exception.CustomAuthenticationEntryPoint;
+import com.codragon.sclive.exception.JWTExceptionController;
 import com.codragon.sclive.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,8 @@ public class SecurityConfig {
                         "/webjars/**", "/swagger-ui.html"
                 ).permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and().exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
         return http.build();
     }

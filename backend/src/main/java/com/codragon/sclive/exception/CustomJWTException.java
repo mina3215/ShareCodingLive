@@ -1,7 +1,10 @@
 package com.codragon.sclive.exception;
 
 import lombok.Getter;
+import lombok.ToString;
 
+
+@ToString
 @Getter
 //@AllArgsConstructor
 public class CustomJWTException extends RuntimeException {

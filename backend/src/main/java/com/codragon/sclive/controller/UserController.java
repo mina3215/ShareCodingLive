@@ -1,6 +1,7 @@
 package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.domain.UserEntity;
 import com.codragon.sclive.dto.*;
 import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.jwt.Jwt;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -106,11 +108,19 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/update")
-    public ResponseEntity<String> updateUserInfo(@RequestParam String nickname, @RequestHeader("AccessToken") String accessToken) {
-        UserDao userDao = new UserDao();
-        userDao.setNickname(nickname);
-        userDao.setEmail(jwt.getEmailFromToken(accessToken));
-        userService.updateUserInfo(userDao);
+    public ResponseEntity<String> updateUserInfo(
+            @RequestParam String nickname,
+            @RequestHeader("Authorization") String accessToken,
+            @AuthenticationPrincipal UserEntity user) {
+
+        log.info("user: {}", user);
+        log.debug("nickname: {}", nickname);
+        log.debug("accessToken: {}", accessToken);
+
+//        UserDao userDao = new UserDao();
+//        userDao.setNickname(nickname);
+//        userDao.setEmail(jwt.getEmailFromToken(accessToken));
+//        userService.updateUserInfo(userDao);
         return ResponseEntity.status(200).body("성공");
     }
 

@@ -9,9 +9,12 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletRequest;
+import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 
 @Component
@@ -53,7 +56,7 @@ public class Jwt {
 
 
     public String createAccessToken(String email, String nickname) {
-        Date exp = new Date(getCurrentTime() + FIVE_MINUTES);
+        Date exp = new Date(getCurrentTime() + 2000);
 
         String accessToken = Jwts.builder()
                 .setHeaderParams(headerMap)
@@ -67,7 +70,7 @@ public class Jwt {
         return accessToken;
     }
 
-    public boolean validateToken(String token) throws CustomJWTException {
+    public boolean validateToken(String token, HttpServletRequest request) {
         Jws<Claims> jws;
 
         // 유효한 토큰인지 확인
@@ -78,7 +81,9 @@ public class Jwt {
                     .parseClaimsJws(token);
         } catch (ExpiredJwtException e) {
             // 유효 기간이 지난 토큰
-            throw new CustomJWTException(JWTErrorCode.EXPIRED_TOKEN);
+            CustomJWTException customException = new CustomJWTException(JWTErrorCode.EXPIRED_TOKEN);
+            request.setAttribute("exception", customException);
+            return false;
         } catch (CompressionException | MalformedJwtException | UnsupportedJwtException e) {
             // 압축 오류, 키 틀림 오류, 해당 토큰과 맞지 않는 토큰 타입 오류
             throw new CustomJWTException(JWTErrorCode.NOT_VALID_TOKEN);

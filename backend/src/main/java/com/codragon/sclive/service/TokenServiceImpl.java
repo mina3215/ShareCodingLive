@@ -23,7 +23,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Boolean getValidation(String token) {
-        return jwt.validateToken(token);
+        return jwt.validateToken(token, null);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TokenServiceImpl implements TokenService {
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new CustomJWTException(JWTErrorCode.TOKEN_IS_NULL);
         }
-        jwt.validateToken(refreshToken);
+        jwt.validateToken(refreshToken, null);
         String userEmail = jwt.getEmailFromToken(refreshToken);
 
         UserDao userDao = userMapper.getUserByEmail(userEmail);

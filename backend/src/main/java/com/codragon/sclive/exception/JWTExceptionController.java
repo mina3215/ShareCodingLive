@@ -16,6 +16,7 @@ public class JWTExceptionController {
 
     private ResponseEntity<Map<String, String>> makeErrorMsg(JWTErrorCode error) {
 
+        log.info("여기");
         HttpHeaders responseHeaders = new HttpHeaders();
         HttpStatus httpStatus = error.getHttpStatus();
 
@@ -29,7 +30,13 @@ public class JWTExceptionController {
 
     @ExceptionHandler(value = CustomJWTException.class)
     public ResponseEntity<Map<String, String>> handleCustomException(CustomJWTException e) {
+        log.info("여기여기");
         // CustomException 클래스의 jwtErrorCode 멤버 변수를 반환
         return makeErrorMsg(e.getJwtErrorCode());
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public void test() {
+        log.info("test!!");
     }
 }
