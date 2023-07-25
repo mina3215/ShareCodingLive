@@ -1,16 +1,24 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.exception.CustomJWTException;
+import com.codragon.sclive.exception.JWTErrorCode;
+import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.awt.event.WindowFocusListener;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenServiceImpl implements TokenService{
     private final Jwt jwt;
     private final UserMapper userMapper;
+    private final JWTUtil jwtUtil;
 
 
     @Override
@@ -20,10 +28,13 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public String getAccessTokenByRefreshToken(String refreshToken) {
-        // TODO: redis에서 유저 정보 가져오기
-        String userEmail;
-//        UserDao userDao = userMapper.getUserInfo(userEmail);
-//        return jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
-        return "";
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            throw new CustomJWTException(JWTErrorCode.TOKEN_IS_NULL);
+        }
+        jwt.validateToken(refreshToken);
+        String userEmail = jwt.getEmailFromToken(refreshToken);
+        UserDao userDao = userMapper.getUserInfo(userEmail);
+
+        return jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
     }
 }

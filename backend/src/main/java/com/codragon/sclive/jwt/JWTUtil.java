@@ -66,8 +66,9 @@ public class JWTUtil {
 
         return userRefreshToken;
     }
+
     /**
-     * 파라미터로 전달된 이메일의 유저 Refresh Token 반환
+     * 파라미터로 전달된 이메일의 유저 Refresh Token 삭제
      *
      * @param userEmail 유저 이메일
      * @return 0이면 실패, 1이면 성공
@@ -86,4 +87,6 @@ public class JWTUtil {
         }
         return 0;
     }
+
+
 }

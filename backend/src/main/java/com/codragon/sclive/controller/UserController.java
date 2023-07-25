@@ -126,11 +126,9 @@ public class UserController {
         } catch (CustomDBException e) {
             throw e;
         }
-
-//        return null;
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.\n" +
+    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다." +
             "")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
