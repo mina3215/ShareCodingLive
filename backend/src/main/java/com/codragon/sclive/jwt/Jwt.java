@@ -56,7 +56,7 @@ public class Jwt {
 
 
     public String createAccessToken(String email, String nickname) {
-        Date exp = new Date(getCurrentTime() + 2000);
+        Date exp = new Date(getCurrentTime() + FIVE_MINUTES);
 
         String accessToken = Jwts.builder()
                 .setHeaderParams(headerMap)

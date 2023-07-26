@@ -4,6 +4,7 @@ import com.codragon.sclive.dao.UserDao;
 import com.codragon.sclive.domain.UserEntity;
 import com.codragon.sclive.dto.*;
 import com.codragon.sclive.exception.CustomDBException;
+import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
 import com.codragon.sclive.service.UserService;
 import io.swagger.annotations.Api;
@@ -25,11 +26,13 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class UserController {
 
-    private Jwt jwt;
+    private final Jwt jwt;
+    private final JWTUtil jwtUtil;
     private final UserService userService;
 
-    public UserController(Jwt jwt, UserService userService) {
+    public UserController(Jwt jwt, JWTUtil jwtUtil, UserService userService) {
         this.jwt = jwt;
+        this.jwtUtil = jwtUtil;
         this.userService = userService;
     }
 
@@ -87,7 +90,17 @@ public class UserController {
         return ResponseEntity.status(responseDto.getHttpStatusCode()).body(responseDto);
     }
 
-    //Todo : 로그아웃
+    @ApiOperation(value = "로그아웃")
+    @GetMapping("/logout")
+    public void logout(@AuthenticationPrincipal UserEntity user, HttpServletResponse response) {
+        log.info("user: {}", user);
+
+        Cookie myCookie = new Cookie("Refresh-Token", null);
+        myCookie.setMaxAge(0);
+        response.addCookie(myCookie);
+
+        jwtUtil.deleteUserRefreshToken(user.getUserEmail());
+    }
 
     @ApiOperation(value = "비밀번호 변경", notes = "password") //Todo : 비밀번호 변경 로직 구현
     @ApiResponses({

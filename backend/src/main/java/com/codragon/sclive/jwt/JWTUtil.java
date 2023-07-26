@@ -40,7 +40,7 @@ public class JWTUtil {
 
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         // TODO: Refresh Token 유효 시간 정하고, application.yml 파일에서 불러오기
-        valueOperations.set(userEmail, refreshToken, 5L, TimeUnit.SECONDS);
+        valueOperations.set(userEmail, refreshToken, 30L, TimeUnit.MINUTES);
 
         log.info("set '{}' Refresh Token: '{}'", userEmail, refreshToken);
 
