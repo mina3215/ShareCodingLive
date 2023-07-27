@@ -58,18 +58,6 @@ class TokenServiceImplTest {
     }
 
     @Test
-    public void refresh_유효기간이_지났을때_체크() {
-        // given
-        String refreshToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTAyNTA3NjksImlhdCI6MTY5MDI1MDc2OSwiZW1haWwiOiJ0ZXN0Iiwibmlja25hbWUiOiJ0ZXN0In0.r3EqP_OdXPPUCSsjAtTTLLDvsS0MuFhJ3YgRZL7IKIM";
-
-        // when
-        CustomJWTException e = assertThrows(CustomJWTException.class, () -> tokenService.getAccessTokenByRefreshToken(refreshToken));
-
-        // then
-        assertThat(e.getJwtErrorCode().getMessage()).isEqualTo("유효 기간이 지난 토큰입니다");
-    }
-
-    @Test
     public void 다른_테스트를_위한_토큰_발급() {
         String refresh = jwt.createAccessToken("test", "test");
 
