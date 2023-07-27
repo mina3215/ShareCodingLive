@@ -129,7 +129,7 @@ public class UserController {
         log.info("user: {}", user);
         log.debug("nickname: {}", nickname);
         log.debug("accessToken: {}", accessToken);
-
+        accessToken = jwt.removeBearer(accessToken);
 //        UserDao userDao = new UserDao();
 //        userDao.setNickname(nickname);
 //        userDao.setEmail(jwt.getEmailFromToken(accessToken));
@@ -172,6 +172,7 @@ public class UserController {
     })
     @GetMapping("/withdrawal")
     public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String accessToken) {
+        accessToken = jwt.removeBearer(accessToken);
         try {
             userService.deleteUser(accessToken);
             return ResponseEntity.status(200).body("SUCCESS");
@@ -180,7 +181,9 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "header에 access 토큰이 존재해야 한다.")
+    @ApiOperation(value = "회원 정보 조회", notes = "header에 Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로\n"+
+                                                "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 ㅠㅣ")
+
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "회원 정보 조회 실패"),
@@ -188,6 +191,7 @@ public class UserController {
     })
     @GetMapping("/userinfo")
     public ResponseEntity<UserResDto> getUserInfo(@RequestHeader("Authorization") String accessToken) {
+        accessToken = jwt.removeBearer(accessToken);
         String email = jwt.getEmailFromToken(accessToken);
         UserDao userDao = userService.getUserInfoByEmail(email);
         UserResDto userResDto = userDao.getUserdaoToDto();
