@@ -43,8 +43,8 @@ public class MessageServiceImpl implements MessageService {
                 text = text.substring(3, text.length() - 3); // 구분 문자 제거
                 message.setMessage(text);
 
-                // Todo : 코드이기 때문에 text를 redis에 저장
-                codeUtil.saveCode(message);
+                // Todo : 코드이기 때문에 text를 redis에 저장 -> 문제발생
+//                codeUtil.saveCode(message);
             }
             // ?질문? 이면 질문
             else if ('?' == start.charAt(0) && '?' == end.charAt(2)) {

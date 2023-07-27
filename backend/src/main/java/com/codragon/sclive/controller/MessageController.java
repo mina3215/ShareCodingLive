@@ -29,6 +29,6 @@ public class MessageController {
         ChatMessage chatMessage = messageService.sendMessage(message);
 
         //채팅방 토픽으로 메시지를 전송한다.
-        sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), message);
+        sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), chatMessage);
     }
 }
