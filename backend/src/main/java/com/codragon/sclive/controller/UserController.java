@@ -108,13 +108,13 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/password")
-    public ResponseEntity<String> updatePassword(@RequestBody UserReqDto userReqDto) { //Auth와 password
+    public ResponseEntity<String> updatePassword(@RequestBody UserReqDto userReqDto) {
         UserDao userDao = userReqDto.UserDtoToDao();
         userService.updatePassword(userDao);
         return ResponseEntity.status(200).body("Success");
     }
 
-    @ApiOperation(value = "닉네임 수정", notes = "{nickname,\nAccessToken이 header에 존재해야 한다.}")
+    @ApiOperation(value = "닉네임 수정", notes = "{nickname,\n(Header) Authorization : access 토큰")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "닉네임 변경 실패"),
@@ -130,10 +130,10 @@ public class UserController {
         log.debug("nickname: {}", nickname);
         log.debug("accessToken: {}", accessToken);
         accessToken = jwt.removeBearer(accessToken);
-//        UserDao userDao = new UserDao();
-//        userDao.setNickname(nickname);
-//        userDao.setEmail(jwt.getEmailFromToken(accessToken));
-//        userService.updateUserInfo(userDao);
+        UserDao userDao = new UserDao();
+        userDao.setNickname(nickname);
+        userDao.setEmail(jwt.getEmailFromToken(accessToken));
+        userService.updateUserInfo(userDao);
         return ResponseEntity.status(200).body("성공");
     }
 
@@ -182,7 +182,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "회원 정보 조회", notes = "header에 Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로\n"+
-                                                "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 ㅠㅣ")
+                                                "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 필수")
 
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
