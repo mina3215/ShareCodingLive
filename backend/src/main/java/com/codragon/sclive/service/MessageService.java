@@ -6,8 +6,6 @@ public interface MessageService {
 
 //    public ChatRoom createRoom(String roomId);
 
-    void saveCode(String roomId);
-
     ChatMessage sendMessage(ChatMessage message);
 
 }

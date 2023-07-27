@@ -1,11 +1,14 @@
 package com.codragon.sclive.service;
 
+import com.codragon.sclive.chat.CodeUtil;
 import com.codragon.sclive.domain.ChatMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
 //    //채팅방 생성
@@ -13,6 +16,8 @@ public class MessageServiceImpl implements MessageService {
 //        ChatRoom chatRoom = ChatRoom.create(roomId);
 //        return chatRoom;
 //    }
+
+    private final CodeUtil codeUtil;
 
     @Override
     public ChatMessage sendMessage(ChatMessage message) {
@@ -39,8 +44,7 @@ public class MessageServiceImpl implements MessageService {
                 message.setMessage(text);
 
                 // Todo : 코드이기 때문에 text를 redis에 저장
-
-
+                codeUtil.saveCode(message);
             }
             // ?질문? 이면 질문
             else if ('?' == start.charAt(0) && '?' == end.charAt(2)) {
@@ -51,10 +55,4 @@ public class MessageServiceImpl implements MessageService {
         }
         return message;
     }
-
-    @Override
-    public void saveCode(String roomId) {
-
-    }
-
 }
