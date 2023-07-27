@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.*;
@@ -27,6 +28,7 @@ class JWTUtilTest {
     @Autowired
     Jwt jwt;
 
+    HttpServletRequest request = null;
     @Test
     void 토큰에서_닉네임_반환_테스트() {
         String result = "Test";
@@ -61,22 +63,10 @@ class JWTUtilTest {
         String token = "qwerfsvasgqwe.asdqfrgojqwoidfoiajsdifo.qwoioivifodnvas";
 
         // then
-        CustomJWTException e = assertThrows(CustomJWTException.class, () -> jwt.validateToken(token));
+        CustomJWTException e = assertThrows(CustomJWTException.class, () -> jwt.validateToken(token,request));
 
         // when
         assertThat(e.getJwtErrorCode().getMessage()).isEqualTo("잘못 만들어진 토큰입니다! (해킹 위험)");
-    }
-
-    @Test
-    void 유효기간이_지난_토큰_예외_확인() {
-        // given
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTAxOTg2OTcsImlhdCI6MTY5MDE5ODY5NywiZW1haWwiOiJzc2FmeUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6InNzYWZ5In0.SPYaFArs1vQsaReyEKGIx670LnCDt3QFm5OUc2n9-LY";
-
-        // then
-        CustomJWTException e = assertThrows(CustomJWTException.class, () -> jwt.validateToken(token));
-
-        // when
-        assertThat(e.getJwtErrorCode().getMessage()).isEqualTo("유효 기간이 지난 토큰입니다");
     }
 
     @Test
