@@ -3,18 +3,22 @@ package com.codragon.sclive.dao;
 import com.codragon.sclive.dto.UserResDto;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class UserDao {
 
-    String email;
+    private String email;
 
-    String changedEmail;
+    private String changedEmail;
 
-    String nickname;
+    private String nickname;
 
-    String password;
+    private String password;
+
+    private String role;
 
     public UserResDto getUserdaoToDto() {
         UserResDto userResDto = new UserResDto();

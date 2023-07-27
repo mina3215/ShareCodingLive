@@ -10,12 +10,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.awt.event.WindowFocusListener;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TokenServiceImpl implements TokenService{
+public class TokenServiceImpl implements TokenService {
+
     private final Jwt jwt;
     private final UserMapper userMapper;
     private final JWTUtil jwtUtil;
@@ -23,17 +23,19 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public Boolean getValidation(String token) {
-        return jwt.validateToken(token);
+        return jwt.validateToken(token, null);
     }
 
     @Override
     public String getAccessTokenByRefreshToken(String refreshToken) {
+
         if (refreshToken == null || refreshToken.isEmpty()) {
             throw new CustomJWTException(JWTErrorCode.TOKEN_IS_NULL);
         }
-        jwt.validateToken(refreshToken);
+        jwt.validateToken(refreshToken, null);
         String userEmail = jwt.getEmailFromToken(refreshToken);
-        UserDao userDao = userMapper.getUserInfo(userEmail);
+
+        UserDao userDao = userMapper.getUserByEmail(userEmail);
 
         return jwt.createAccessToken(userDao.getEmail(), userDao.getNickname());
     }
