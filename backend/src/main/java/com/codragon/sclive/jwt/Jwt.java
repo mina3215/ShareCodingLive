@@ -116,4 +116,9 @@ public class Jwt {
         Date date = new Date(System.currentTimeMillis());
         return date.getTime();
     }
+
+    public String removeBearer(String token){
+        token = token.substring(7);
+        return token;
+    }
 }
