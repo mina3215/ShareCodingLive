@@ -40,16 +40,20 @@ public class CodeUtil {
         String title = this.getTitle(message.getMessage());
         Date date = new Date();
 
-        Map<String,String> code = new HashMap<>();
-        code.put("code_id", uuid.toString()); //uniqe id 생성해서 넣기
-        code.put("cid", message.getRoomId());
-        code.put("title", title);
-        code.put("content", message.getMessage());
-        code.put("created_time",date.toString());
-        code.put("review", "리뷰입니다.");
+//        Map<String,String> code = new HashMap<>();
+//        code.put("code_id", uuid.toString()); //uniqe id 생성해서 넣기
+//        code.put("cid", message.getRoomId());
+//        code.put("title", title);
+//        code.put("content", message.getMessage());
+//        code.put("created_time",date.toString());
+//        code.put("review", "리뷰입니다.");
+
+        Code code = new Code();
+        code.setC_id("chat1");
+        code.setContent("helloworld");
 
         HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
-        hashOperations.putAll("code1", code);
+        hashOperations.put("chat1", "code1", code);
         return 1;
     }
 

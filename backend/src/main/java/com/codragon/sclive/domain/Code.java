@@ -7,15 +7,15 @@ import lombok.Setter;
 @Setter
 public class Code {
 
-    private int code_id;
+//    private int code_id;
 
     private String c_id;
 
-    private String title;
+//    private String title;
 
     private String content;
 
-    private String created_time;
+//    private String created_time;
 
-    private String review;
+//    private String review;
 }

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @Slf4j
 @SpringBootTest
@@ -15,6 +17,9 @@ class CodeSaveUtilTest {
 
     @Autowired
     CodeUtil codeUtil;
+
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
 
     @Test
     void 코드_저장_테스트(){
@@ -29,8 +34,8 @@ class CodeSaveUtilTest {
 
     @Test
     void 코드_불러오기_테스트(){
-        Code code = codeUtil.getCodebyRoomId("code1");
-        log.info("결과는 {}",code);
+        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+        hashOperations.put("chat1", "code1", "hello");
     }
 
 }
