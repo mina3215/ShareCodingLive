@@ -54,6 +54,10 @@ dependencies {
     //Stomp
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
+    //Json
+    compileOnly "com.fasterxml.jackson.core:jackson-databind:2.9.4"
+
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
