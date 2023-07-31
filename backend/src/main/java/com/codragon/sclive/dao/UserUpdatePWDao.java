@@ -7,6 +7,10 @@ import lombok.Setter;
 @Setter
 public class UserUpdatePWDao {
 
+    String email;
+
+    String password;
+
     String beforePW;
 
     String afterPW;
