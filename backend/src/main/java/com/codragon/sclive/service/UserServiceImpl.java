@@ -113,9 +113,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String accessToken) {
+    public void deleteUser(String email) {
 
-        String email = jwt.getEmailFromToken(accessToken);
         jwtUtil.deleteUserRefreshToken(email);
 
         // 이미 탈퇴한 회원이라면
