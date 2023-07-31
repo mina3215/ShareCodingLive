@@ -1,12 +1,10 @@
 package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserUpdatePWDao;
 import com.codragon.sclive.domain.HttpResult;
 import com.codragon.sclive.domain.UserEntity;
-import com.codragon.sclive.dto.TokenDto;
-import com.codragon.sclive.dto.UserLoginReqDto;
-import com.codragon.sclive.dto.UserReqDto;
-import com.codragon.sclive.dto.UserResDto;
+import com.codragon.sclive.dto.*;
 import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
@@ -63,7 +61,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<HttpResult> login(@RequestBody UserLoginReqDto userLoginReqDto, HttpServletResponse response) {
         UserDao userDao = userLoginReqDto.UserDtoToDao();
-        log.info("userDao : "+userDao.toString());
+        log.info("userDao : " + userDao.toString());
         TokenDto tokenDto = userService.login(userDao);
 
         HttpResult result = null;
@@ -85,15 +83,16 @@ public class UserController {
 
             result = HttpResult.getSuccess();
         } else {
-            result = new HttpResult(HttpStatus.FORBIDDEN,HttpResult.Result.ERROR ,"아이디 혹은 비밀번호가 잘못되었습니다.");
+            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "아이디 혹은 비밀번호가 잘못되었습니다.");
         }
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @ApiOperation(value = "로그아웃", notes = "header에 Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로\n"+
-            "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 필수")
+    @ApiOperation(value = "로그아웃", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
     @GetMapping("/logout")
-    public ResponseEntity<HttpResult> logout(@ApiIgnore @AuthenticationPrincipal UserEntity user, HttpServletResponse response) {
+    public ResponseEntity<HttpResult> logout(
+            @ApiIgnore @AuthenticationPrincipal UserEntity user,
+            HttpServletResponse response) {
         log.info("user: {}", user);
 
         Cookie myCookie = new Cookie("Refresh-Token", null);
@@ -105,21 +104,33 @@ public class UserController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @ApiOperation(value = "비밀번호 변경", notes = "password") //Todo : 비밀번호 변경 로직 구현
+    @ApiOperation(value = "비밀번호 변경", notes = "password : 바꿀 비밀번호\n" + "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
+    //Todo : 비밀번호 변경 로직 구현
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/password")
-    public ResponseEntity<HttpResult> updatePassword(@RequestBody UserReqDto userReqDto) {
-        UserDao userDao = userReqDto.UserDtoToDao();
-        userService.updatePassword(userDao);
-        HttpResult result = HttpResult.getSuccess();
+    public ResponseEntity<HttpResult> updatePassword(
+            @ApiIgnore @AuthenticationPrincipal UserEntity user,
+            @RequestBody UserUpPWReqDto userUpPWReqDto) {
+        log.info("user: {}", user);
+        UserUpdatePWDao userUpdatePWDao = new UserUpdatePWDao();
+        userUpdatePWDao.setEmail(user.getUserEmail());
+        userUpdatePWDao.setPassword(user.getPassword());
+        userUpdatePWDao.setBeforePW(userUpPWReqDto.getPassword());
+        userUpdatePWDao.setAfterPW(userUpPWReqDto.getChangedPassword());
+        int res = userService.updatePassword(userUpdatePWDao);
+        HttpResult result = null;
+        if(res==1){
+            result = HttpResult.getSuccess();
+        } else{
+            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "비밀번호 변경에 실패했습니다.");
+        }
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @ApiOperation(value = "닉네임 수정", notes = "{nickname,\n"+"header에 Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로\n"+
-            "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 필수")
+    @ApiOperation(value = "닉네임 수정", notes = "nickname\n" + "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "닉네임 변경 실패"),
@@ -127,8 +138,8 @@ public class UserController {
     })
     @GetMapping("/update")
     public ResponseEntity<HttpResult> updateUserInfo(
-            @RequestParam String nickname,
-            @ApiIgnore@AuthenticationPrincipal UserEntity user) {
+            @ApiIgnore @AuthenticationPrincipal UserEntity user,
+            @RequestParam String nickname) {
         log.info("user: {}", user);
         log.debug("nickname: {}", nickname);
         UserDao userDao = new UserDao();
@@ -150,10 +161,10 @@ public class UserController {
     public ResponseEntity<HttpResult> emailCheck(@RequestParam String email) {
         int sameEmailCnt = userService.emailCheck(email);
         HttpResult result = null;
-        if(sameEmailCnt == 0){
+        if (sameEmailCnt == 0) {
             result = HttpResult.getSuccess();
-        } else{
-            result = new HttpResult(HttpStatus.FORBIDDEN ,HttpResult.Result.ERROR,"중복된 이메일 입니다.");
+        } else {
+            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "중복된 이메일 입니다.");
         }
         return ResponseEntity.status(result.getStatus()).body(result);
     }
@@ -168,23 +179,22 @@ public class UserController {
     public ResponseEntity<HttpResult> nicknameCheck(@RequestParam String nickname) {
         int sameNicknameCnt = userService.nickNameCheck(nickname);
         HttpResult result = null;
-        if(sameNicknameCnt == 0){
+        if (sameNicknameCnt == 0) {
             result = HttpResult.getSuccess();
-        } else{
-            result = new HttpResult(HttpStatus.FORBIDDEN,HttpResult.Result.ERROR ,"중복된 닉네임 입니다.");
+        } else {
+            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "중복된 닉네임 입니다.");
         }
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @ApiOperation(value = "회원 탈퇴", notes = "header에 Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로\n"+
-            "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 필수")
+    @ApiOperation(value = "회원 탈퇴", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 404, message = "이미 탈퇴한 회원"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/withdrawal")
-    public ResponseEntity<HttpResult> deleteUser(@ApiIgnore@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<HttpResult> deleteUser(@ApiIgnore @AuthenticationPrincipal UserEntity user) {
         HttpResult result = null;
         try {
             userService.deleteUser(user.getUserEmail());
@@ -196,19 +206,19 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "회원 정보 조회", notes = "header에 Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로\n"+
-            "액세스토큰을 담아줘야 동작합니다! 토큰 앞에 Bearer 이거 필수")
+    @ApiOperation(value = "회원 정보 조회", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 401, message = "회원 정보 조회 실패"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping("/userinfo")
-    public ResponseEntity<HttpResult> getUserInfo(@ApiIgnore@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<HttpResult> getUserInfo(@ApiIgnore @AuthenticationPrincipal UserEntity user) {
         String email = user.getUserEmail();
         UserDao userDao = userService.getUserInfoByEmail(email);
         UserResDto userResDto = userDao.getUserdaoToDto();
         HttpResult result = HttpResult.getSuccess();
+        result.setData(userResDto);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 }

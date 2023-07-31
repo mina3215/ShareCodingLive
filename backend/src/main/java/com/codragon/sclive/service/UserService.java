@@ -1,13 +1,11 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserUpdatePWDao;
 import com.codragon.sclive.dto.TokenDto;
-import org.springframework.http.ResponseEntity;
-
-import javax.servlet.http.HttpServletResponse;
 
 public interface UserService {
-    void updatePassword(UserDao userDao);
+    int updatePassword(UserUpdatePWDao userDao);
 
     void updateUserInfo(UserDao userDao);
 

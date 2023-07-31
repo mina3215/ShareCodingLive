@@ -16,6 +16,14 @@ public class HttpResult {
 
     private String message;
 
+    private Object data;
+
+    public HttpResult(HttpStatus status, Result result, String message) {
+        this.status = status;
+        this.result = result;
+        this.message = message;
+    }
+
     public static enum Result {
         SUCCESS, ERROR
     }
