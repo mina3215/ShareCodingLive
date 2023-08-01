@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -75,8 +76,9 @@ public class UserController {
             Cookie cookie = new Cookie("Refresh-Token", refreshToken);
             // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
             cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
+//            cookie.setSecure(true);
+//            cookie.setHttpOnly(true);
+            cookie.setPath("/");
 
             response.addHeader("Access-Token", accessToken);
             response.addCookie(cookie);
@@ -86,6 +88,24 @@ public class UserController {
             result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "아이디 혹은 비밀번호가 잘못되었습니다.");
         }
         return ResponseEntity.status(result.getStatus()).body(result);
+    }
+
+    @GetMapping("/cookie")
+    public String getCookie(HttpServletResponse response){
+//        ResponseCookie cookie1 = ResponseCookie.from("hcookie", "hello")
+//                .path("/")
+//                .sameSite("None")
+//                .httpOnly(true)
+//                .build();
+//        response.addHeader("Set-Cookie", cookie1.toString());
+//        HttpResult result =  HttpResult.getSuccess();
+
+
+        Cookie cookie = new Cookie("hello", "hicookie");
+        cookie.setMaxAge(10000);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return "Cookie";
     }
 
     @ApiOperation(value = "로그아웃", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
@@ -115,11 +135,13 @@ public class UserController {
             @ApiIgnore @AuthenticationPrincipal UserEntity user,
             @RequestBody UserUpPWReqDto userUpPWReqDto) {
         log.info("user: {}", user);
+        log.info("ReqDto: {}", userUpPWReqDto.toString());
         UserUpdatePWDao userUpdatePWDao = new UserUpdatePWDao();
         userUpdatePWDao.setEmail(user.getUserEmail());
         userUpdatePWDao.setPassword(user.getPassword());
         userUpdatePWDao.setBeforePW(userUpPWReqDto.getPassword());
         userUpdatePWDao.setAfterPW(userUpPWReqDto.getChangedPassword());
+        log.info("Dao : {}", userUpdatePWDao.toString());
         int res = userService.updatePassword(userUpdatePWDao);
         HttpResult result = null;
         if(res==1){
