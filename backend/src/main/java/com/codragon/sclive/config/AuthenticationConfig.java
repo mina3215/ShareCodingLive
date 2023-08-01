@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -30,6 +31,10 @@ public class AuthenticationConfig {
             UserDao findUser = userMapper.getUserByEmail(userEmail);
 
             log.debug("get User {} in loadUserByUsername", findUser);
+
+            if (findUser == null) {
+                throw new UsernameNotFoundException("아이디 혹은 비밀번호가 틀립니다.");
+            }
 
             UserEntity user = UserEntity.builder()
                     .userEmail(findUser.getEmail())

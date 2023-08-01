@@ -1,6 +1,7 @@
 package com.codragon.sclive.service;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserUpdatePWDao;
 import com.codragon.sclive.domain.UserEntity;
 import com.codragon.sclive.dto.TokenDto;
 import com.codragon.sclive.exception.CustomDBException;
@@ -81,10 +82,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(UserDao userDao) {
-        String encodedPW = passwordEncoder.encode(userDao.getPassword());
-        userDao.setPassword(encodedPW);
-        userMapper.updatePassword(userDao);
+    public int updatePassword(UserUpdatePWDao user) {
+        //비밀번호 일치 확인
+        boolean isSamePW = passwordEncoder.matches(user.getBeforePW(), user.getPassword());
+        if(isSamePW){
+            String encodedPW = passwordEncoder.encode(user.getAfterPW());
+            user.setPassword(encodedPW);
+            userMapper.updatePassword(user);
+            return 1;
+        } else{
+            return 0;
+        }
     }
 
     @Override
@@ -113,9 +121,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String accessToken) {
+    public void deleteUser(String email) {
 
-        String email = jwt.getEmailFromToken(accessToken);
         jwtUtil.deleteUserRefreshToken(email);
 
         // 이미 탈퇴한 회원이라면

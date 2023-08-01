@@ -1,11 +1,13 @@
 package com.codragon.sclive.mapper;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserUpdatePWDao;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
-    void updatePassword(UserDao userDao);// throws SQLException; 해서 핸들러 처리
+
+    void updatePassword(UserUpdatePWDao userDao);
 
     void updateUserInfo(UserDao userDao);
 
