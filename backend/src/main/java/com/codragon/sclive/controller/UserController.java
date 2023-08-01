@@ -70,12 +70,13 @@ public class UserController {
             Cookie cookie = new Cookie("Refresh-Token", refreshToken);
             // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
             cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
-            cookie.setSecure(true);
             cookie.setHttpOnly(true);
+//            cookie.setSecure(true);
+//            cookie.setHttpOnly(true);
 
             response.addHeader("Access-Token", accessToken);
             response.addCookie(cookie);
-
+            response.setHeader("Cache-Control", "");
             responseDto = UserLoginResDto.builder()
                     .httpStatusCode(200)
                     .message("정상적으로 로그인이 완료됐습니다.")

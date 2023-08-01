@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/chat")
+@CrossOrigin(origins = "192.168.100.128", allowCredentials = "true")
 public class ChatController {
 
     @ApiOperation(value = "채팅방 생성", notes = "roomId : 회의방 uuid\n")
