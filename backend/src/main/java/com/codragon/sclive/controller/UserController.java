@@ -80,8 +80,15 @@ public class UserController {
 //            cookie.setHttpOnly(true);
             cookie.setPath("/");
 
-            response.addHeader("Access-Token", accessToken);
-            response.addCookie(cookie);
+//            ResponseCookie cookie = new ResponseCookie("Refresh-Token", refreshToken);
+//            // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
+//            cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
+//            cookie.setSecure(true);
+//            cookie.setHttpOnly(true);
+//            cookie.sameS
+//
+//            response.addHeader("Access-Token", accessToken);
+//            response.addCookie(cookie);
 
             result = HttpResult.getSuccess();
         } else {
