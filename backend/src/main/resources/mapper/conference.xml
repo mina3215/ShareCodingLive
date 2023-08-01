@@ -4,6 +4,10 @@
 <mapper namespace="com.codragon.sclive.mapper.ConferenceMapper">
 
     <insert id="create" parameterType="ConCreateDao">
-        INSERT INTO conference (`conference_uuid`, `start_time`, `title`, `is_active`, `owner_email`) VALUES ('asdfasdfsadf', now(), '엄청난 회의방', 0, 'ssafy');
+        INSERT INTO conference (`conference_uuid`, `start_time`, `title`, `is_active`, `owner_email`) VALUES (#{conferenceUuid}, #{startTime}, #{title}, 0, #{ownerEmail});
     </insert>
+
+    <update id="start" parameterType="string">
+        update conference set is_active=1 where conference_uuid = #{hello};
+    </update>
 </mapper>
