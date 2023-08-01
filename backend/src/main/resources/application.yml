@@ -1,19 +1,27 @@
+server:
+  port: 8080
+  address: 0.0.0.0
 
 # ============================= #
 # ====== Local Database ======= #
 # ============================= #
-# TODO: URL, username, ddl-auto ????
+# TODO: URL, username, ddl-auto 확인하기
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    url: jdbc:mysql://dev-mysql:3306/sclive?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
+  redis:
+    host: dev-redis
+    port: 6379
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
   application:
     name: BackendApplication
+  auth:
+    secretKey: 6v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-
 
 mybatis:
   type-aliases-package: com.codragon.sclive.dao
@@ -21,4 +29,4 @@ mybatis:
 
 logging:
   level:
-    com.codragon.sclive: INFO
+    com.codragon.sclive: debug
