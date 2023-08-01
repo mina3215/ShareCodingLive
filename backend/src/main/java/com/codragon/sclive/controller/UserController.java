@@ -115,11 +115,13 @@ public class UserController {
             @ApiIgnore @AuthenticationPrincipal UserEntity user,
             @RequestBody UserUpPWReqDto userUpPWReqDto) {
         log.info("user: {}", user);
+        log.info("ReqDto: {}", userUpPWReqDto.toString());
         UserUpdatePWDao userUpdatePWDao = new UserUpdatePWDao();
         userUpdatePWDao.setEmail(user.getUserEmail());
         userUpdatePWDao.setPassword(user.getPassword());
         userUpdatePWDao.setBeforePW(userUpPWReqDto.getPassword());
         userUpdatePWDao.setAfterPW(userUpPWReqDto.getChangedPassword());
+        log.info("Dao : {}", userUpdatePWDao.toString());
         int res = userService.updatePassword(userUpdatePWDao);
         HttpResult result = null;
         if(res==1){
