@@ -14,7 +14,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< Updated upstream
 import org.springframework.http.HttpStatus;
+=======
+>>>>>>> Stashed changes
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -80,8 +83,15 @@ public class UserController {
 //            cookie.setHttpOnly(true);
             cookie.setPath("/");
 
-            response.addHeader("Access-Token", accessToken);
-            response.addCookie(cookie);
+//            ResponseCookie cookie = new ResponseCookie("Refresh-Token", refreshToken);
+//            // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
+//            cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
+//            cookie.setSecure(true);
+//            cookie.setHttpOnly(true);
+//            cookie.sameS
+//
+//            response.addHeader("Access-Token", accessToken);
+//            response.addCookie(cookie);
 
             result = HttpResult.getSuccess();
         } else {
