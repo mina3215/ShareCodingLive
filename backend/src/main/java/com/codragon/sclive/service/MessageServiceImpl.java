@@ -6,23 +6,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
-
-//    //채팅방 생성
-//    public ChatRoom createRoom(String roomId) {
-//        ChatRoom chatRoom = ChatRoom.create(roomId);
-//        return chatRoom;
-//    }
 
     private final CodeUtil codeUtil;
 
     @Override
     public ChatMessage sendMessage(ChatMessage message) {
         String text = message.getMessage(); //사용자가 보내고자 하는 실제 메시지
-
+        String format = "aa hh:mm";
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat type = new SimpleDateFormat(format);
+        message.setSendTime(type.format(today.getTime())); //전송 시간 설정
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
             // ENTER TYPE이면 입장 메시지를 작성
             message.setMessage(message.getSender() + "님이 입장하였습니다.");
