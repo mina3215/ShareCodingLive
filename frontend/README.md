@@ -68,3 +68,28 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# 라이브러리
+
+- npm i react-redux
+- npm install @reduxjs/toolkit
+- npm i styled-components
+- npm install @mui/material @emotion/react @emotion/styled
+- npm i react-router-dom
+- npm i axios
+- npm install react-material-ui-form-validator
+- npm i react-toastify
+- npm install @mui/material @emotion/react @emotion/styled --legacy-peer-deps
+- npm install @mui/icons-material --legacy-peer-deps
+- npm install react-spinners
+- npm i react-loading-overlay
+- npm i styled-reset
+- npm i redux-persist
+- npm install http-proxy-middleware
+- npm install tesseract.js
+- npm install react-bootstrap bootstrap
+- npm install html2canvas
+- npm install file-saver --save
+- npm install react-selectable-fast
+  <!-- - npm i moment -->
+  <!-- - npm i js-cookie -->
