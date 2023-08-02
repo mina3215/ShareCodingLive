@@ -14,10 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-<<<<<<< Updated upstream
 import org.springframework.http.HttpStatus;
-=======
->>>>>>> Stashed changes
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,12 +60,12 @@ public class UserController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/login")
-    public ResponseEntity<HttpResult> login(@RequestBody UserLoginReqDto userLoginReqDto, HttpServletResponse response) {
+    public ResponseEntity<UserLoginResDto> login(@RequestBody UserLoginReqDto userLoginReqDto, HttpServletResponse response) {
+
         UserDao userDao = userLoginReqDto.UserDtoToDao();
-        log.info("userDao : " + userDao.toString());
         TokenDto tokenDto = userService.login(userDao);
 
-        HttpResult result = null;
+        UserLoginResDto responseDto = null;
 
         // FIXME: 로그인 예외 처리 Refactoring 하기
         if (tokenDto.isLoginSuccessful()) {
@@ -79,26 +76,27 @@ public class UserController {
             Cookie cookie = new Cookie("Refresh-Token", refreshToken);
             // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
             cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
-//            cookie.setSecure(true);
-//            cookie.setHttpOnly(true);
             cookie.setPath("/");
-
-//            ResponseCookie cookie = new ResponseCookie("Refresh-Token", refreshToken);
-//            // TODO: application.yml 파일에서 RefreshToken 유효 기간 불러오기
-//            cookie.setMaxAge(60 * 60 * 24 * 3); // 3일
 //            cookie.setSecure(true);
 //            cookie.setHttpOnly(true);
-//            cookie.sameS
-//
-//            response.addHeader("Access-Token", accessToken);
-//            response.addCookie(cookie);
 
-            result = HttpResult.getSuccess();
+            response.addHeader("Access-Token", accessToken);
+            response.addCookie(cookie);
+
+            responseDto = UserLoginResDto.builder()
+                    .httpStatusCode(200)
+                    .message("정상적으로 로그인이 완료됐습니다.")
+                    .build();
         } else {
-            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "아이디 혹은 비밀번호가 잘못되었습니다.");
+            responseDto = UserLoginResDto.builder()
+                    .httpStatusCode(401)
+                    .message("아이디 혹은 비밀번호가 잘못 됐습니다.")
+                    .build();
         }
-        return ResponseEntity.status(result.getStatus()).body(result);
+
+        return ResponseEntity.status(responseDto.getHttpStatusCode()).body(responseDto);
     }
+
 
     @GetMapping("/cookie")
     public String getCookie(HttpServletResponse response){

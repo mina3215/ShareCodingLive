@@ -24,6 +24,7 @@ public class ChatController {
     @PostMapping("/room")
     public ChatRoom createRoom(@RequestParam String roomId) {
         ChatRoom chatRoom = ChatRoom.create(roomId);
+        System.out.println("chatRoom = " + chatRoom);
         return chatRoom;
     }
 }
