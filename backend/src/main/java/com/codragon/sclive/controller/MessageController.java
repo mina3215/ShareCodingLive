@@ -6,10 +6,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
@@ -26,7 +28,9 @@ public class MessageController {
     })
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
+        log.info("입력된 메시지 : {}",message);
         ChatMessage chatMessage = messageService.sendMessage(message);
+        log.info("가공되어 출력될 메시지 : {}",message);
 
         //채팅방 토픽으로 메시지를 전송한다.
         sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), chatMessage);
