@@ -90,6 +90,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - npm install react-bootstrap bootstrap
 - npm install html2canvas
 - npm install file-saver --save
-- npm install react-selectable-fast
-  <!-- - npm i moment -->
-  <!-- - npm i js-cookie -->
