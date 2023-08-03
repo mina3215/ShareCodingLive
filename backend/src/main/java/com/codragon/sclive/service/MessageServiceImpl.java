@@ -1,7 +1,9 @@
 package com.codragon.sclive.service;
 
+import com.codragon.sclive.chat.ChatGPTUtil;
 import com.codragon.sclive.chat.CodeUtil;
 import com.codragon.sclive.domain.ChatMessage;
+import com.codragon.sclive.domain.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -16,6 +19,7 @@ import java.util.Date;
 public class MessageServiceImpl implements MessageService {
 
     private final CodeUtil codeUtil;
+    private final ChatGPTUtil chatGPTUtil;
 
     @Override
     public ChatMessage sendMessage(ChatMessage message) {
@@ -43,6 +47,15 @@ public class MessageServiceImpl implements MessageService {
                 message.setType(ChatMessage.MessageType.CODE); // 타입 지정
                 text = text.substring(3, text.length() - 3); // 구분 문자 제거
                 message.setMessage(text);
+
+                Code code = new Code();
+                String uuid = UUID.randomUUID().toString();
+                code.setId(uuid);
+                String title = chatGPTUtil.getTitle(text);
+                code.setTitle(title);
+                String content = chatGPTUtil.addComment(text);
+                code.setContent(content);
+
 
                 // Todo : 코드이기 때문에 text를 redis에 저장 -> 문제발생
 //                codeUtil.saveCode(message);
