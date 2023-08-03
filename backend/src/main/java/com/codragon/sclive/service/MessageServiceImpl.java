@@ -46,17 +46,20 @@ public class MessageServiceImpl implements MessageService {
             if ("```".equals(start) && "```".equals(end)) {
                 message.setType(ChatMessage.MessageType.CODE); // 타입 지정
                 text = text.substring(3, text.length() - 3); // 구분 문자 제거
-                message.setMessage(text);
 
                 Code code = new Code();
                 String uuid = UUID.randomUUID().toString();
                 code.setId(uuid);
+                // Todo : chatGPTUtil이 병렬적으로 실행되게
                 String title = chatGPTUtil.getTitle(text);
                 code.setTitle(title);
                 String content = chatGPTUtil.addComment(text);
                 code.setContent(content);
+                String summarization = chatGPTUtil.getSummarize(text);
 
-
+                message.setTitle(title);
+                message.setMessage(content);
+                message.setSummarization(summarization);
                 // Todo : 코드이기 때문에 text를 redis에 저장 -> 문제발생
 //                codeUtil.saveCode(message);
             }

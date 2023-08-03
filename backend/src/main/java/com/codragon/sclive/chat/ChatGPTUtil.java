@@ -53,4 +53,10 @@ public class ChatGPTUtil {
         return commentCode;
     }
 
+    public String getSummarize(String code) {
+        StringBuilder question = new StringBuilder("아래의 코드에 대한 한줄 평을 남겨줘 : \n");
+        question.append(code);
+        String summarization = chatgptService.sendMessage(question.toString());
+        return summarization;
+    }
 }
