@@ -4,28 +4,52 @@ import Mic from '@material-ui/icons/Mic';
 import MicOff from '@material-ui/icons/MicOff';
 import Videocam from '@material-ui/icons/Videocam';
 import VideocamOff from '@material-ui/icons/VideocamOff';
+
 import Fullscreen from '@material-ui/icons/Fullscreen';
 import FullscreenExit from '@material-ui/icons/FullscreenExit';
+
 import PictureInPicture from '@material-ui/icons/PictureInPicture';
 import ScreenShare from '@material-ui/icons/ScreenShare';
 import StopScreenShare from '@material-ui/icons/StopScreenShare';
-import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew';
+import ChatIcon from '@mui/icons-material/Chat'; // 채팅
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // 참가자
+import BackHandIcon from '@mui/icons-material/BackHand';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+
+import LogoutIcon from '@mui/icons-material/Logout'; // 나가기
 
 import IconButton from '@material-ui/core/IconButton';
 
 import styled from 'styled-components';
 
-const Toolbar = styled.div`
-    background-color: #282828;
-    bottom: 0;
+const Wrapper = styled.div`
+    position: absolute;
+    display: flex;
+    width:100%;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
+    & div {
+        width: 100%;
+        height: 100%;
+    }
 `
-
-
+const Icon = styled(IconButton)`
+    height: 100%;
+    color : white; 
+    & svg {
+        width: 45px;
+        height: 45px;
+    }
+`;
 
 export default class ToolbarComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = { fullscreen: false };
+        this.state = { 
+            fullscreen: false,
+            mouseover : false
+        };
         this.camStatusChanged = this.camStatusChanged.bind(this);
         this.micStatusChanged = this.micStatusChanged.bind(this);
         this.screenShare = this.screenShare.bind(this);
@@ -33,8 +57,9 @@ export default class ToolbarComponent extends Component {
         this.toggleFullscreen = this.toggleFullscreen.bind(this);
         this.switchCamera = this.switchCamera.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
-        this.toggleChat = this.toggleChat.bind(this);
+        
     }
+    
 
 
     micStatusChanged() {
@@ -54,6 +79,10 @@ export default class ToolbarComponent extends Component {
     }
 
     toggleFullscreen() {
+        alert('고쳐야 함!')
+        return;
+
+        // local 유저 말고 스크린 있는지 판별해서 그걸로 바꾸기. 스크린이나 호스트?
         this.setState({ fullscreen: !this.state.fullscreen });
         this.props.toggleFullscreen();
     }
@@ -66,49 +95,59 @@ export default class ToolbarComponent extends Component {
         this.props.leaveSession();
     }
 
-    toggleChat() {
-        this.props.toggleChat();
-    }
 
     render() {
         const localUser = this.props.user;
         return (
-            <Toolbar>
-                <div className="toolbar">
-
-                    <div className="buttonsContent">
-                        <IconButton color="inherit" className="navButton" id="navMicButton" onClick={this.micStatusChanged}>
-                            {localUser !== undefined && localUser.isAudioActive() ? <Mic /> : <MicOff color="secondary" />}
-                        </IconButton>
-
-                        <IconButton color="inherit" className="navButton" id="navCamButton" onClick={this.camStatusChanged}>
+            <Wrapper>
+                <div>
+                    <div>
+                        <Icon onClick={this.camStatusChanged}>
                             {localUser !== undefined && localUser.isVideoActive() ? (
                                 <Videocam />
                             ) : (
                                 <VideocamOff color="secondary" />
                             )}
-                        </IconButton>
+                        </Icon>
 
-                        <IconButton color="inherit" className="navButton" onClick={this.screenShare}>
+                        <Icon onClick={this.micStatusChanged}>
+                            {localUser !== undefined && localUser.isAudioActive() ? <Mic /> : <MicOff color="secondary" />}
+                        </Icon>
+
+
+                        <Icon onClick={this.screenShare}>
                             {localUser !== undefined && localUser.isScreenShareActive() ? <PictureInPicture /> : <ScreenShare />}
-                        </IconButton>
+                        </Icon>
 
                         {localUser !== undefined &&
                             localUser.isScreenShareActive() && (
-                                <IconButton onClick={this.stopScreenShare} id="navScreenButton">
+                                <Icon onClick={this.stopScreenShare} >
                                     <StopScreenShare color="secondary" />
-                                </IconButton>
-                            )}
+                                </Icon>
+                        )}
 
-                        <IconButton color="inherit" className="navButton" onClick={this.toggleFullscreen}>
+                        <Icon>
+                            <AccountCircleIcon/>
+                        </Icon>
+
+                        <Icon>
+                            <ChatIcon/>
+                        </Icon>
+
+                        <Icon>
+                            <SentimentSatisfiedAltIcon />
+                        </Icon>
+
+
+                        <Icon  onClick={this.toggleFullscreen}>
                             {localUser !== undefined && this.state.fullscreen ? <FullscreenExit /> : <Fullscreen />}
-                        </IconButton>
-                        <IconButton color="secondary" className="navButton" onClick={this.leaveSession} id="navLeaveButton">
-                            <PowerSettingsNew />
-                        </IconButton>
+                        </Icon>
+                        <Icon>
+                            <LogoutIcon color={this.state.mouseover ? 'error':'white'} onClick={this.leaveSession} onMouseEnter={()=>this.setState({mouseover:true})} onMouseLeave={()=>this.setState({mouseover:false})} />
+                        </Icon>                          
                     </div>
                 </div>
-            </Toolbar>
+            </Wrapper>
         );
     }
 }

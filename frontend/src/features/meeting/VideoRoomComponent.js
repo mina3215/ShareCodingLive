@@ -12,6 +12,43 @@ import ToolbarComponent from './toolbar/ToolbarComponent';
 import styled from 'styled-components';
 
 
+const ParticipantCams = styled.div`
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    top : 0;
+    width : 100%;
+    height : 30%;
+    background-color: #282828;
+    z-index: 9999;
+`
+
+const Toolbar = styled.div`
+    position: absolute;
+    display: flex;
+    bottom : 0;
+    background-color: #282828;
+    width : 100%;
+    height : 10%;
+`
+
+const Cam = styled.div`
+    position: relative;
+    width: 310px;
+    height: 90%;
+    overflow: hidden;
+    margin-right: 12px;
+    margin-left: 12px;
+    & div {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+`
+
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
 
@@ -45,7 +82,6 @@ class VideoRoomComponent extends Component {
         this.screenShare = this.screenShare.bind(this);
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.closeDialogExtension = this.closeDialogExtension.bind(this);
-        this.toggleChat = this.toggleChat.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
     }
 
@@ -138,9 +174,10 @@ class VideoRoomComponent extends Component {
             videoSource: videoDevices[0].deviceId,
             publishAudio: localUser.isAudioActive(),
             publishVideo: localUser.isVideoActive(),
-            resolution: '640x480',
+            resolution: '320x240',
             frameRate: 30,
             insertMode: 'APPEND',
+            mirror : false,
         });
 
         if (this.state.session.capabilities.publish) {
@@ -422,20 +459,6 @@ class VideoRoomComponent extends Component {
         this.layout.setLayoutOptions(openviduLayoutOptions);
     }
 
-    toggleChat(property) {
-        let display = property;
-
-        if (display === undefined) {
-            display = this.state.chatDisplay === 'none' ? 'block' : 'none';
-        }
-        if (display === 'block') {
-            this.setState({ chatDisplay: display, messageReceived: false });
-        } else {
-            console.log('chat', display);
-            this.setState({ chatDisplay: display });
-        }
-        // this.updateLayout();
-    }
 
     checkNotification(event) {
         this.setState({
@@ -450,35 +473,36 @@ class VideoRoomComponent extends Component {
 
         return (
             <div>
-
                 <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
 
                 <div>
-                    {localUser !== undefined && localUser.getStreamManager() !== undefined && (
-                        <div>
-                            <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
-                        </div>
-                    )}
-
-                    {this.state.subscribers.map((sub, i) => (
-                        <div key={i} >
-                            <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
-                        </div>
-                    ))}
-
+                    <ParticipantCams>
+                        {localUser !== undefined && localUser.getStreamManager() !== undefined && (
+                            <Cam>
+                                <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
+                            </Cam>
+                        )}
+                        {this.state.subscribers.map((sub, i) => (
+                            <Cam key={i} >
+                                <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
+                            </Cam>
+                        ))}
+                    </ParticipantCams>
+                    {/* 호스트 캠, 스크린 두기 */}
                 </div>
-                <ToolbarComponent
-                    sessionId={mySessionId}
-                    user={localUser}
-                    showNotification={this.state.messageReceived}
-                    camStatusChanged={this.camStatusChanged}
-                    micStatusChanged={this.micStatusChanged}
-                    screenShare={this.screenShare}
-                    stopScreenShare={this.stopScreenShare}
-                    toggleFullscreen={this.toggleFullscreen}
-                    leaveSession={this.leaveSession}
-                    toggleChat={this.toggleChat}
-                />
+                <Toolbar>
+                    <ToolbarComponent
+                        sessionId={mySessionId}
+                        user={localUser}
+                        showNotification={this.state.messageReceived}
+                        camStatusChanged={this.camStatusChanged}
+                        micStatusChanged={this.micStatusChanged}
+                        screenShare={this.screenShare}
+                        stopScreenShare={this.stopScreenShare}
+                        toggleFullscreen={this.toggleFullscreen}
+                        leaveSession={this.leaveSession}
+                    />
+                </Toolbar>
             </div>
         );
     }

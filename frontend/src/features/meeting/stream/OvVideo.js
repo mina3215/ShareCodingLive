@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import './StreamComponent.css';
+
+import styled from 'styled-components';
+
+
+const CamOff = styled.div`
+    background-color: #282828;
+`
+
 
 export default class OvVideoComponent extends Component {
     constructor(props) {
@@ -8,6 +15,7 @@ export default class OvVideoComponent extends Component {
     }
 
     componentDidMount() {
+        console.log('사용자 상태 확인', this.props.user);
         if (this.props && this.props.user.streamManager && !!this.videoRef) {
             console.log('PROPS: ', this.props);
             this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
@@ -37,6 +45,7 @@ export default class OvVideoComponent extends Component {
                 ref={this.videoRef}
                 muted={this.props.mutedSound}
             />
+            
         );
     }
 }

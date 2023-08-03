@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './StreamComponent.css';
 import OvVideoComponent from './OvVideo';
 
+
+// 아이콘
 import MicOff from '@material-ui/icons/MicOff';
 import VideocamOff from '@material-ui/icons/VideocamOff';
 import VolumeUp from '@material-ui/icons/VolumeUp';
@@ -12,6 +13,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import FormHelperText from '@material-ui/core/FormHelperText';
+
+import styled from 'styled-components';
+
+
+
 
 export default class StreamComponent extends Component {
     constructor(props) {
