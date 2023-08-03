@@ -30,3 +30,6 @@ mybatis:
 logging:
   level:
     com.codragon.sclive: debug
+
+chatgpt:
+  api-key: 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
