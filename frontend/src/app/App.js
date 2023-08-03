@@ -13,6 +13,7 @@ import './App.css';
 import Home from '../features/home/Home';
 import Error404 from '../common/error/Error404';
 import Error500 from '../common/error/Error500';
+import MeetingPage from '../features/meeting/MeetingPage';
 
 const Wrapper = styled.div`
   background-color: #d9d9d9;
@@ -49,6 +50,7 @@ function App() {
             <Route path="/" element={<Home />} />
             {/* 경로 매핑 되지 않을 시 404 오류 페이지 */}
             <Route path="*" element={<Error404 />} />
+            <Route path="/meeting" element={<MeetingPage />} />
           </Routes>
         </BrowserRouter>
         <StyledToastContainer
