@@ -50,6 +50,7 @@ function App() {
             <Route path="/" element={<Home />} />
             {/* 경로 매핑 되지 않을 시 404 오류 페이지 */}
             <Route path="*" element={<Error404 />} />
+            {/* 음.. */}
             <Route path="/meeting" element={<MeetingPage />} />
           </Routes>
         </BrowserRouter>

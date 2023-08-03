@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Container, Button, makeStyles } from '@material-ui/core';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { useNavigate } from 'react-router-dom';
+
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -120,56 +122,53 @@ export const CommonButton = styled(Button)`
 
 const NewConference = (props) => {
   const classes = useStyles();
+  const Navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState('');
 
-  const signUpHandler = () => {
-    props.ChangeSignUp(true);
+  const reservHandler = () => {
+    
   };
 
-  function handleSubmit(e) {}
+  function handleSubmit(e) {
+    Navigate('/meeting')
+  }
   return (
     <Wrapper>
-      {/* <LogoWrapper>
-        <Logo to="/" src={logo} />
-      </LogoWrapper> */}
-
       <LoginContainer>
         <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-          <TextTitle>NewConference</TextTitle>
-          <TextSubtitle>쉐코라 시작하기</TextSubtitle>
-          {/* 이메일 입력 필드 */}
+          {/* 제목 입력 필드 */}
           <CommonTextValidator
             islogininput="true"
             size="small"
-            type="email"
-            label="Email"
-            onChange={(e) => setEmail(e.target.value.replace(/\s/g, ''))}
-            name="email"
-            value={email}
-            validators={['required', 'isEmail']}
-            errorMessages={['정보를 입력해주세요', '이메일 형식으로 입력해주세요']}
+            type="title"
+            label="제목을 입력하세요"
+            onChange={(e) => setTitle(e.target.value)}
+            name="title"
+            value={title}
+            validators={['required']}
+            errorMessages={['회의 제목을 입력하세요']}
             variant="outlined"
           />
-          {/* 비밀번호 입력 필드 */}
+          {/* 날짜 입력 필드 */}
           <CommonTextValidator
             size="small"
-            label="비밀번호"
-            onChange={(e) => setPassword(e.target.value.replace(/\s/g, ''))}
-            value={password}
-            name="password"
-            type="password"
-            validators={['required']}
-            errorMessages={['정보를 입력해주세요']}
+            label=""
+            onChange={(e) => setDate(e)}
+            value={date}
+            name="date"
+            type="date"
+            // validators={['required']}
+            // errorMessages={['날짜를 입력해주세요']}
             variant="outlined"
           />
           <CommonButton green="true" type="submit">
-            로그인
+            생성
           </CommonButton>
           <br />
-          <CommonButton onClick={signUpHandler} grey="true">
-            회원가입
+          <CommonButton onClick={reservHandler} grey="true">
+            예약
           </CommonButton>
         </ValidatorForm>
       </LoginContainer>

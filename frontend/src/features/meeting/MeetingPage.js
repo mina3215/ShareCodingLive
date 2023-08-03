@@ -1,5 +1,6 @@
 import React from 'react';
-
+import VideoRoomComponent from './VideoRoomComponent';
+import ReactDOM from 'react-dom';
 
 // css
 import { Container, Grid } from '@material-ui/core';
@@ -13,13 +14,13 @@ export const Wrapper = styled.div`
   background-color: #404040;
 `
 
+
 function MeetingPage(props) {
   return (
     <Wrapper>
-      
-      
+      <VideoRoomComponent />
     </Wrapper>
   );
 }
-
 export default MeetingPage;
+
