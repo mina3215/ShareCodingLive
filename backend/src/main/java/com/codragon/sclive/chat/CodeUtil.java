@@ -36,9 +36,9 @@ public class CodeUtil {
 
         //코드id(auto-increment) 회의방uuid 제목 내용 생성시간 한줄평(일단 null)
 
-        UUID uuid = UUID.randomUUID();
-        String title = this.getTitle(message.getMessage());
-        Date date = new Date();
+//        UUID uuid = UUID.randomUUID();
+//        String title = this.getTitle(message.getMessage());
+//        Date date = new Date();
 
 //        Map<String,String> code = new HashMap<>();
 //        code.put("code_id", uuid.toString()); //uniqe id 생성해서 넣기
@@ -48,12 +48,12 @@ public class CodeUtil {
 //        code.put("created_time",date.toString());
 //        code.put("review", "리뷰입니다.");
 
-        Code code = new Code();
-        code.setC_id("chat1");
-        code.setContent("helloworld");
-
-        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
-        hashOperations.put("chat1", "code1", code);
+//        Code code = new Code();
+//        code.setC_id("chat1");
+//        code.setContent("helloworld");
+//
+//        HashOperations<String, Object, Object> hashOperations = redisTemplate.opsForHash();
+//        hashOperations.put("chat1", "code1", code);
         return 1;
     }
 
@@ -75,9 +75,9 @@ public class CodeUtil {
         return code;
     }
 
-    private String getTitle(String code) { //코드의 제목을 짓는다.
-        String title = code.substring(0,Math.min(20, code.length()));
-        return title;
-    }
+//    private String getTitle(String code) { //코드의 제목을 짓는다.
+//        String title = code.substring(0,Math.min(20, code.length()));
+//        return title;
+//    }
 
 }

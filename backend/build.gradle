@@ -60,6 +60,9 @@ dependencies {
     //Json
     compileOnly "com.fasterxml.jackson.core:jackson-databind:2.9.4"
 
+    //ChatGPT
+    implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
