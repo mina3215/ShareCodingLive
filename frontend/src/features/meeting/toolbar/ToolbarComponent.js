@@ -56,7 +56,6 @@ export default class ToolbarComponent extends Component {
         this.micStatusChanged = this.micStatusChanged.bind(this);
         this.screenShare = this.screenShare.bind(this);
         this.stopScreenShare = this.stopScreenShare.bind(this);
-        this.toggleFullscreen = this.toggleFullscreen.bind(this);
         this.switchCamera = this.switchCamera.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
         this.toggleChat = this.toggleChat(this);
@@ -83,9 +82,7 @@ export default class ToolbarComponent extends Component {
     }
 
     toggleFullscreen() {
-        // TODO: local 유저 말고 스크린 있는지 판별해서 그걸로 바꾸기. 스크린이나 호스트?
-        this.setState({ fullscreen: !this.state.fullscreen });
-        this.props.toggleFullscreen();
+        return;
     }
 
     switchCamera() {

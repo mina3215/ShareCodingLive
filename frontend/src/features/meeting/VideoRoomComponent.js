@@ -53,8 +53,8 @@ const Cam = styled.div`
 
 var localUser = new UserModel();
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/';
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/';
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : "https://i9d109.p.ssafy.io:5000";
+const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/';
 
 
 
@@ -84,7 +84,6 @@ class VideoRoomComponent extends Component {
         this.camStatusChanged = this.camStatusChanged.bind(this);
         this.micStatusChanged = this.micStatusChanged.bind(this);
         this.nicknameChanged = this.nicknameChanged.bind(this);
-        this.toggleFullscreen = this.toggleFullscreen.bind(this);
         this.screenShare = this.screenShare.bind(this);
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.closeDialogExtension = this.closeDialogExtension.bind(this);
@@ -370,40 +369,6 @@ class VideoRoomComponent extends Component {
         this.state.session.signal(signalOptions);
     }
 
-    toggleFullscreen() {
-        const document = window.document;
-        console.log('오긴오몽모오모오몸ㅇ')
-        console.log('에프에스', document.getElementById('container'));
-        const fs = document.getElementById('container');
-        if (
-            !document.fullscreenElement &&
-            !document.mozFullScreenElement &&
-            !document.webkitFullscreenElement &&
-            !document.msFullscreenElement
-        ) {
-            if (fs.requestFullscreen) {
-                fs.requestFullscreen();
-            } else if (fs.msRequestFullscreen) {
-                fs.msRequestFullscreen();
-            } else if (fs.mozRequestFullScreen) {
-                fs.mozRequestFullScreen();
-            } else if (fs.webkitRequestFullscreen) {
-                fs.webkitRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            }
-        }
-    }
-
-
     screenShare() {
         const videoSource = navigator.userAgent.indexOf('Firefox') !== -1 ? 'window' : 'screen';
         console.log('비디오 소스', videoSource)
@@ -496,15 +461,16 @@ class VideoRoomComponent extends Component {
 
         return (
             <div>
-                <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
-
-                <div id="container">
-                    <ParticipantCams >
-                        {localUser !== undefined && localUser.getStreamManager() !== undefined && (
-                            <Cam>
-                                <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
-                            </Cam>
-                        )}
+                <div>
+                    <ParticipantCams>
+                        <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
+                        <div id='containers'>
+                            {localUser !== undefined && localUser.getStreamManager() !== undefined && (
+                                <Cam>
+                                    <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
+                                </Cam>
+                            )}
+                        </div>
 
                         {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
                         {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
@@ -528,7 +494,6 @@ class VideoRoomComponent extends Component {
                         micStatusChanged={this.micStatusChanged}
                         screenShare={this.screenShare}
                         stopScreenShare={this.stopScreenShare}
-                        toggleFullscreen={this.toggleFullscreen}
                         leaveSession={this.leaveSession}
                     />
                 </Toolbar>
