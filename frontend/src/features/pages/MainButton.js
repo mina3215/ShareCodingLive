@@ -24,7 +24,7 @@ export const CommonButton = styled(Button)`
   border-radius: 20px;
   background: ${(props) => {
     if (props.green) {
-      return '#94C798';
+      return '#3B7DDD';
     } else if (props.black) {
       return '#282828';
     } else if (props.darkgrey) {
@@ -35,7 +35,7 @@ export const CommonButton = styled(Button)`
   }};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#418eff' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 

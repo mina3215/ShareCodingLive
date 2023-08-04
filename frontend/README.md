@@ -74,7 +74,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - npm i react-redux
 - npm install @reduxjs/toolkit
 - npm i styled-components
-- npm install @mui/material @emotion/react @emotion/styled
 - npm i react-router-dom
 - npm i axios
 - npm install react-material-ui-form-validator
@@ -90,3 +89,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - npm install react-bootstrap bootstrap
 - npm install html2canvas
 - npm install file-saver --save
+- npm i @material-ui/core
+- npm i openvidu-browser
+- npm i openvidu-react
