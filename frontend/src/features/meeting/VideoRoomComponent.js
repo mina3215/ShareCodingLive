@@ -53,7 +53,8 @@ const Cam = styled.div`
 var localUser = new UserModel();
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/';
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : "https://i9d109.p.ssafy.io:5000";
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/';
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/';
+const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
 
 
 
@@ -103,7 +104,6 @@ class VideoRoomComponent extends Component {
             animate: true, // Whether you want to animate the transitions
         };
 
-        this.layout.initLayoutContainer(document.getElementById('layout'), openViduLayoutOptions);
         window.addEventListener('beforeunload', this.onbeforeunload);
         this.joinSession();
     }
@@ -507,6 +507,8 @@ class VideoRoomComponent extends Component {
         const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
             headers: { 'Content-Type': 'application/json', },
         });
+        console.log('반호나반환바노하노하놔한화호나혼',response.data);
+        console.log(typeof(response.data))
         return response.data; // The sessionId
     }
 
@@ -514,6 +516,7 @@ class VideoRoomComponent extends Component {
         const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
             headers: { 'Content-Type': 'application/json', },
         });
+        console.log('토킅노틐토늨토크노토큰',response.data);
         return response.data; // The token
     }
 }

@@ -61,6 +61,9 @@ export default class ToolbarComponent extends Component {
         this.toggleChat = this.toggleChat(this);
     }
     
+    handsUp(){
+        
+    }
 
     toggleChat(){
     }
