@@ -3,19 +3,26 @@ package com.codragon.sclive.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 public class Code {
 
-//    private int code_id;
+    // Code Domain Unique ID
+    private int id;
 
-    private String c_id;
+    // 수업 
+    private String course_id;
 
-//    private String title;
+    // Code 제목
+    private String title;
 
+    // Code 내용 + 주석 포함
     private String content;
 
-//    private String created_time;
+    // Code 생성 시각
+    private String created_time;
 
-//    private String review;
+    // Code 한 줄 요약
+    private String summarization;
 }
