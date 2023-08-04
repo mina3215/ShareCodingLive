@@ -1,11 +1,8 @@
 package com.codragon.sclive.chat;
 
-import com.codragon.sclive.domain.ChatMessage;
 import com.codragon.sclive.domain.Code;
 import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +23,7 @@ import java.util.Set;
 class CodeSaveUtilTest {
 
     @Autowired
-    CodeUtil codeUtil;
+    CodeService codeService;
 
     @Autowired
     RedisTemplate<String, Object> redisTemplate;

@@ -1,6 +1,6 @@
 package com.codragon.sclive.service;
 
-import com.codragon.sclive.chat.CodeUtil;
+import com.codragon.sclive.chat.CodeService;
 import com.codragon.sclive.domain.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class MessageServiceImpl implements MessageService {
 //        return chatRoom;
 //    }
 
-    private final CodeUtil codeUtil;
+    private final CodeService codeService;
 
     @Override
     public ChatMessage sendMessage(ChatMessage message) {
