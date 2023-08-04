@@ -1,15 +1,15 @@
 package com.codragon.sclive.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Code {
-
-    // Code Domain Unique ID
-    private int id;
 
     // 수업 
     private String course_id;

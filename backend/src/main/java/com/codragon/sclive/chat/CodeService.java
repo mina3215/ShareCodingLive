@@ -44,4 +44,11 @@ public class CodeService {
 
         return courseCodeMap;
     }
+
+    public Code getCertainCode(String courseUUID, String codeUUID) {
+
+        HashOperations<String, String, Code> hashOperations = redisTemplate.opsForHash();
+
+        return hashOperations.entries(courseUUID).get(codeUUID);
+    }
 }
