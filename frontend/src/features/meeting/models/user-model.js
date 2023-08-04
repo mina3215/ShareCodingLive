@@ -5,6 +5,7 @@ class UserModel {
     screenShareActive;
     nickname;
     streamManager;
+    role; //"admin | user "
     type; // 'remote' | 'local'
 
     constructor() {
@@ -15,6 +16,10 @@ class UserModel {
         this.nickname = '';
         this.streamManager = null;
         this.type = 'local';
+    }
+
+    isAdmin() {
+        return this.role === "admin"
     }
 
     isAudioActive() {

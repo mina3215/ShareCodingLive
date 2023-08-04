@@ -51,6 +51,7 @@ const Cam = styled.div`
 `
 
 var localUser = new UserModel();
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/';
 const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
 
 
@@ -71,6 +72,7 @@ class VideoRoomComponent extends Component {
             subscribers: [],
             chatDisplay: 'none',
             currentVideoDevice: undefined,
+            isRoomAdmin : false,
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -150,8 +152,10 @@ class VideoRoomComponent extends Component {
     connect(token) {
         this.state.session
             .connect(
-                token,
-                { clientData: this.state.myUserName },
+                token,{ 
+                  clientData: this.state.myUserName,
+                  admin: this.state.isRoomAdmin,   
+                },
             )
             .then(() => {
                 this.connectWebCam();
@@ -254,6 +258,7 @@ class VideoRoomComponent extends Component {
         this.sendSignalUserChanged({ isVideoActive: localUser.isVideoActive() });
         this.setState({ localUser: localUser });
         }catch(error){
+            console.log(localUser.getStreamManager().publishVideo(localUser.isVideoActive()))
             alert('현재 카메라를 켤 수 있는 비디오가 없습니다. 잠시후 다시 시도하세요 ')
         }
     }
@@ -396,6 +401,7 @@ class VideoRoomComponent extends Component {
 
     screenShare() {
         const videoSource = navigator.userAgent.indexOf('Firefox') !== -1 ? 'window' : 'screen';
+        console.log('비디오 소스', videoSource)
         const publisher = this.OV.initPublisher(
             undefined,
             {
@@ -420,6 +426,13 @@ class VideoRoomComponent extends Component {
         publisher.once('accessAllowed', () => {
             this.state.session.unpublish(localUser.getStreamManager());
             localUser.setStreamManager(publisher);
+            if(publisher.stream.getMediaStream()){
+               publisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
+                	
+                    this.state.session.unpublish(publisher);
+                    this.connectWebCam();
+                })
+            }
             this.state.session.publish(localUser.getStreamManager()).then(() => {
                 localUser.setScreenShareActive(true);
                 this.setState({ localUser: localUser }, () => {
@@ -427,6 +440,8 @@ class VideoRoomComponent extends Component {
                 });
             });
         });
+
+        
         publisher.on('streamPlaying', () => {
             publisher.videos[0].video.parentElement.classList.remove('custom-class');
         });
@@ -435,6 +450,7 @@ class VideoRoomComponent extends Component {
     closeDialogExtension() {
         this.setState({ showExtensionDialog: false });
     }
+
 
     stopScreenShare() {
         this.state.session.unpublish(localUser.getStreamManager());
@@ -520,6 +536,7 @@ class VideoRoomComponent extends Component {
     }
 
     async createSession(sessionId) {
+        // TODO: 세션 생성 시 호스트 판별
         const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
             headers: { 'Content-Type': 'application/json', },
         });

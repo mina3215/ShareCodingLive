@@ -2,6 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { deleteToken } from '../../common/api/JWT-common';
 import axios from '../../common/api/http-common';
 
+
+// 액션들
+
+
 // 초기값 설정
 const initialState = {
   user: {},
@@ -9,7 +13,7 @@ const initialState = {
 };
 
 // 리덕스 슬라이스 생성
-const authSlice = createSlice({
+const meetingSlice = createSlice({
   name: 'meeting',
   initialState,
   reducers: {
@@ -18,4 +22,4 @@ const authSlice = createSlice({
 });
 
 // export const { setNicknameCheckedFalse, setEmailCheckedFalse, resetUser } = authSlice.actions;
-export default authSlice.reducer;
+export default meetingSlice.reducer;
