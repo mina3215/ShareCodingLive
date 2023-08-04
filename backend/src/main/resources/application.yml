@@ -1,6 +1,8 @@
 server:
   port: 8080
   address: 0.0.0.0
+  servlet:
+    context-path: /api
 
 # ============================= #
 # ====== Local Database ======= #
@@ -9,11 +11,11 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sclive?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
+    url: jdbc:mysql://dev-mysql:3306/sclive?serverTimezone=UTC&useUniCode=yes&characterEncoding=UTF-8
     username: ssafy
     password: ssafy
   redis:
-    host: localhost
+    host: dev-redis
     port: 6379
   mvc:
     pathmatch:
@@ -33,3 +35,4 @@ logging:
 
 chatgpt:
   api-key: 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
+  url: https://api.openai.com/v1/chat/completions

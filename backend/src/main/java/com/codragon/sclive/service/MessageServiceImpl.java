@@ -45,7 +45,7 @@ public class MessageServiceImpl implements MessageService {
             // ```code``` 이면 코드
             if ("```".equals(start) && "```".equals(end)) {
                 message.setType(ChatMessage.MessageType.CODE); // 타입 지정
-                text = text.substring(3, text.length() - 3); // 구분 문자 제거
+//                text = text.substring(3, text.length() - 3); // 구분 문자 제거
 
                 Code code = new Code();
                 String uuid = UUID.randomUUID().toString();
