@@ -29,6 +29,7 @@ const Wrapper = styled.div`
     height: 100%;
     flex-direction: row;
     align-items: center;
+    overflow: hidden;
     & div {
         width: 100%;
         height: 100%;
@@ -102,6 +103,7 @@ export default class ToolbarComponent extends Component {
             <Wrapper>
                 <div>
                     <div>
+                        {/* TODO: 아이콘 위치 조절 */}
                         <Icon onClick={this.camStatusChanged}>
                             {localUser !== undefined && localUser.isVideoActive() ? (
                                 <Videocam />
@@ -130,6 +132,7 @@ export default class ToolbarComponent extends Component {
                             <AccountCircleIcon/>
                         </Icon>
 
+                        {/* 채팅 클릭 시 전체 적용 */}
                         <Icon>
                             <ChatIcon/>
                         </Icon>

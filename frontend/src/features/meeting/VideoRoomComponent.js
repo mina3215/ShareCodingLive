@@ -39,8 +39,9 @@ const Cam = styled.div`
     width: 310px;
     height: 90%;
     overflow: hidden;
-    margin-right: 12px;
-    margin-left: 12px;
+    margin-right: 15px;
+    margin-left: 15px;
+    flex-shrink: 0;
     & div {
         position: absolute;
         width: 100%;
@@ -470,6 +471,7 @@ class VideoRoomComponent extends Component {
     render() {
         const mySessionId = this.state.mySessionId;
         const localUser = this.state.localUser;
+        let camNumbers = 3;
 
         return (
             <div>
@@ -482,13 +484,19 @@ class VideoRoomComponent extends Component {
                                 <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
                             </Cam>
                         )}
+
+                        {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
+                        {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
                         {this.state.subscribers.map((sub, i) => (
+                            (i<=camNumbers)? (
                             <Cam key={i} >
+                                {console.log('이건 구독자 번호인가요',i)}
                                 <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
                             </Cam>
+                            ): null
                         ))}
                     </ParticipantCams>
-                    {/* 호스트 캠, 스크린 두기 */}
+                    {/* TODO: 호스트 캠, 스크린 두기 */}
                 </div>
                 <Toolbar>
                     <ToolbarComponent
