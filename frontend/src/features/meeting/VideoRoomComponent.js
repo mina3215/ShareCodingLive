@@ -3,7 +3,6 @@ import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import DialogExtensionComponent from './dialog-extension/DialogExtension';
 import StreamComponent from './stream/StreamComponent';
-import './VideoRoomComponent.css';
 
 import OpenViduLayout from './layout/openvidu-layout';
 import UserModel from './models/user-model';
@@ -464,13 +463,11 @@ class VideoRoomComponent extends Component {
                 <div>
                     <ParticipantCams>
                         <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
-                        <div id='containers'>
                             {localUser !== undefined && localUser.getStreamManager() !== undefined && (
                                 <Cam>
                                     <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
                                 </Cam>
                             )}
-                        </div>
 
                         {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
                         {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
