@@ -3,6 +3,7 @@ import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import DialogExtensionComponent from './dialog-extension/DialogExtension';
 import StreamComponent from './stream/StreamComponent';
+import './VideoRoomComponent.css';
 
 import OpenViduLayout from './layout/openvidu-layout';
 import UserModel from './models/user-model';
@@ -53,6 +54,8 @@ const Cam = styled.div`
 var localUser = new UserModel();
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/';
 const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/';
+
 
 
 class VideoRoomComponent extends Component {
@@ -369,6 +372,8 @@ class VideoRoomComponent extends Component {
 
     toggleFullscreen() {
         const document = window.document;
+        console.log('오긴오몽모오모오몸ㅇ')
+        console.log('에프에스', document.getElementById('container'));
         const fs = document.getElementById('container');
         if (
             !document.fullscreenElement &&
@@ -493,8 +498,8 @@ class VideoRoomComponent extends Component {
             <div>
                 <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
 
-                <div>
-                    <ParticipantCams>
+                <div id="container">
+                    <ParticipantCams >
                         {localUser !== undefined && localUser.getStreamManager() !== undefined && (
                             <Cam>
                                 <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
