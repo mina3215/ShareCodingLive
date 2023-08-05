@@ -14,6 +14,9 @@ public class Code {
     // 수업 
     private String course_id;
 
+    // Code Domain Unique ID
+    private String id;
+
     // Code 제목
     private String title;
 
