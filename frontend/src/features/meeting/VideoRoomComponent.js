@@ -4,12 +4,12 @@ import React, { Component } from 'react';
 import DialogExtensionComponent from './dialog-extension/DialogExtension';
 import StreamComponent from './stream/StreamComponent';
 
-import OpenViduLayout from './layout/openvidu-layout';
 import UserModel from './models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
 
 // css
 import styled from 'styled-components';
+import './VideoRoomComponent.css';
 
 
 const ParticipantCams = styled.div`
@@ -22,7 +22,7 @@ const ParticipantCams = styled.div`
     width : 100%;
     height : 30%;
     background-color: #282828;
-    z-index: 9999;
+    z-index: 0;
 `
 
 const Toolbar = styled.div`
@@ -44,6 +44,8 @@ const Cam = styled.div`
     flex-shrink: 0;
     & div {
         position: absolute;
+        display: flex;
+        justify-content: center;
         width: 100%;
         height: 100%;
     }
@@ -62,7 +64,6 @@ class VideoRoomComponent extends Component {
     constructor(props) {
         super(props);
         this.hasBeenUpdated = false;
-        this.layout = new OpenViduLayout();
         let sessionName = this.props.sessionName ? this.props.sessionName : 'SessionAB';
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
         this.remotes = [];
@@ -76,6 +77,7 @@ class VideoRoomComponent extends Component {
             chatDisplay: 'none',
             currentVideoDevice: undefined,
             isRoomAdmin : false,
+            isReact : false,
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -88,22 +90,10 @@ class VideoRoomComponent extends Component {
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.closeDialogExtension = this.closeDialogExtension.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
+        this.handsUp = this.handsUp.bind(this);
     }
 
     componentDidMount() {
-        const openViduLayoutOptions = {
-            maxRatio: 3 / 2, // The narrowest ratio that will be used (default 2x3)
-            minRatio: 9 / 16, // The widest ratio that will be used (default 16x9)
-            fixedRatio: false, // If this is true then the aspect ratio of the video is maintained and minRatio and maxRatio are ignored (default false)
-            bigClass: 'OV_big', // The class to add to elements that should be sized bigger
-            bigPercentage: 0.8, // The maximum percentage of space the big ones should take up
-            bigFixedRatio: false, // fixedRatio for the big ones
-            bigMaxRatio: 3 / 2, // The narrowest ratio to use for the big elements (default 2x3)
-            bigMinRatio: 9 / 16, // The widest ratio to use for the big elements (default 16x9)
-            bigFirst: true, // Whether to place the big one in the top left (true) or bottom right
-            animate: true, // Whether you want to animate the transitions
-        };
-
         window.addEventListener('beforeunload', this.onbeforeunload);
         this.joinSession();
     }
@@ -165,7 +155,7 @@ class VideoRoomComponent extends Component {
                 if(this.props.error){
                     this.props.error({ error: error.error, messgae: error.message, code: error.code, status: error.status });
                 }
-                alert('There was an error connecting to the session:', error.message);
+                alert('방 들어가기 실패 !');
                 console.log('There was an error connecting to the session:', error.code, error.message);
             });
     }
@@ -255,12 +245,11 @@ class VideoRoomComponent extends Component {
     camStatusChanged() {
         localUser.setVideoActive(!localUser.isVideoActive());
         try{
-        localUser.getStreamManager().publishVideo(localUser.isVideoActive());
-        this.sendSignalUserChanged({ isVideoActive: localUser.isVideoActive() });
-        this.setState({ localUser: localUser });
+            localUser.getStreamManager().publishVideo(localUser.isVideoActive());
+            this.sendSignalUserChanged({ isVideoActive: localUser.isVideoActive() });
+            this.setState({ localUser: localUser });
         }catch(error){
-            console.log(localUser.getStreamManager().publishVideo(localUser.isVideoActive()))
-            alert('현재 카메라를 켤 수 있는 비디오가 없습니다. 잠시후 다시 시도하세요 ')
+            alert('현재 사용할 수 있는 카메라가 없습니다. 잠시후 다시 시도하세요 ')
         }
     }
 
@@ -293,7 +282,6 @@ class VideoRoomComponent extends Component {
     subscribeToStreamCreated() {
         this.state.session.on('streamCreated', (event) => {
             const subscriber = this.state.session.subscribe(event.stream, undefined);
-            console.log('비디오타입',event.stream.typeOfVideo)
             subscriber.on('streamPlaying', (e) => {
                 this.checkSomeoneShareScreen();
                 subscriber.videos[0].video.parentElement.classList.remove('custom-class');
@@ -320,7 +308,7 @@ class VideoRoomComponent extends Component {
                 this.checkSomeoneShareScreen();
             }, 20);
             event.preventDefault();
-            this.updateLayout();
+            // this.updateLayout();
         });
     }
 
@@ -343,6 +331,9 @@ class VideoRoomComponent extends Component {
                     if (data.isScreenShareActive !== undefined) {
                         user.setScreenShareActive(data.isScreenShareActive);
                     }
+                    if(data.reaction !== undefined){
+                        user.setReaction(data.reaction)
+                    }
                 }
             });
             this.setState(
@@ -354,11 +345,6 @@ class VideoRoomComponent extends Component {
         });
     }
 
-    // updateLayout() {
-    //     setTimeout(() => {
-    //         this.layout.updateLayout();
-    //     }, 20);
-    // }
 
     sendSignalUserChanged(data) {
         const signalOptions = {
@@ -430,19 +416,6 @@ class VideoRoomComponent extends Component {
         let isScreenShared;
         // return true if at least one passes the test
         isScreenShared = this.state.subscribers.some((user) => user.isScreenShareActive()) || localUser.isScreenShareActive();
-        const openviduLayoutOptions = {
-            maxRatio: 3 / 2,
-            minRatio: 9 / 16,
-            fixedRatio: isScreenShared,
-            bigClass: 'OV_big',
-            bigPercentage: 0.8,
-            bigFixedRatio: false,
-            bigMaxRatio: 3 / 2,
-            bigMinRatio: 9 / 16,
-            bigFirst: true,
-            animate: true,
-        };
-        this.layout.setLayoutOptions(openviduLayoutOptions);
     }
 
 
@@ -453,6 +426,19 @@ class VideoRoomComponent extends Component {
     }
 
 
+    handsUp(){
+        if(localUser.isReaction() === 'hand'){
+            localUser.setReaction(null)
+            this.sendSignalUserChanged({reaction: 'none'})
+        }else{
+            localUser.setReaction('hand');
+            console.log()
+            this.sendSignalUserChanged({ reaction : localUser.isReaction() });
+        }
+        this.setState({localUser: localUser});
+    }
+
+
     render() {
         const mySessionId = this.state.mySessionId;
         const localUser = this.state.localUser;
@@ -460,40 +446,50 @@ class VideoRoomComponent extends Component {
 
         return (
             <div>
+                {localUser &&localUser.streamManager?(
                 <div>
-                    <ParticipantCams>
-                        <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
-                            {localUser !== undefined && localUser.getStreamManager() !== undefined && (
-                                <Cam>
-                                    <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
-                                </Cam>
-                            )}
+                    <div>
+                        <ParticipantCams>
+                            <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
+                                {localUser !== undefined && localUser.getStreamManager() !== undefined && (
+                                    <Cam>
+                                        <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
+                                    </Cam>
+                                )}
 
-                        {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
-                        {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
-                        {this.state.subscribers.map((sub, i) => (
-                            (i<=camNumbers)? (
-                            <Cam key={i} >
-                                {console.log('이건 구독자 번호인가요',i)}
-                                <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
-                            </Cam>
-                            ): null
-                        ))}
-                    </ParticipantCams>
-                    {/* TODO: 호스트 캠, 스크린 두기 */}
+                            {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
+                            {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
+                            {this.state.subscribers.map((sub, i) => (
+                                (i<=camNumbers)? (
+                                <Cam key={i} >
+                                    {console.log('이건 구독자 번호인가요',i)}
+                                    <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
+                                </Cam>
+                                ): null
+                            ))}
+                        </ParticipantCams>
+                        {/* TODO: 호스트 캠, 스크린 두기 */}
+                    </div>
+                    <Toolbar>
+                        <ToolbarComponent
+                            sessionId={mySessionId}
+                            user={localUser}
+                            showNotification={this.state.messageReceived}
+                            camStatusChanged={this.camStatusChanged}
+                            micStatusChanged={this.micStatusChanged}
+                            screenShare={this.screenShare}
+                            stopScreenShare={this.stopScreenShare}
+                            leaveSession={this.leaveSession}
+                            handsUp={this.handsUp}
+                        />
+                    </Toolbar>
+                </div>): (
+                    <div class="loading-container">
+                    <div class="loading"></div>
+                    <div id="loading-text">loading</div>
                 </div>
-                <Toolbar>
-                    <ToolbarComponent
-                        sessionId={mySessionId}
-                        user={localUser}
-                        showNotification={this.state.messageReceived}
-                        camStatusChanged={this.camStatusChanged}
-                        micStatusChanged={this.micStatusChanged}
-                        screenShare={this.screenShare}
-                        stopScreenShare={this.stopScreenShare}
-                        leaveSession={this.leaveSession}
-                    />
-                </Toolbar>
+                )
+                }
             </div>
         );
     }

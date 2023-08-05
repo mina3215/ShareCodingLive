@@ -3,11 +3,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 
-const CamOff = styled.div`
-    background-color: #282828;
-`
-
-
 export default class OvVideoComponent extends Component {
     constructor(props) {
         super(props);

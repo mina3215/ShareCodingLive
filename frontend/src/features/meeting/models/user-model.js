@@ -5,8 +5,11 @@ class UserModel {
     screenShareActive;
     nickname;
     streamManager;
-    role; //"admin | user "
+    role; // "admin | user "
     type; // 'remote' | 'local'
+    reaction; // hand
+
+
 
     constructor() {
         this.connectionId = '';
@@ -18,6 +21,9 @@ class UserModel {
         this.type = 'local';
     }
 
+    isReaction(){
+        return this.reaction;
+    }
     isAdmin() {
         return this.role === "admin"
     }
@@ -75,6 +81,10 @@ class UserModel {
         if (type === 'local' |  type === 'remote') {
             this.type = type;
         }
+    }
+
+    setReaction(reaction){
+        this.reaction = reaction;
     }
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+
 
 import Mic from '@material-ui/icons/Mic';
 import MicOff from '@material-ui/icons/MicOff';
@@ -58,14 +58,11 @@ export default class ToolbarComponent extends Component {
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.switchCamera = this.switchCamera.bind(this);
         this.leaveSession = this.leaveSession.bind(this);
-        this.toggleChat = this.toggleChat(this);
+        this.handsUp = this.handsUp.bind(this);
     }
     
     handsUp(){
-        
-    }
-
-    toggleChat(){
+        this.props.handsUp();
     }
 
     micStatusChanged() {
@@ -82,10 +79,6 @@ export default class ToolbarComponent extends Component {
 
     stopScreenShare() {
         this.props.stopScreenShare();
-    }
-
-    toggleFullscreen() {
-        return;
     }
 
     switchCamera() {
@@ -136,6 +129,11 @@ export default class ToolbarComponent extends Component {
                         <Icon>
                             <ChatIcon/>
                         </Icon>
+                        
+
+                        <Icon onClick={this.handsUp}>
+                            <BackHandIcon/>
+                        </Icon>
 
                         <Icon>
                             <SentimentSatisfiedAltIcon />
@@ -154,3 +152,4 @@ export default class ToolbarComponent extends Component {
         );
     }
 }
+;
