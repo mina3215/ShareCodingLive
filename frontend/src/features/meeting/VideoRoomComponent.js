@@ -1,16 +1,26 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
+
 import DialogExtensionComponent from './dialog-extension/DialogExtension';
 import StreamComponent from './stream/StreamComponent';
-
 import UserModel from './models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
+
+// import { getToken } from '../../common/api/JWT-common';
 
 // css
 import styled from 'styled-components';
 import './VideoRoomComponent.css';
 
+const HostCam = styled.div`
+    position: absolute;
+    display: flex;
+    width : 50%;
+    height: 50%;
+    top: 250px;
+
+`
 
 const ParticipantCams = styled.div`
     position: absolute;
@@ -53,9 +63,9 @@ const Cam = styled.div`
 `
 
 var localUser = new UserModel();
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/'; // 희솜 언니 백 
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/'; // 내 ip
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/'; //내로컬
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/'; //내로컬
+const APPLICATION_SERVER_URL = 'http://119.56.161.229:7777/' ; // 유정양
+
 
 
 
@@ -64,6 +74,8 @@ class VideoRoomComponent extends Component {
         super(props);
         this.hasBeenUpdated = false;
         const uuid = this.props.uuid;
+        // const userToken = getToken(); // 주소 오류라 잠깐 보류
+        const userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTEzMzEzMzgsImlhdCI6MTY5MTMzMTMzOCwiZW1haWwiOiJpY2hlcm9tQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoi6rmA7Jyg7KCVIOqwgOunjOyViOuRoCJ9.xriPNQXzKPot_R2shVqFCszgkcqtAngZhSxZRvVykPk' 
         console.log('나 이거 받았는데? ', uuid);
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
         const isAdmin = this.props.isAdmin;
@@ -79,8 +91,10 @@ class VideoRoomComponent extends Component {
             hostUser: undefined,
             chatDisplay: 'none',
             currentVideoDevice: undefined,
+
             isAdmin : isAdmin,
             isReact : false,
+            userToken: userToken
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -133,7 +147,8 @@ class VideoRoomComponent extends Component {
         } else {
             try {
                 var token = await this.getToken();
-                console.log(token);
+                console.log('11111111111111',token);
+                console.log('토큰타입',typeof(token))
                 this.connect(token);
             } catch (error) {
                 console.error('There was an error getting the token:', error.code, error.message);
@@ -510,13 +525,13 @@ class VideoRoomComponent extends Component {
                             ))}
                         </ParticipantCams>
                         {/* TODO: 호스트 캠, 스크린 두기 */}
-                        <div>
+                        <HostCam>
                             {hostUser !== undefined && hostUser.getStreamManager()!==undefined &&(
                                 <div>
                                     <StreamComponent user={hostUser} />
                                 </div>  
                             )}
-                        </div>
+                        </HostCam>
                     </div>
                     <Toolbar>
                         <ToolbarComponent
@@ -543,26 +558,48 @@ class VideoRoomComponent extends Component {
         );
     }
     async getToken() {
-        const sessionId = await this.createSession(this.state.mySessionId);
-        return await this.createToken(sessionId);
+        console.log('유저 개인 토큰', 'Bearer ' + this.state.userToken)
+        console.log(this.state.isAdmin);
+        const response = await this.createSessionToken(this.state.mySessionId);
+        console.log(response.data);
+        return response.data;
     }
 
-    async createSession(sessionId) {
-        // TODO: 세션 생성 시 호스트 판별
-        const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
-            headers: { 'Content-Type': 'application/json', },
-        });
-        console.log('반호나반환바노하노하놔한화호나혼',response.data);
-        console.log(typeof(response.data))
-        return response.data; // The sessionId
+    async createSessionToken(sessionId){
+        try{
+            console.log('여기 왔어')
+            const response = await axios.post(APPLICATION_SERVER_URL + 'conference/join', { owner: this.state.isAdmin, uuid:sessionId },
+            { headers: {
+                'Content-Type': 'application/json',
+                Authorization : `Bearer ${this.state.userToken}`
+            }});
+            console.log(response);
+            return response.data;
+        }catch(err){
+            console.log(err);
+        }
     }
 
-    async createToken(sessionId) {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-            headers: { 'Content-Type': 'application/json', },
-        });
-        console.log('토킅노틐토늨토크노토큰',response.data);
-        return response.data; // The token
-    }
+    // async getToken() {
+    //     const sessionId = await this.createSession(this.state.mySessionId);
+    //     return await this.createToken(sessionId);
+    // }
+    // async createSession(sessionId) {
+    //     // TODO: 세션 생성 시 호스트 판별
+    //     const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
+    //         headers: { 'Content-Type': 'application/json', },
+    //     });
+    //     console.log('반호나반환바노하노하놔한화호나혼',response.data);
+    //     console.log(typeof(response.data))
+    //     return response.data; // The sessionId
+    // }
+
+    // async createToken(sessionId) {
+    //     const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
+    //         headers: { 'Content-Type': 'application/json', },
+    //     });
+    //     console.log('토킅노틐토늨토크노토큰',response.data);
+    //     return response.data; // The token
+    // }
 }
 export default VideoRoomComponent;
