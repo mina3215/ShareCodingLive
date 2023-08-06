@@ -26,7 +26,7 @@ public class MessageServiceImpl implements MessageService {
     private String getCurrentTime() {
 
         LocalDateTime now = LocalDateTime.now();
-        String currentTime = now.format(DateTimeFormatter.ofPattern("a HH시 mm분"));
+        String currentTime = now.format(DateTimeFormatter.ofPattern("a hh시 mm분"));
 
         return currentTime;
     }
@@ -50,6 +50,7 @@ public class MessageServiceImpl implements MessageService {
      * 1. 메시지 타입 체크        : checkMessageType <br>
      * 2. 각 메시지에 따라 가공   : MessageUtil <br>
      * 3. 메시지에 보낸 시간 처리 : getCurrentTime <br>
+     *
      * @param messageFromClient 클라이언트에게 온 메시지
      * @return 가공된 메시지
      */
@@ -71,6 +72,8 @@ public class MessageServiceImpl implements MessageService {
                 answerMessage = messageUtil.talk(messageFromClient, answerMessage);
                 break;
             case CODE:
+                answerMessage.setRoomId(messageFromClient.getRoomId());
+                answerMessage.setSender(messageFromClient.getSender());
                 answerMessage = messageUtil.code(messageFromClient, answerMessage);
                 break;
             case QUESTION:

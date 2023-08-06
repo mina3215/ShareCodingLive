@@ -12,9 +12,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 @Slf4j
@@ -44,6 +46,40 @@ public class ChatGPTUtil {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Map> response = restTemplate.postForEntity(ENDPOINT, requestEntity, Map.class);
         return response.toString();
+    }
+
+    public ArrayList<String> generateDetailCodeWithChatGPT(String code) {
+
+        log.debug("prepare to send User's Code to ChatGPT");
+        long start = System.currentTimeMillis();
+
+        CompletableFuture<String> title = new CompletableFuture<>();
+        CompletableFuture<String> summarize = new CompletableFuture<>();
+        CompletableFuture<String> comment = new CompletableFuture<>();
+
+        ArrayList<String> result = new ArrayList<>();
+
+        try {
+            title = this.getTitle(code);
+            summarize = this.getSummarize(code);
+            comment = this.addComment(code);
+
+            CompletableFuture.allOf(title, summarize, comment).join();
+
+            log.info("Elapsed time: " + (System.currentTimeMillis() - start));
+            log.info("title: {}", title.get());
+            log.info("summarize: {}", summarize.get());
+            log.info("comment: {}", comment.get());
+
+            result.add(title.get());
+            result.add(comment.get());
+            result.add(summarize.get());
+
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e.toString());
+        }
+
+        return result;
     }
 
     @Async
