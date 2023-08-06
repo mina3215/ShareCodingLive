@@ -25,7 +25,7 @@ public class OpenviduUtil {
     private String OPENVIDU_URL = "https://i9d109.p.ssafy.io:4443/";
 
 //    @Value("${OPENVIDU_SECRET}")
-    private String OPENVIDU_SECRET = "MY_SECERT";
+    private String OPENVIDU_SECRET = "MY_SECRET";
 
     private OpenVidu openvidu;
 

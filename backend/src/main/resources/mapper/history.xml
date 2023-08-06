@@ -4,7 +4,7 @@
 <mapper namespace="com.codragon.sclive.mapper.ConferenceHistoryMapper">
 
     <insert id="create" parameterType="HistoryCreateDao">
-        INSERT INTO conference_history (`user_email`, `conference_uuid`, `join_time`) VALUES (#{email}, #{uuid}, now());
+        INSERT INTO conference_history (`user_email`, `course_id`, `join_time`) VALUES (#{email}, #{uuid}, now());
     </insert>
 
 </mapper>

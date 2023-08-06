@@ -8,15 +8,12 @@ import lombok.Setter;
 @Setter
 public class ConferenceCreateReqDto {
 
-    private String startTime;
-
     private String title;
 
     private String uuid;
 
-    public ConCreateDao dtoTodao() {
+    public ConCreateDao dtoToDao() {
         ConCreateDao dao = new ConCreateDao();
-        dao.setStartTime(this.startTime);
         dao.setTitle(this.title);
         dao.setConferenceUuid(this.uuid);
         return dao;

@@ -9,7 +9,9 @@ public interface ConferenceMapper {
 
     void create(ConCreateDao conCreateDao);
 
-//    void start(String uuid);
-
     int end(ConEndDao dao);
+
+    void update(String uuid);
+
+    int find(String uuid);
 }
