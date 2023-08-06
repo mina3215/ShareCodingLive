@@ -15,22 +15,29 @@ import java.util.concurrent.ExecutionException;
 public class MessageUtil {
 
     private final ChatGPTUtil chatGPTUtil;
+    private final ParticipantService participantService;
 
     public ChatMessage enter(ChatMessage senderMessage, ChatMessage returnMessage) {
 
+        String roomId = senderMessage.getRoomId();
         String newParticipantName = senderMessage.getSender();
-        log.info("{} 강의방에 {}이 참여했습니다", 1, newParticipantName);
 
-        returnMessage.setMessage(newParticipantName.concat("님이 들어왔습니다"));
+        log.info("{} 강의방에 {}이 참여했습니다", roomId, newParticipantName);
+
+        participantService.joinParticipant(roomId, senderMessage.getSender());
+
+        returnMessage.setSender(newParticipantName);
+        returnMessage.setMessage(participantService.getAllParticipantInCurrentRoom(roomId).toString());
 
         return returnMessage;
     }
 
     public ChatMessage quit(ChatMessage senderMessage, ChatMessage returnMessage) {
 
-        String quitParticipantName = senderMessage.getSender();
+        String leaveParticipantName = senderMessage.getSender();
 
-        returnMessage.setMessage(quitParticipantName.concat("님이 나갔습니다."));
+        returnMessage.setMessage(leaveParticipantName);
+
         return returnMessage;
     }
 
