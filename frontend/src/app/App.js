@@ -14,6 +14,7 @@ import Home from '../features/home/Home';
 import Error404 from '../common/error/Error404';
 import Error500 from '../common/error/Error500';
 import MeetingPage from '../features/meeting/MeetingPage';
+import VideoRoomComponent from '../features/meeting/VideoRoomComponent';
 
 const Wrapper = styled.div`
   background-color: #d9d9d9;

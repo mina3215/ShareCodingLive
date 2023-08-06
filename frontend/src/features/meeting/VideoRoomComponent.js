@@ -7,11 +7,12 @@ import StreamComponent from './stream/StreamComponent';
 import UserModel from './models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
 
-// import { getToken } from '../../common/api/JWT-common';
+import { getToken as getLocalToken } from '../../common/api/JWT-common';
 
 // css
 import styled from 'styled-components';
 import './VideoRoomComponent.css';
+// import { Alert } from '@mui/material';
 
 const HostCam = styled.div`
     position: absolute;
@@ -74,14 +75,14 @@ class VideoRoomComponent extends Component {
         super(props);
         this.hasBeenUpdated = false;
         const uuid = this.props.uuid;
-        // const userToken = getToken(); // 주소 오류라 잠깐 보류
-        const userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTEzMzEzMzgsImlhdCI6MTY5MTMzMTMzOCwiZW1haWwiOiJpY2hlcm9tQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoi6rmA7Jyg7KCVIOqwgOunjOyViOuRoCJ9.xriPNQXzKPot_R2shVqFCszgkcqtAngZhSxZRvVykPk' 
-        console.log('나 이거 받았는데? ', uuid);
+        // TODO: 닉네임 받아오기 
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
         const isAdmin = this.props.isAdmin;
         this.remotes = [];
         this.host = undefined;
         this.localUserAccessAllowed = false;
+         // const userToken = getLocalToken(); // 주소가 쉐코라랑 달라서 잠깐 보류 
+        const userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTEzMzEzMzgsImlhdCI6MTY5MTMzMTMzOCwiZW1haWwiOiJpY2hlcm9tQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoi6rmA7Jyg7KCVIOqwgOunjOyViOuRoCJ9.xriPNQXzKPot_R2shVqFCszgkcqtAngZhSxZRvVykPk' 
         this.state = {
             mySessionId: uuid,
             myUserName: userName,
@@ -92,9 +93,10 @@ class VideoRoomComponent extends Component {
             chatDisplay: 'none',
             currentVideoDevice: undefined,
 
-            isAdmin : isAdmin,
-            isReact : false,
-            userToken: userToken
+            // 추가한 state
+            isAdmin : isAdmin, // 나는 host 인가?
+            isReact : false, // 손을 들었는가?
+            userToken: userToken // localStorage 토큰
         };
 
         this.joinSession = this.joinSession.bind(this);
@@ -107,20 +109,24 @@ class VideoRoomComponent extends Component {
         this.stopScreenShare = this.stopScreenShare.bind(this);
         this.closeDialogExtension = this.closeDialogExtension.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
+
         this.handsUp = this.handsUp.bind(this);
         this.detectMic = this.detectMic.bind(this);
     }
 
+    // 마운트 시 시작하는 함수
     componentDidMount() {
         window.addEventListener('beforeunload', this.onbeforeunload);
         this.joinSession();
     }
 
+    // 언마운트 시
     componentWillUnmount() {
         window.removeEventListener('beforeunload', this.onbeforeunload);
         this.leaveSession();
     }
 
+    // 윈도우 창을 닫을 때 
     onbeforeunload(event) {
         this.leaveSession();
     }
@@ -128,47 +134,47 @@ class VideoRoomComponent extends Component {
     joinSession() {
         this.OV = new OpenVidu();
 
+        // session은 오픈비두 객체를 initSession한 것.
         this.setState(
             {
                 session: this.OV.initSession(),
             },
             async () => {
-
-                this.subscribeToStreamCreated();
-                await this.connectToSession();
+                this.subscribeToStreamCreated(); // 참여자들의 정보를 불러온다.
+                await this.connectToSession(); // 내 세션을 연결시킨다. 
             },
         );
     }
 
     async connectToSession() {
+        // 토큰이 없으면 토큰을 가져와서 해당 토큰을 가진 세션에 connect
         if (this.props.token !== undefined) {
-            console.log('token received: ', this.props.token);
             this.connect(this.props.token);
         } else {
             try {
                 var token = await this.getToken();
-                console.log('11111111111111',token);
-                console.log('토큰타입',typeof(token))
                 this.connect(token);
             } catch (error) {
                 console.error('There was an error getting the token:', error.code, error.message);
                 if(this.props.error){
                     this.props.error({ error: error.error, messgae: error.message, code: error.code, status: error.status });
                 }
-                alert('There was an error getting the token:', error.message);
             }
         }
     }
 
     connect(token) {
+        // 내 세션을 새로 연결시킨다. 이때 .connect는 OV.initSession()의 함수. 
+        // .connect()는 인자로 세션token, clientData, MetaData를 갖는다. 
         this.state.session
             .connect(
                 token,{ 
-                  clientData: this.state.myUserName,
+                  clientData: this.state.myUserName, 
                   admin: this.state.isAdmin,   
                 },
             )
             .then(() => {
+                // 세션에 성공하면 webcam연결
                 this.connectWebCam();
             })
             .catch((error) => {
@@ -181,10 +187,14 @@ class VideoRoomComponent extends Component {
     }
 
     async connectWebCam() {
+        // 내 openvidu객체에서 사용가능한 media 목록을 가져온다.
         await this.OV.getUserMedia({ audioSource: undefined, videoSource: undefined });
+        // 장치 목록 가져옴. 이때 사용하기에 가장 적합한 장치를 불러옴.
         var devices = await this.OV.getDevices();
+        // videoinput종류의 디바이스를 저장한다.
         var videoDevices = devices.filter(device => device.kind === 'videoinput');
 
+        // 첫 publisher 생성.
         let publisher = this.OV.initPublisher(undefined, {
             audioSource: undefined,
             videoSource: videoDevices[0].deviceId,
@@ -196,6 +206,7 @@ class VideoRoomComponent extends Component {
             mirror : false,
         });
 
+        // 누가 세션 올린거 감지
         if (this.state.session.capabilities.publish) {
             publisher.on('accessAllowed' , () => {
                 this.state.session.publish(publisher).then(() => {
@@ -208,15 +219,20 @@ class VideoRoomComponent extends Component {
             });
 
         }
+
+        // 전역 localUser부터 set해주고
         localUser.setRole(this.state.isAdmin);
         localUser.setNickname(this.state.myUserName);
         localUser.setConnectionId(this.state.session.connection.connectionId);
         localUser.setScreenShareActive(false);
         localUser.setStreamManager(publisher);
+        
+        // 변화 감지를 위해 각종 함수 호출.
         this.subscribeToUserChanged();
         this.subscribeToStreamDestroyed();
         this.sendSignalUserChanged({ isScreenShareActive: localUser.isScreenShareActive() });
 
+        // setState해줘야 오류가 안나나봄
         this.setState({ currentVideoDevice: videoDevices[0], localUser: localUser }, () => {
             // 이 시점에서 로딩 끝 
             this.state.localUser.getStreamManager().on('streamPlaying', (e) => {
@@ -224,7 +240,7 @@ class VideoRoomComponent extends Component {
             });
         });
 
-        // 내가 호스트면 host에 넣습니다.
+        // 내가 호스트면 sethostUser
         if(localUser.isAdmin()){
             this.setState({ hostUser: localUser});
         }
@@ -269,6 +285,7 @@ class VideoRoomComponent extends Component {
             this.props.leaveSession();
         }
     }
+
     camStatusChanged() {
         localUser.setVideoActive(!localUser.isVideoActive());
         try{
@@ -308,13 +325,11 @@ class VideoRoomComponent extends Component {
 
     subscribeToStreamCreated() {
         this.state.session.on('streamCreated', (event) => {
-            console.log('구독자 크레이트',event);
             const subscriber = this.state.session.subscribe(event.stream, undefined);
             subscriber.on('streamPlaying', (e) => {
                 this.checkSomeoneShareScreen();
                 subscriber.videos[0].video.parentElement.classList.remove('custom-class');
             });
-            console.log('구독구독구독',subscriber);
             const newUser = new UserModel();
             newUser.setStreamManager(subscriber);
             newUser.setConnectionId(event.stream.connection.connectionId);
@@ -322,7 +337,6 @@ class VideoRoomComponent extends Component {
             const clientdata = event.stream.connection.data.split('%')[0];
             newUser.setNickname(JSON.parse(clientdata).clientData);
             newUser.setRole(JSON.parse(clientdata).admin);
-            console.log('내가 이방 주인이다',newUser.isAdmin());
 
             // 구독자 중 호스트가 있으면 hostUser에 넣습니다.
             if (newUser.isAdmin()){
@@ -393,15 +407,12 @@ class VideoRoomComponent extends Component {
     }
 
     screenShare() {
-        console.log(this.state.localUser.isAdmin())
-        console.log(localUser.isAdmin())
         // host가 아니면 화면 공유 막기
         if(!this.state.localUser.isAdmin()){
             alert('host가 아니면 화면공유를 할 수 없습니다.')
             return;
         }
         const videoSource = navigator.userAgent.indexOf('Firefox') !== -1 ? 'window' : 'screen';
-        console.log('비디오 소스', videoSource)
         const publisher = this.OV.initPublisher(
             undefined,
             {
@@ -424,17 +435,25 @@ class VideoRoomComponent extends Component {
         );
 
         publisher.once('accessAllowed', () => {
+            // 현재 카메라, host 얼굴 캠 제거
             this.state.session.unpublish(localUser.getStreamManager());
+            
+            // 위에서 선언한 SCREEN publisher를 내 streamManager로 지정 ( 전역 localUser )
             localUser.setStreamManager(publisher);
+
+            // 크롬에서 제공해주는 공유 중지 상단 바 눌렀을 때 종료하는 로직
             if(publisher.stream.getMediaStream()){
                publisher.stream.getMediaStream().getVideoTracks()[0].addEventListener('ended', () => {
-                	
                     this.state.session.unpublish(publisher);
                     this.connectWebCam();
                 })
             }
+
+            // screen 화면을 공유함.
             this.state.session.publish(localUser.getStreamManager()).then(() => {
+                // 전역 localUser 변경 
                 localUser.setScreenShareActive(true);
+                // state localUser에 전역 localUser의 상태를 지정, hostUser에도 지정 
                 this.setState({ localUser: localUser, hostUser:localUser }, () => {
                     this.sendSignalUserChanged({ isScreenShareActive: localUser.isScreenShareActive() });
                 });
@@ -453,10 +472,12 @@ class VideoRoomComponent extends Component {
 
 
     stopScreenShare() {
+        // 화면 공유 두번 눌렀을 때 실행
         this.state.session.unpublish(localUser.getStreamManager());
         this.connectWebCam();
     }
 
+    // 누가 스크린 공유를 시작했는가?
     checkSomeoneShareScreen() {
         let isScreenShared;
         // return true if at least one passes the test
@@ -470,7 +491,7 @@ class VideoRoomComponent extends Component {
         });
     }
 
-
+    // 손 들기 감지 
     handsUp(){
         if(localUser.isReaction() === 'hand'){
             localUser.setReaction(null)
@@ -524,7 +545,7 @@ class VideoRoomComponent extends Component {
                                 ): null
                             ))}
                         </ParticipantCams>
-                        {/* TODO: 호스트 캠, 스크린 두기 */}
+                        {/* TODO: 호스트 캠, 스크린 스타일 조정 크기 조정 .. */}
                         <HostCam>
                             {hostUser !== undefined && hostUser.getStreamManager()!==undefined &&(
                                 <div>
@@ -558,48 +579,26 @@ class VideoRoomComponent extends Component {
         );
     }
     async getToken() {
-        console.log('유저 개인 토큰', 'Bearer ' + this.state.userToken)
-        console.log(this.state.isAdmin);
         const response = await this.createSessionToken(this.state.mySessionId);
-        console.log(response.data);
         return response.data;
     }
 
     async createSessionToken(sessionId){
         try{
-            console.log('여기 왔어')
             const response = await axios.post(APPLICATION_SERVER_URL + 'conference/join', { owner: this.state.isAdmin, uuid:sessionId },
             { headers: {
                 'Content-Type': 'application/json',
                 Authorization : `Bearer ${this.state.userToken}`
             }});
-            console.log(response);
             return response.data;
         }catch(err){
+            if(err.response.status===403){
+                alert('없는 회의방입니다.')
+                // 뒤로 보내기 
+                window.history.back();
+            }
             console.log(err);
         }
     }
-
-    // async getToken() {
-    //     const sessionId = await this.createSession(this.state.mySessionId);
-    //     return await this.createToken(sessionId);
-    // }
-    // async createSession(sessionId) {
-    //     // TODO: 세션 생성 시 호스트 판별
-    //     const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
-    //         headers: { 'Content-Type': 'application/json', },
-    //     });
-    //     console.log('반호나반환바노하노하놔한화호나혼',response.data);
-    //     console.log(typeof(response.data))
-    //     return response.data; // The sessionId
-    // }
-
-    // async createToken(sessionId) {
-    //     const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-    //         headers: { 'Content-Type': 'application/json', },
-    //     });
-    //     console.log('토킅노틐토늨토크노토큰',response.data);
-    //     return response.data; // The token
-    // }
 }
 export default VideoRoomComponent;
