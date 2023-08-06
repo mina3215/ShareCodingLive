@@ -52,7 +52,6 @@ const initialState = {
   uuid: null,
   roomTitle : null,
   createTime : null,
-  hands : false,
 };
 
 // 리덕스 슬라이스 생성

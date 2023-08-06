@@ -267,11 +267,9 @@ class VideoRoomComponent extends Component {
 
     leaveSession() {
         const mySession = this.state.session;
-
         if (mySession) {
             mySession.disconnect();
         }
-
         // Empty all properties...
         this.OV = null;
         this.setState({
@@ -281,9 +279,13 @@ class VideoRoomComponent extends Component {
             myUserName: 'OpenVidu_User' + Math.floor(Math.random() * 100),
             localUser: undefined,
         });
+        
         if (this.props.leaveSession) {
             this.props.leaveSession();
         }
+
+        window.history.back();
+
     }
 
     camStatusChanged() {

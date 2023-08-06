@@ -49,7 +49,6 @@ export default class ToolbarComponent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            fullscreen: false,
             mouseover : false
         };
         this.camStatusChanged = this.camStatusChanged.bind(this);
