@@ -53,10 +53,9 @@ const Cam = styled.div`
 `
 
 var localUser = new UserModel();
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/';
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : "https://i9d109.p.ssafy.io:5000";
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/';
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.134:5000/'; // 희솜 언니 백 
+// const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://192.168.100.190:5000/'; // 내 ip
+const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/'; //내로컬
 
 
 
@@ -64,19 +63,21 @@ class VideoRoomComponent extends Component {
     constructor(props) {
         super(props);
         this.hasBeenUpdated = false;
-        let sessionName = this.props.sessionName ? this.props.sessionName : 'SessionAB';
+        // let uuid = this.props.uuid;
+        let uuid = 'sessionAB';
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
+        const isAdmin = this.props.isAdmin;
         this.remotes = [];
         this.localUserAccessAllowed = false;
         this.state = {
-            mySessionId: sessionName,
+            mySessionId: uuid,
             myUserName: userName,
             session: undefined,
             localUser: undefined,
             subscribers: [],
             chatDisplay: 'none',
             currentVideoDevice: undefined,
-            isRoomAdmin : false,
+            isAdmin : isAdmin,
             isReact : false,
         };
 
@@ -91,6 +92,7 @@ class VideoRoomComponent extends Component {
         this.closeDialogExtension = this.closeDialogExtension.bind(this);
         this.checkNotification = this.checkNotification.bind(this);
         this.handsUp = this.handsUp.bind(this);
+        this.detectMic = this.detectMic.bind(this);
     }
 
     componentDidMount() {
@@ -115,6 +117,7 @@ class VideoRoomComponent extends Component {
                 session: this.OV.initSession(),
             },
             async () => {
+
                 this.subscribeToStreamCreated();
                 await this.connectToSession();
             },
@@ -188,6 +191,7 @@ class VideoRoomComponent extends Component {
             });
 
         }
+        localUser.setRole(this.state.isAdmin);
         localUser.setNickname(this.state.myUserName);
         localUser.setConnectionId(this.state.session.connection.connectionId);
         localUser.setScreenShareActive(false);
@@ -197,6 +201,7 @@ class VideoRoomComponent extends Component {
         this.sendSignalUserChanged({ isScreenShareActive: localUser.isScreenShareActive() });
 
         this.setState({ currentVideoDevice: videoDevices[0], localUser: localUser }, () => {
+            // 이 시점에서 로딩 끝 
             this.state.localUser.getStreamManager().on('streamPlaying', (e) => {
                 publisher.videos[0].video.parentElement.classList.remove('custom-class');
             });
@@ -438,6 +443,15 @@ class VideoRoomComponent extends Component {
         this.setState({localUser: localUser});
     }
 
+    detectMic(){
+        this.state.session.on('publisherStartSpeacking', (event) => {
+            console.log('나 얘기하는 중이잖아',event);
+        })
+        this.state.session.on('publisherStopSpeaking', (event) => {
+            console.log('얘기 끝', event);
+        })
+    }
+
 
     render() {
         const mySessionId = this.state.mySessionId;
@@ -446,7 +460,7 @@ class VideoRoomComponent extends Component {
 
         return (
             <div>
-                {localUser &&localUser.streamManager?(
+                {localUser&&localUser.streamManager?(
                 <div>
                     <div>
                         <ParticipantCams>
@@ -459,10 +473,11 @@ class VideoRoomComponent extends Component {
 
                             {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
                             {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
+                            {/* TODO: 여기 로직 변경  */}
                             {this.state.subscribers.map((sub, i) => (
                                 (i<=camNumbers)? (
                                 <Cam key={i} >
-                                    {console.log('이건 구독자 번호인가요',i)}
+                                    {console.log('구독자 정보',sub)}
                                     <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
                                 </Cam>
                                 ): null
@@ -484,10 +499,11 @@ class VideoRoomComponent extends Component {
                         />
                     </Toolbar>
                 </div>): (
+                    // 비디오 안 불러왔으면 아무것도 안보이게 해놓음 
                     <div class="loading-container">
-                    <div class="loading"></div>
-                    <div id="loading-text">loading</div>
-                </div>
+                        <div class="loading"></div>
+                        <div id="loading-text">입장 중</div>
+                    </div>
                 )
                 }
             </div>

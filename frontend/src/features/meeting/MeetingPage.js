@@ -1,10 +1,9 @@
 import React from 'react';
 import VideoRoomComponent from './VideoRoomComponent';
-import ReactDOM from 'react-dom';
-
 // css
 import { Container, Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -15,10 +14,16 @@ export const Wrapper = styled.div`
 `
 
 
-function MeetingPage(props) {
+function MeetingPage() {
+
+  const { state } = useLocation();
+
   return (
     <Wrapper>
-      <VideoRoomComponent />
+      <VideoRoomComponent 
+        uuid={state.uuid}
+        isAdmin = {state.isAdmin}
+      />
     </Wrapper>
   );
 }

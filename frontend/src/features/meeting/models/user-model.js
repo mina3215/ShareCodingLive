@@ -19,6 +19,8 @@ class UserModel {
         this.nickname = '';
         this.streamManager = null;
         this.type = 'local';
+        this.reaction = null;
+        this.role = 'user'
     }
 
     isReaction(){
@@ -82,7 +84,11 @@ class UserModel {
             this.type = type;
         }
     }
-
+    setRole(isAdmin){
+        if(isAdmin){
+            this.role='admin'
+        }
+    }
     setReaction(reaction){
         this.reaction = reaction;
     }

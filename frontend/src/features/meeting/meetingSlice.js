@@ -1,21 +1,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { deleteToken } from '../../common/api/JWT-common';
-import axios from '../../common/api/http-common';
+import axios from 'axios';
 
+// 액션
 
-// 액션들
-// export const signup = createAsyncThunk('SIGNUP', async (userInfo, { rejectWithValue }) => {
-//   try {
-//     const response = await axios.post('/user/signup', userInfo);
-//     return response;
-//   } catch (err) {
-//     return rejectWithValue(err.response);
-//   }
-// });
-// 초기값 설정
+export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { rejectWithValue }) => {
+  try {
+    console.log(data);
+    console.log(data.title);
+    const response = await axios.post(
+      `http://119.56.161.229:7777/conference/create?title=${data.title}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    return rejectWithValue(err.response);
+  }
+});
+
+// 초기 값 
 const initialState = {
-  user: {},
-  isLoading: false,
+  uuid: null,
+  roomTitle : null,
+  createTime : null,
   hands : false,
 };
 
@@ -25,21 +37,20 @@ const meetingSlice = createSlice({
   initialState,
   reducers: {
     userHandsUp: (state) => {
-      state.hands = true;
-      alert('손듦',state.hands);
-
-
-      setTimeout(() => {
-        state.hands = false;
-      }, 5000);
     },
   },
+  extraReducers: (builder) => {
+    builder
+    .addCase(getUUIDLink.fulfilled, (state) => {
+      console.log(state);
+    })
+    .addCase(getUUIDLink.rejected, (state)=>{
+      console.log(state);
+    })
+  }
 
 });
 
 // export const { setNicknameCheckedFalse, setEmailCheckedFalse, resetUser } = authSlice.actions;
-const {actions, reducer} = meetingSlice;
 
-export const {userHandsUp} = actions;
-
-export default reducer;
+export default meetingSlice.reducer;
