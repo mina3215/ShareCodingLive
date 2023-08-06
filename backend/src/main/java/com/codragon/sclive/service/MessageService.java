@@ -4,8 +4,5 @@ import com.codragon.sclive.domain.ChatMessage;
 
 public interface MessageService {
 
-//    public ChatRoom createRoom(String roomId);
-
-    ChatMessage sendMessage(ChatMessage message);
-
+    ChatMessage processMessage(ChatMessage message);
 }

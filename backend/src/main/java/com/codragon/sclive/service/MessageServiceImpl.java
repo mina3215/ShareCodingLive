@@ -54,7 +54,7 @@ public class MessageServiceImpl implements MessageService {
      * @return 가공된 메시지
      */
     @Override
-    public ChatMessage sendMessage(ChatMessage messageFromClient) {
+    public ChatMessage processMessage(ChatMessage messageFromClient) {
 
         MessageType MESSAGE_TYPE = checkMessageType(messageFromClient);
         ChatMessage answerMessage = new ChatMessage();
@@ -62,7 +62,6 @@ public class MessageServiceImpl implements MessageService {
         switch (MESSAGE_TYPE) {
 
             case ENTER:
-                log.info("AA");
                 answerMessage = messageUtil.enter(messageFromClient, answerMessage);
                 break;
             case QUIT:
