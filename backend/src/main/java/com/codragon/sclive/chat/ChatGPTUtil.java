@@ -12,11 +12,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 
 @Slf4j
@@ -48,40 +46,6 @@ public class ChatGPTUtil {
         return response.toString();
     }
 
-    public ArrayList<String> generateDetailCodeWithChatGPT(String code) {
-
-        log.debug("prepare to send User's Code to ChatGPT");
-        long start = System.currentTimeMillis();
-
-        CompletableFuture<String> title = new CompletableFuture<>();
-        CompletableFuture<String> summarize = new CompletableFuture<>();
-        CompletableFuture<String> comment = new CompletableFuture<>();
-
-        ArrayList<String> result = new ArrayList<>();
-
-        try {
-            title = this.getTitle(code);
-            summarize = this.getSummarize(code);
-            comment = this.addComment(code);
-
-            CompletableFuture.allOf(title, summarize, comment).join();
-
-            log.info("Elapsed time: " + (System.currentTimeMillis() - start));
-            log.info("title: {}", title.get());
-            log.info("summarize: {}", summarize.get());
-            log.info("comment: {}", comment.get());
-
-            result.add(title.get());
-            result.add(comment.get());
-            result.add(summarize.get());
-
-        } catch (InterruptedException | ExecutionException e) {
-            log.error(e.toString());
-        }
-
-        return result;
-    }
-
     @Async
     public CompletableFuture<String> getTitle(String code) throws InterruptedException {
 
@@ -102,7 +66,8 @@ public class ChatGPTUtil {
         log.debug("start to generate code Comment");
 
 //        StringBuilder question = new StringBuilder("아래의 코드에 설명 주석을 달아줘. 코드와 주석 외에는 답변하지 말아줘 : \n");
-        StringBuilder question = new StringBuilder("아래 코드를 해석해서 주석을 달아줘 \n");
+//        StringBuilder question = new StringBuilder("아래 코드를 해석해서 각 코드마다 주석을 달아서 다시 출력해줘 \n");
+        StringBuilder question = new StringBuilder("아래 이 코드에 주석을 달아주세요. 코드 스니펫으로 사용 언어를 표기하여 보내주세요. \n");
         question.append(code);
 
         String commentCode = chatgptService.sendMessage(question.toString());

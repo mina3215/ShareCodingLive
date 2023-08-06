@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 @Slf4j
@@ -41,12 +42,28 @@ public class MessageUtil {
 
         String senderCode = senderMessage.getMessage();
 
-        // 제목, 주석, 요약 순
-        ArrayList<String> result = chatGPTUtil.generateDetailCodeWithChatGPT(senderCode);
+        log.debug("prepare to send User's Code to ChatGPT");
+        long start = System.currentTimeMillis();
 
-        returnMessage.setTitle(result.get(0));
-        returnMessage.setMessage(result.get(1));
-        returnMessage.setSummarization(result.get(2));
+        try {
+            CompletableFuture<String> title = chatGPTUtil.getTitle(senderCode);
+            CompletableFuture<String> summarize = chatGPTUtil.getSummarize(senderCode);
+            CompletableFuture<String> comment = chatGPTUtil.addComment(senderCode);
+
+            CompletableFuture.allOf(title, summarize, comment).join();
+
+            log.info("Elapsed time: " + (System.currentTimeMillis() - start));
+            log.info("title: {}", title.get());
+            log.info("summarize: {}", summarize.get());
+            log.info("comment: {}", comment.get());
+
+            returnMessage.setTitle(title.get());
+            returnMessage.setMessage(comment.get());
+            returnMessage.setSummarization(summarize.get());
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("ChatGPT 통신 에러");
+            e.getStackTrace();
+        }
 
         return returnMessage;
     }

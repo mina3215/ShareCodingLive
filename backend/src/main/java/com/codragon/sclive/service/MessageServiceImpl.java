@@ -60,6 +60,10 @@ public class MessageServiceImpl implements MessageService {
         MessageType MESSAGE_TYPE = checkMessageType(messageFromClient);
         ChatMessage answerMessage = new ChatMessage();
 
+        answerMessage.setType(MESSAGE_TYPE);
+        answerMessage.setRoomId(messageFromClient.getRoomId());
+        answerMessage.setSender(messageFromClient.getSender());
+
         switch (MESSAGE_TYPE) {
 
             case ENTER:
@@ -72,8 +76,6 @@ public class MessageServiceImpl implements MessageService {
                 answerMessage = messageUtil.talk(messageFromClient, answerMessage);
                 break;
             case CODE:
-                answerMessage.setRoomId(messageFromClient.getRoomId());
-                answerMessage.setSender(messageFromClient.getSender());
                 answerMessage = messageUtil.code(messageFromClient, answerMessage);
                 break;
             case QUESTION:
