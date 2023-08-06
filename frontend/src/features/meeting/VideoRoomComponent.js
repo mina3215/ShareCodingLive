@@ -63,11 +63,12 @@ class VideoRoomComponent extends Component {
     constructor(props) {
         super(props);
         this.hasBeenUpdated = false;
-        // let uuid = this.props.uuid;
-        let uuid = 'sessionAB';
+        const uuid = this.props.uuid;
+        console.log('나 이거 받았는데? ', uuid);
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
         const isAdmin = this.props.isAdmin;
         this.remotes = [];
+        this.host = undefined;
         this.localUserAccessAllowed = false;
         this.state = {
             mySessionId: uuid,
@@ -75,6 +76,7 @@ class VideoRoomComponent extends Component {
             session: undefined,
             localUser: undefined,
             subscribers: [],
+            hostUser: undefined,
             chatDisplay: 'none',
             currentVideoDevice: undefined,
             isAdmin : isAdmin,
@@ -148,7 +150,7 @@ class VideoRoomComponent extends Component {
             .connect(
                 token,{ 
                   clientData: this.state.myUserName,
-                  admin: this.state.isRoomAdmin,   
+                  admin: this.state.isAdmin,   
                 },
             )
             .then(() => {
@@ -206,6 +208,11 @@ class VideoRoomComponent extends Component {
                 publisher.videos[0].video.parentElement.classList.remove('custom-class');
             });
         });
+
+        // 내가 호스트면 host에 넣습니다.
+        if(localUser.isAdmin()){
+            this.setState({ hostUser: localUser});
+        }
     }
 
     updateSubscribers() {
@@ -286,17 +293,28 @@ class VideoRoomComponent extends Component {
 
     subscribeToStreamCreated() {
         this.state.session.on('streamCreated', (event) => {
+            console.log('구독자 크레이트',event);
             const subscriber = this.state.session.subscribe(event.stream, undefined);
             subscriber.on('streamPlaying', (e) => {
                 this.checkSomeoneShareScreen();
                 subscriber.videos[0].video.parentElement.classList.remove('custom-class');
             });
+            console.log('구독구독구독',subscriber);
             const newUser = new UserModel();
             newUser.setStreamManager(subscriber);
             newUser.setConnectionId(event.stream.connection.connectionId);
             newUser.setType('remote');
-            const nickname = event.stream.connection.data.split('%')[0];
-            newUser.setNickname(JSON.parse(nickname).clientData);
+            const clientdata = event.stream.connection.data.split('%')[0];
+            newUser.setNickname(JSON.parse(clientdata).clientData);
+            newUser.setRole(JSON.parse(clientdata).admin);
+            console.log('내가 이방 주인이다',newUser.isAdmin());
+
+            // 구독자 중 호스트가 있으면 hostUser에 넣습니다.
+            if (newUser.isAdmin()){
+                this.setState({ hostUser : newUser});
+                return;
+            }
+            // 아니면 그냥 구독자
             this.remotes.push(newUser);
             if(this.localUserAccessAllowed) {
                 this.updateSubscribers();
@@ -360,6 +378,13 @@ class VideoRoomComponent extends Component {
     }
 
     screenShare() {
+        console.log(this.state.localUser.isAdmin())
+        console.log(localUser.isAdmin())
+        // host가 아니면 화면 공유 막기
+        if(!this.state.localUser.isAdmin()){
+            alert('host가 아니면 화면공유를 할 수 없습니다.')
+            return;
+        }
         const videoSource = navigator.userAgent.indexOf('Firefox') !== -1 ? 'window' : 'screen';
         console.log('비디오 소스', videoSource)
         const publisher = this.OV.initPublisher(
@@ -395,7 +420,7 @@ class VideoRoomComponent extends Component {
             }
             this.state.session.publish(localUser.getStreamManager()).then(() => {
                 localUser.setScreenShareActive(true);
-                this.setState({ localUser: localUser }, () => {
+                this.setState({ localUser: localUser, hostUser:localUser }, () => {
                     this.sendSignalUserChanged({ isScreenShareActive: localUser.isScreenShareActive() });
                 });
             });
@@ -457,6 +482,7 @@ class VideoRoomComponent extends Component {
         const mySessionId = this.state.mySessionId;
         const localUser = this.state.localUser;
         let camNumbers = 3;
+        const hostUser = this.state.hostUser;
 
         return (
             <div>
@@ -465,7 +491,7 @@ class VideoRoomComponent extends Component {
                     <div>
                         <ParticipantCams>
                             <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
-                                {localUser !== undefined && localUser.getStreamManager() !== undefined && (
+                                {localUser !== undefined && !localUser.isAdmin() && localUser.getStreamManager() !== undefined && (
                                     <Cam>
                                         <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
                                     </Cam>
@@ -484,6 +510,13 @@ class VideoRoomComponent extends Component {
                             ))}
                         </ParticipantCams>
                         {/* TODO: 호스트 캠, 스크린 두기 */}
+                        <div>
+                            {hostUser !== undefined && hostUser.getStreamManager()!==undefined &&(
+                                <div>
+                                    <StreamComponent user={hostUser} />
+                                </div>  
+                            )}
+                        </div>
                     </div>
                     <Toolbar>
                         <ToolbarComponent

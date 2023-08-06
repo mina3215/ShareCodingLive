@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Container, Button, makeStyles } from '@material-ui/core';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -122,14 +122,19 @@ export const CommonButton = styled(Button)`
 const EnterConference = (props) => {
   const classes = useStyles();
 
-  const [uuid, setUUID] = useState('');
+  const [url, setURL] = useState('');
 
-  const signUpHandler = () => {
-    props.ChangeSignUp(true);
-  };
+  const Navigate = useNavigate()
 
   function handleSubmit(e) {
-    console.log(uuid);
+    const len = url.length
+    const uuid = url.slice(31,len)
+    console.log('넘길 uuid', uuid);
+    Navigate('/meeting', 
+    {state: { 
+      uuid: uuid,
+      isAdmin : false,
+    }})
   }
   return (
     <Wrapper>
@@ -137,13 +142,12 @@ const EnterConference = (props) => {
         <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
           <CommonTextValidator
             size="small"
-            label="비밀번호"
+            label="링크"
             onChange={(e) => {
-              const len = e.target.value.length;
-              setUUID(e.target.value.slice(30,len))}
+              setURL(e.target.value.replace(/\s/g, ''))}
             }
-            value={uuid}
-            name="uuid"
+            value={url}
+            name="url"
             validators={['required']}
             errorMessages={['링크를 입력하세요!']}
             variant="outlined"
