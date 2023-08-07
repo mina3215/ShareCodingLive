@@ -1,90 +1,102 @@
 package com.codragon.sclive.chat;
 
-
-import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ChatGPTUtil {
 
-    // TODO: endpoint, api-key 주입 받기
-    private static final String API_KEY = "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";
-    private static final String ENDPOINT = "https://api.openai.com/v1/completions";
+    private String API_KEY = "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";
+    private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
-    private final ChatgptService chatgptService;
-
-    public String generateText(String prompt, float temperature, int maxTokens) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + API_KEY);
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "text-davinci-003");
-        requestBody.put("prompt", prompt);
-        requestBody.put("temperature", temperature);
-        requestBody.put("max_tokens", maxTokens);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Map> response = restTemplate.postForEntity(ENDPOINT, requestEntity, Map.class);
-        return response.toString();
-    }
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
-    public CompletableFuture<String> getTitle(String code) throws InterruptedException {
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> getTitle(String code) {
+        StringBuilder question = new StringBuilder("Could you please make a title for the code snippet below?\n");
+        question.append(code);
+        QuestionRequest request = new QuestionRequest();
+        request.setQuestion(question.toString());
 
         log.debug("start to generate code Title");
-
-//        StringBuilder question = new StringBuilder("Could you please make a title for the code snippet below?\n");
-        StringBuilder question = new StringBuilder("아래 코드를 해석해서 제목을 달아줘 \n");
-        question.append(code);
-
-        String title = chatgptService.sendMessage(question.toString());
-
-        return CompletableFuture.completedFuture(title);
+        return this.askQuestion(request);
     }
 
     @Async
-    public CompletableFuture<String> addComment(String code) throws InterruptedException {
-
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> addComment(String code) {
+        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 코드 스니펫으로 사용언어를 표기하여 보내주세요. \n");
+        question.append(code);
+        QuestionRequest request = new QuestionRequest();
+        request.setQuestion(question.toString());
         log.debug("start to generate code Comment");
-
-//        StringBuilder question = new StringBuilder("아래의 코드에 설명 주석을 달아줘. 코드와 주석 외에는 답변하지 말아줘 : \n");
-//        StringBuilder question = new StringBuilder("아래 코드를 해석해서 각 코드마다 주석을 달아서 다시 출력해줘 \n");
-        StringBuilder question = new StringBuilder("아래 이 코드에 주석을 달아주세요. 코드 스니펫으로 사용 언어를 표기하여 보내주세요. \n");
-        question.append(code);
-
-        String commentCode = chatgptService.sendMessage(question.toString());
-
-        return CompletableFuture.completedFuture(commentCode);
+        return this.askQuestion(request);
     }
 
     @Async
-    public CompletableFuture<String> getSummarize(String code) throws InterruptedException {
-
-        log.debug("start to generate code Summarization");
-
-        StringBuilder question = new StringBuilder("아래의 코드에 대한 한줄 평을 남겨줘 : \n");
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> getSummarize(String code) {
+        StringBuilder question = new StringBuilder("아래의 코드에 대한 한줄 평을 남겨주세요. : \n");
         question.append(code);
+        QuestionRequest request = new QuestionRequest();
+        request.setQuestion(question.toString());
+//        String answer = response.getChoices().get(0).getMessage().content;
+        log.debug("start to generate code Summarization");
+        return this.askQuestion(request);
+    }
 
-        String summarization = chatgptService.sendMessage(question.toString());
 
-        return CompletableFuture.completedFuture(summarization);
+    public HttpEntity<ChatGptRequest> buildHttpEntity(ChatGptRequest chatGptRequest) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.parseMediaType(ChatGptConfig.MEDIA_TYPE));
+        httpHeaders.add(ChatGptConfig.AUTHORIZATION, ChatGptConfig.BEARER + API_KEY);
+        return new HttpEntity<>(chatGptRequest, httpHeaders);
+    }
+
+    @Async
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> getResponse(HttpEntity<ChatGptRequest> chatGptRequestHttpEntity) {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(60000);
+        //답변이 길어질 경우 TimeOut Error가 발생하니 1분정도 설정해줍니다.
+        requestFactory.setReadTimeout(60 * 1000);   //  1min = 60 sec * 1,000ms
+        restTemplate.setRequestFactory(requestFactory);
+
+        ResponseEntity<ChatGptResponse> responseEntity = restTemplate.postForEntity(
+                ChatGptConfig.CHAT_URL,
+                chatGptRequestHttpEntity,
+                ChatGptResponse.class);
+
+        return CompletableFuture.completedFuture(responseEntity);
+    }
+
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> askQuestion(QuestionRequest questionRequest) {
+        List<ChatGptMessage> messages = new ArrayList<>();
+        messages.add(ChatGptMessage.builder()
+                .role(ChatGptConfig.ROLE)
+                .content(questionRequest.getQuestion())
+                .build());
+
+        return this.getResponse(
+                this.buildHttpEntity(
+                        new ChatGptRequest(
+                                ChatGptConfig.CHAT_MODEL,
+                                ChatGptConfig.MAX_TOKEN,
+                                ChatGptConfig.TEMPERATURE,
+                                ChatGptConfig.STREAM,
+                                messages
+                        )
+                )
+        );
     }
 }

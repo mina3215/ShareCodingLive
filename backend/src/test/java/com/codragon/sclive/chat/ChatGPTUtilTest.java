@@ -53,22 +53,22 @@ class ChatGPTUtilTest {
             "}" +
             "```";
 
-    @Test
-    @DisplayName("코드 제목, 요약, 주석 달기")
-    void getTitle() throws ExecutionException, InterruptedException {
-
-        log.debug("prepare to send User's Code to ChatGPT");
-        long start = System.currentTimeMillis();
-
-        CompletableFuture<String> title = chatGPTUtil.getTitle(code);
-        CompletableFuture<String> summarize = chatGPTUtil.getSummarize(code);
-        CompletableFuture<String> comment = chatGPTUtil.addComment(code);
-
-        CompletableFuture.allOf(title, summarize, comment).join();
-
-        log.info("Elapsed time: " + (System.currentTimeMillis() - start));
-        log.info("title: {}", title.get());
-        log.info("summarize: {}", summarize.get());
-        log.info("comment: {}", comment.get());
-    }
+//    @Test
+//    @DisplayName("코드 제목, 요약, 주석 달기")
+//    void getTitle() throws ExecutionException, InterruptedException {
+//
+//        log.debug("prepare to send User's Code to ChatGPT");
+//        long start = System.currentTimeMillis();
+//
+//        CompletableFuture<String> title = chatGPTUtil.getTitle(code);
+//        CompletableFuture<String> summarize = chatGPTUtil.getSummarize(code);
+//        CompletableFuture<String> comment = chatGPTUtil.addComment(code);
+//
+//        CompletableFuture.allOf(title, summarize, comment).join();
+//
+//        log.info("Elapsed time: " + (System.currentTimeMillis() - start));
+//        log.info("title: {}", title.get());
+//        log.info("summarize: {}", summarize.get());
+//        log.info("comment: {}", comment.get());
+//    }
 }

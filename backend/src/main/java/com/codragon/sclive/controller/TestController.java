@@ -21,15 +21,15 @@ public class TestController {
 
     private final ChatGPTUtil chatGPTUtil;
 
-    @ApiOperation(value = "테스트 컨트롤러")
-    @PostMapping()
-    public String test(@RequestBody String question){
-        log.info("질문을 날려봅시다. : {}", question);
-//        String answer = chatgptService.sendMessage(question);
-        String answer = chatGPTUtil.generateText("what is penguin?", 1.0f, 1000);
-
-        log.info("chatGPT의 대답 : {}",answer);
-
-        return answer;
-    }
+//    @ApiOperation(value = "테스트 컨트롤러")
+//    @PostMapping()
+//    public String test(@RequestBody String question){
+//        log.info("질문을 날려봅시다. : {}", question);
+////        String answer = chatgptService.sendMessage(question);
+////        String answer = chatGPTUtil.generateText("what is penguin?", 1.0f, 1000);
+//
+//        log.info("chatGPT의 대답 : {}",answer);
+//
+//        return answer;
+//    }
 }
