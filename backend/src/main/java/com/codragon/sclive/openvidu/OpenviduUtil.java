@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -18,12 +19,13 @@ import io.openvidu.java.client.OpenViduJavaClientException;
 import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 
+@Component
 public class OpenviduUtil {
 //    @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL = "https://i9d109.p.ssafy.io:4443/";
 
 //    @Value("${OPENVIDU_SECRET}")
-    private String OPENVIDU_SECRET = "MY_SECERT";
+    private String OPENVIDU_SECRET = "MY_SECRET";
 
     private OpenVidu openvidu;
 

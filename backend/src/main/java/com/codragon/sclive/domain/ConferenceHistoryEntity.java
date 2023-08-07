@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class ConferenceHistoryEntity {
 
-    private int id;
+    private int id; // 강의 기록 인덱스
 
-    private String userEmail;
+    private String userEmail; // 참여자 이메일
 
-    private String conferenceUuid;
+    private String courseId; // 강의 UUID
 
-    private String joinTime;
+    private String joinTime; // 강의 참여 시간
 }

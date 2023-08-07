@@ -1,5 +1,6 @@
 package com.codragon.sclive.dto;
 
+import com.codragon.sclive.dao.ConCreateDao;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +8,14 @@ import lombok.Setter;
 @Setter
 public class ConferenceCreateReqDto {
 
-    private String startTime;
-
     private String title;
+
+    private String uuid;
+
+    public ConCreateDao dtoToDao() {
+        ConCreateDao dao = new ConCreateDao();
+        dao.setTitle(this.title);
+        dao.setConferenceUuid(this.uuid);
+        return dao;
+    }
 }
