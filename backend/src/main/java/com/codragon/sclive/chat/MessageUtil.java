@@ -28,7 +28,7 @@ public class MessageUtil {
         participantService.joinParticipant(roomId, senderMessage.getSender());
 
         returnMessage.setSender(newParticipantName);
-        returnMessage.setMessage(participantService.getAllParticipantInCurrentRoom(roomId).toString());
+        returnMessage.setParticipants(participantService.getAllParticipantInCurrentRoom(roomId));
 
         return returnMessage;
     }
@@ -49,47 +49,6 @@ public class MessageUtil {
     public ChatMessage code(ChatMessage senderMessage, ChatMessage returnMessage) {
 
         String senderCode = senderMessage.getMessage();
-
-        senderCode = "```" +
-                "const recvMessage = (recv) => {\n" +
-                "    if (recv.type === 'ENTER') {\n" +
-                "      setMembers((prevMerbers) => [\n" +
-                "        ...prevMerbers,\n" +
-                "        { sender: recv.sender, members: recv.message},\n" +
-                "      \n" +
-                "      ]);\n" +
-                "    }\n" +
-                "    else if (recv.type === 'QUIT') {\n" +
-                "      setMembers(members.filter(member => member !== recv.sender))\n" +
-                "\n" +
-                "    }\n" +
-                "    else if (recv.type === 'TALK') {\n" +
-                "      setChats((prevChats) => [\n" +
-                "        ...prevChats,\n" +
-                "        { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime},\n" +
-                "      \n" +
-                "      ]);\n" +
-                "\n" +
-                "    }\n" +
-                "    else if (recv.type === 'QUESTION') {\n" +
-                "      setQuestions((prevQuestions) => [\n" +
-                "        ...prevQuestions,\n" +
-                "        { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime},\n" +
-                "      \n" +
-                "      ]);\n" +
-                "\n" +
-                "    }\n" +
-                "    else if (recv.type === 'CODE') {\n" +
-                "      setCodes((prevCodes) => [\n" +
-                "        ...prevCodes,\n" +
-                "        { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime , title: recv.title, summarization: recv.summarization},\n" +
-                "      \n" +
-                "      ]);\n" +
-                "\n" +
-                "    }\n" +
-                "    \n" +
-                "  };" +
-                "```";
 
         log.debug("prepare to send User's Code to ChatGPT");
         long start = System.currentTimeMillis();

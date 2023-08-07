@@ -34,6 +34,7 @@ public class MessageServiceImpl implements MessageService {
     private MessageType checkMessageType(ChatMessage messageFromClient) {
 
         String clientMessage = messageFromClient.getMessage();
+        log.info("clientMessage: {}", clientMessage);
         MessageType messageType = messageFromClient.getType();
 
         if (clientMessage.startsWith(CODE_PREFIX) && clientMessage.endsWith(CODE_PREFIX)) {
@@ -56,6 +57,11 @@ public class MessageServiceImpl implements MessageService {
      */
     @Override
     public ChatMessage processMessage(ChatMessage messageFromClient) {
+
+        String clientMessage = messageFromClient.getMessage();
+        if (clientMessage == null) {
+            messageFromClient.setMessage("");
+        }
 
         MessageType MESSAGE_TYPE = checkMessageType(messageFromClient);
         ChatMessage answerMessage = new ChatMessage();

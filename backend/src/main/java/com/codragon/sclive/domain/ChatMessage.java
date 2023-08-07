@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.ToString;
 import com.codragon.sclive.chat.MessageType;
 
+import java.util.Set;
+
 
 @Getter
 @Setter
@@ -24,4 +26,6 @@ public class ChatMessage {
     private String title;           // 코드 제목
 
     private String summarization;   // 코드 요약
+
+    private Set<String> participants;
 }

@@ -37,7 +37,8 @@ public class ChatGPTUtil {
 
     @Async
     public CompletableFuture<ResponseEntity<ChatGptResponse>> addComment(String code) {
-        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 코드 스니펫으로 사용언어를 표기하여 보내주세요. \n");
+//        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 코드 스니펫으로 사용언어를 표기하여 보내주세요. \n");
+        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 그리고 앞에 어느 언어인지 표기해줘. \n");
         question.append(code);
         QuestionRequest request = new QuestionRequest();
         request.setQuestion(question.toString());
