@@ -65,7 +65,7 @@ const Cam = styled.div`
 
 var localUser = new UserModel();
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/'; //내로컬
-const APPLICATION_SERVER_URL = 'http://119.56.161.229:7777/' ; // 유정양
+const APPLICATION_SERVER_URL = 'http://192.168.100.210:8080/' ; // 유정양
 
 
 
@@ -77,12 +77,12 @@ class VideoRoomComponent extends Component {
         const uuid = this.props.uuid;
         // TODO: 닉네임 받아오기 
         let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
-        const isAdmin = this.props.isAdmin;
+        const isHost = this.props.isHost;
         this.remotes = [];
         this.host = undefined;
         this.localUserAccessAllowed = false;
          // const userToken = getLocalToken(); // 주소가 쉐코라랑 달라서 잠깐 보류 
-        const userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTEzMzEzMzgsImlhdCI6MTY5MTMzMTMzOCwiZW1haWwiOiJpY2hlcm9tQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoi6rmA7Jyg7KCVIOqwgOunjOyViOuRoCJ9.xriPNQXzKPot_R2shVqFCszgkcqtAngZhSxZRvVykPk' 
+        const userToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE2NzYzMTMsImlhdCI6MTY5MTY3NjMxMywiZW1haWwiOiJhc2RmMTJAYS5hIiwibmlja25hbWUiOiJhc2RmIn0.JkVL6P6G2gdomidXpm3DAmVDpMX-Qj2H85WvYCy0hiE' 
         this.state = {
             mySessionId: uuid,
             myUserName: userName,
@@ -94,7 +94,7 @@ class VideoRoomComponent extends Component {
             currentVideoDevice: undefined,
 
             // 추가한 state
-            isAdmin : isAdmin, // 나는 host 인가?
+            isHost : isHost, // 나는 host 인가?
             isReact : false, // 손을 들었는가?
             userToken: userToken // localStorage 토큰
         };
@@ -170,7 +170,7 @@ class VideoRoomComponent extends Component {
             .connect(
                 token,{ 
                   clientData: this.state.myUserName, 
-                  admin: this.state.isAdmin,   
+                  host: this.state.isHost,   
                 },
             )
             .then(() => {
@@ -221,7 +221,7 @@ class VideoRoomComponent extends Component {
         }
 
         // 전역 localUser부터 set해주고
-        localUser.setRole(this.state.isAdmin);
+        localUser.setRole(this.state.isHost);
         localUser.setNickname(this.state.myUserName);
         localUser.setConnectionId(this.state.session.connection.connectionId);
         localUser.setScreenShareActive(false);
@@ -241,7 +241,7 @@ class VideoRoomComponent extends Component {
         });
 
         // 내가 호스트면 sethostUser
-        if(localUser.isAdmin()){
+        if(localUser.isHost()){
             this.setState({ hostUser: localUser});
         }
     }
@@ -338,10 +338,10 @@ class VideoRoomComponent extends Component {
             newUser.setType('remote');
             const clientdata = event.stream.connection.data.split('%')[0];
             newUser.setNickname(JSON.parse(clientdata).clientData);
-            newUser.setRole(JSON.parse(clientdata).admin);
+            newUser.setRole(JSON.parse(clientdata).host);
 
             // 구독자 중 호스트가 있으면 hostUser에 넣습니다.
-            if (newUser.isAdmin()){
+            if (newUser.isHost()){
                 this.setState({ hostUser : newUser});
                 return;
             }
@@ -410,7 +410,7 @@ class VideoRoomComponent extends Component {
 
     screenShare() {
         // host가 아니면 화면 공유 막기
-        if(!this.state.localUser.isAdmin()){
+        if(!this.state.localUser.isHost()){
             alert('host가 아니면 화면공유를 할 수 없습니다.')
             return;
         }
@@ -529,7 +529,7 @@ class VideoRoomComponent extends Component {
                     <div>
                         <ParticipantCams>
                             <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
-                                {localUser !== undefined && !localUser.isAdmin() && localUser.getStreamManager() !== undefined && (
+                                {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
                                     <Cam>
                                         <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
                                     </Cam>
@@ -587,7 +587,7 @@ class VideoRoomComponent extends Component {
 
     async createSessionToken(sessionId){
         try{
-            const response = await axios.post(APPLICATION_SERVER_URL + 'conference/join', { owner: this.state.isAdmin, uuid:sessionId },
+            const response = await axios.post(APPLICATION_SERVER_URL + 'conference/join', { owner: this.state.isHost, uuid:sessionId },
             { headers: {
                 'Content-Type': 'application/json',
                 Authorization : `Bearer ${this.state.userToken}`

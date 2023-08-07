@@ -133,7 +133,7 @@ const EnterConference = (props) => {
     Navigate('/meeting', 
     {state: { 
       uuid: uuid,
-      isAdmin : false,
+      isHost : false,
     }})
   }
   return (

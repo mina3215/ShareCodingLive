@@ -22,7 +22,7 @@ function MeetingPage() {
     <Wrapper>
       <VideoRoomComponent 
         uuid={state.uuid}
-        isAdmin = {state.isAdmin}
+        isHost = {state.isHost}
       />
     </Wrapper>
   );

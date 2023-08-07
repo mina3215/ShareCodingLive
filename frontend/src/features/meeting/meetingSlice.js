@@ -9,7 +9,7 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
     console.log(data);
     console.log(data.title);
     const response = await axios.post(
-      `http://119.56.161.229:7777/conference/create?title=${data.title}`,
+      `http://192.168.100.210:8080/conference/create?title=${data.title}`,
       {},
       {
         headers: {

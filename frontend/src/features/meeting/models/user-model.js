@@ -5,7 +5,7 @@ class UserModel {
     screenShareActive;
     nickname;
     streamManager;
-    role; // "admin | user "
+    role; // "host | user "
     type; // 'remote' | 'local'
     reaction; // hand
 
@@ -26,8 +26,8 @@ class UserModel {
     isReaction(){
         return this.reaction;
     }
-    isAdmin() {
-        return this.role === "admin"
+    isHost() {
+        return this.role === "host"
     }
 
     isAudioActive() {
@@ -84,9 +84,9 @@ class UserModel {
             this.type = type;
         }
     }
-    setRole(isAdmin){
-        if(isAdmin){
-            this.role='admin'
+    setRole(isHost){
+        if(isHost){
+            this.role='host'
         }
     }
     setReaction(reaction){

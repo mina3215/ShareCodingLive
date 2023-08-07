@@ -131,7 +131,7 @@ const NewConference = (props) => {
   const Navigate = useNavigate();
   const dispatch = useDispatch();
   // const token = getToken();
-  const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTEzMzEzMzgsImlhdCI6MTY5MTMzMTMzOCwiZW1haWwiOiJpY2hlcm9tQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoi6rmA7Jyg7KCVIOqwgOunjOyViOuRoCJ9.xriPNQXzKPot_R2shVqFCszgkcqtAngZhSxZRvVykPk' 
+  const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE2NzYzMTMsImlhdCI6MTY5MTY3NjMxMywiZW1haWwiOiJhc2RmMTJAYS5hIiwibmlja25hbWUiOiJhc2RmIn0.JkVL6P6G2gdomidXpm3DAmVDpMX-Qj2H85WvYCy0hiE' 
 
   // 날짜 디폴트 값 오늘 날짜, 시간
   const dateNow = new Date();
@@ -164,7 +164,7 @@ const NewConference = (props) => {
   function goTomeetingPage(){
     Navigate('/meeting',{ state : {
       uuid: uuid,
-      isAdmin : true,
+      isHost : true,
     } });
   }
 
