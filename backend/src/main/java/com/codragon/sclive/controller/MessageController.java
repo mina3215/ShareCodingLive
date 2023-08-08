@@ -28,9 +28,10 @@ public class MessageController {
     })
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
-        log.info("입력된 메시지 : {}",message);
-        ChatMessage chatMessage = messageService.sendMessage(message);
-        log.info("가공되어 출력될 메시지 : {}",message);
+
+        log.debug("receive Message: {}", message);
+        ChatMessage chatMessage = messageService.processMessage(message);
+        log.debug("send Message: {}", chatMessage);
 
         //채팅방 토픽으로 메시지를 전송한다.
         sendingOperations.convertAndSend("/topic/chat/room/" + message.getRoomId(), chatMessage);

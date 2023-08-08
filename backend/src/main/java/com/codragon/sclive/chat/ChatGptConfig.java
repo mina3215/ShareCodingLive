@@ -1,6 +1,8 @@
-package com.codragon.sclive.config;
+package com.codragon.sclive.chat;
+
 
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class ChatGptConfig {

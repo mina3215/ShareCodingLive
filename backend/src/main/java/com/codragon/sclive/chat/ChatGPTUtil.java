@@ -1,21 +1,19 @@
 package com.codragon.sclive.chat;
 
-
-import com.codragon.sclive.config.ChatGptConfig;
-import com.codragon.sclive.domain.Code;
-import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+
 
 @Slf4j
 @Component
@@ -27,45 +25,49 @@ public class ChatGPTUtil {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String getTitle(String code){
+    @Async
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> getTitle(String code) {
         StringBuilder question = new StringBuilder("Could you please make a title for the code snippet below?\n");
         question.append(code);
         QuestionRequest request = new QuestionRequest();
         request.setQuestion(question.toString());
-        ChatGptResponse response = this.askQuestion(request);
-        String answer = response.getChoices().get(0).getMessage().content;
-        return answer;
+
+        log.debug("start to generate code Title");
+        return this.askQuestion(request);
     }
 
-    public String addComment(String code){
-        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 코드 스니펫으로 사용언어를 표기하여 보내주세요. \n");
+    @Async
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> addComment(String code) {
+//        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 코드 스니펫으로 사용언어를 표기하여 보내주세요. \n");
+        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 그리고 앞에 어느 언어인지 표기해줘. \n");
         question.append(code);
         QuestionRequest request = new QuestionRequest();
         request.setQuestion(question.toString());
-        ChatGptResponse response = this.askQuestion(request);
-        String answer = response.getChoices().get(0).getMessage().content;
-        return answer;
+        log.debug("start to generate code Comment");
+        return this.askQuestion(request);
     }
 
-    public String getSummarize(String code) {
+    @Async
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> getSummarize(String code) {
         StringBuilder question = new StringBuilder("아래의 코드에 대한 한줄 평을 남겨주세요. : \n");
         question.append(code);
         QuestionRequest request = new QuestionRequest();
         request.setQuestion(question.toString());
-        ChatGptResponse response = this.askQuestion(request);
-        String answer = response.getChoices().get(0).getMessage().content;
-        return answer;
+//        String answer = response.getChoices().get(0).getMessage().content;
+        log.debug("start to generate code Summarization");
+        return this.askQuestion(request);
     }
 
 
-    public HttpEntity<ChatGptRequest> buildHttpEntity(ChatGptRequest chatGptRequest){
+    public HttpEntity<ChatGptRequest> buildHttpEntity(ChatGptRequest chatGptRequest) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.parseMediaType(ChatGptConfig.MEDIA_TYPE));
         httpHeaders.add(ChatGptConfig.AUTHORIZATION, ChatGptConfig.BEARER + API_KEY);
         return new HttpEntity<>(chatGptRequest, httpHeaders);
     }
 
-    public ChatGptResponse getResponse(HttpEntity<ChatGptRequest> chatGptRequestHttpEntity){
+    @Async
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> getResponse(HttpEntity<ChatGptRequest> chatGptRequestHttpEntity) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(60000);
         //답변이 길어질 경우 TimeOut Error가 발생하니 1분정도 설정해줍니다.
@@ -77,14 +79,16 @@ public class ChatGPTUtil {
                 chatGptRequestHttpEntity,
                 ChatGptResponse.class);
 
-        return responseEntity.getBody();
+        return CompletableFuture.completedFuture(responseEntity);
     }
-    public ChatGptResponse askQuestion(QuestionRequest questionRequest){
+
+    public CompletableFuture<ResponseEntity<ChatGptResponse>> askQuestion(QuestionRequest questionRequest) {
         List<ChatGptMessage> messages = new ArrayList<>();
         messages.add(ChatGptMessage.builder()
                 .role(ChatGptConfig.ROLE)
                 .content(questionRequest.getQuestion())
                 .build());
+
         return this.getResponse(
                 this.buildHttpEntity(
                         new ChatGptRequest(

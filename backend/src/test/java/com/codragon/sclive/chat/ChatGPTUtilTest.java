@@ -1,14 +1,20 @@
 package com.codragon.sclive.chat;
 
+<<<<<<< HEAD
 import io.github.flashvayne.chatgpt.dto.ChatRequest;
 import io.github.flashvayne.chatgpt.dto.ChatResponse;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+=======
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
+>>>>>>> 88-webrtc-BE-minsu
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+<<<<<<< HEAD
 @Slf4j
 @SpringBootTest
 class ChatGPTUtilTest {
@@ -20,6 +26,21 @@ class ChatGPTUtilTest {
 
     String code =
             "```public class Main {\n" +
+=======
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+
+@Slf4j
+@SpringBootTest
+class ChatGPTUtilTest {
+
+    @Autowired
+    ChatGPTUtil chatGPTUtil;
+
+    String code = "```" +
+            "public class Main {\n" +
+>>>>>>> 88-webrtc-BE-minsu
             "\tpublic static void main(String[] args) throws Exception {\n" +
             "\t\tBufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n" +
             "\t\tBufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));\n" +
@@ -51,6 +72,7 @@ class ChatGPTUtilTest {
             "\t\tbw.write(sb.append('\\n').toString());\n" +
             "\t\tbw.close();\n" +
             "\t}\n" +
+<<<<<<< HEAD
             "}```";
 
     String code1 = "axios({\n" +
@@ -140,4 +162,27 @@ class ChatGPTUtilTest {
         String answer = chatGPTUtil.getSummarize(code1);
         System.out.println(answer);
     }
+=======
+            "}" +
+            "```";
+
+//    @Test
+//    @DisplayName("코드 제목, 요약, 주석 달기")
+//    void getTitle() throws ExecutionException, InterruptedException {
+//
+//        log.debug("prepare to send User's Code to ChatGPT");
+//        long start = System.currentTimeMillis();
+//
+//        CompletableFuture<String> title = chatGPTUtil.getTitle(code);
+//        CompletableFuture<String> summarize = chatGPTUtil.getSummarize(code);
+//        CompletableFuture<String> comment = chatGPTUtil.addComment(code);
+//
+//        CompletableFuture.allOf(title, summarize, comment).join();
+//
+//        log.info("Elapsed time: " + (System.currentTimeMillis() - start));
+//        log.info("title: {}", title.get());
+//        log.info("summarize: {}", summarize.get());
+//        log.info("comment: {}", comment.get());
+//    }
+>>>>>>> 88-webrtc-BE-minsu
 }

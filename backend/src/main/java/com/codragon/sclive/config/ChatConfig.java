@@ -6,12 +6,16 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class ChatConfig implements WebSocketMessageBrokerConfigurer {
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*").withSockJS();
+        // FIXME: 실제 배포 시에는 withSockJS() 붙이기
+//        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*");
     }
 
     @Override

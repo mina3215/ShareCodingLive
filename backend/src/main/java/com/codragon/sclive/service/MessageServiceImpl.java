@@ -1,75 +1,99 @@
 package com.codragon.sclive.service;
 
-import com.codragon.sclive.chat.ChatGPTUtil;
-import com.codragon.sclive.chat.CodeUtil;
+import com.codragon.sclive.chat.*;
 import com.codragon.sclive.domain.ChatMessage;
-import com.codragon.sclive.domain.Code;
+import io.netty.handler.codec.UnsupportedMessageTypeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static com.codragon.sclive.chat.MessageType.*;
+
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
-    private final CodeUtil codeUtil;
-    private final ChatGPTUtil chatGPTUtil;
+    private final MessageUtil messageUtil;
 
-    @Override
-    public ChatMessage sendMessage(ChatMessage message) {
-        String text = message.getMessage(); //사용자가 보내고자 하는 실제 메시지
-        String format = "aa hh:mm";
-        Calendar today = Calendar.getInstance();
-        SimpleDateFormat type = new SimpleDateFormat(format);
-        message.setSendTime(type.format(today.getTime())); //전송 시간 설정
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-            // ENTER TYPE이면 입장 메시지를 작성
-            message.setMessage(message.getSender() + "님이 입장하였습니다.");
-        } else if (text.length() < 3) {
-            //채팅 길이가 3글자 미만이면 일반 채팅으로 타입 지정
-            message.setType(ChatMessage.MessageType.TALK);
-        } else {
-            // 그 외는 메시지 시작 3글자, 끝 3글자를 가져온다.
-            String start = text.substring(0, 3);
-            String end = text.substring(message.getMessage().length() - 3, message.getMessage().length());
+    private static final String CODE_PREFIX = "```";
+    private static final String QUESTION_PREFIX = "?";
 
-            //메시지의 기본 타입을 일반 채팅으로 지정
-            message.setType(ChatMessage.MessageType.TALK);
+    private String getCurrentTime() {
 
-            // ```code``` 이면 코드
-            if ("```".equals(start) && "```".equals(end)) {
-                message.setType(ChatMessage.MessageType.CODE); // 타입 지정
-//                text = text.substring(3, text.length() - 3); // 구분 문자 제거
+        LocalDateTime now = LocalDateTime.now();
+        String currentTime = now.format(DateTimeFormatter.ofPattern("a hh시 mm분"));
 
-                Code code = new Code();
-                String uuid = UUID.randomUUID().toString();
-                code.setId(uuid);
-                // Todo : chatGPTUtil이 병렬적으로 실행되게
-                String title = chatGPTUtil.getTitle(text);
-                code.setTitle(title);
-                String content = chatGPTUtil.addComment(text);
-                code.setContent(content);
-                String summarization = chatGPTUtil.getSummarize(text);
+        return currentTime;
+    }
 
-                message.setTitle(title);
-                message.setMessage(content);
-                message.setSummarization(summarization);
-                // Todo : 코드이기 때문에 text를 redis에 저장 -> 문제발생
-//                codeUtil.saveCode(message);
-            }
-            // ?질문? 이면 질문
-            else if ('?' == start.charAt(0) && '?' == end.charAt(2)) {
-                message.setType(ChatMessage.MessageType.QUESTION); //타입 지정
-                text = text.substring(1, text.length()); //구분문자 제거, 끝의 ?는 남겨둔다.
-                message.setMessage(text);
-            }
+    private MessageType checkMessageType(ChatMessage messageFromClient) {
+
+        String clientMessage = messageFromClient.getMessage();
+        log.info("clientMessage: {}", clientMessage);
+        MessageType messageType = messageFromClient.getType();
+
+        if (clientMessage.startsWith(CODE_PREFIX) && clientMessage.endsWith(CODE_PREFIX)) {
+            messageType = CODE;
+        } else if (clientMessage.startsWith(QUESTION_PREFIX) && clientMessage.endsWith(QUESTION_PREFIX)) {
+            messageType = QUESTION;
         }
-        return message;
+
+        return messageType;
+    }
+
+    /**
+     * 메시지 타입에 따라 메시지를 가공하여 채팅방으로 다시 전달 <br>
+     * 1. 메시지 타입 체크        : checkMessageType <br>
+     * 2. 각 메시지에 따라 가공   : MessageUtil <br>
+     * 3. 메시지에 보낸 시간 처리 : getCurrentTime <br>
+     *
+     * @param messageFromClient 클라이언트에게 온 메시지
+     * @return 가공된 메시지
+     */
+    @Override
+    public ChatMessage processMessage(ChatMessage messageFromClient) {
+
+        String clientMessage = messageFromClient.getMessage();
+        if (clientMessage == null) {
+            messageFromClient.setMessage("");
+        }
+
+        MessageType MESSAGE_TYPE = checkMessageType(messageFromClient);
+        ChatMessage answerMessage = new ChatMessage();
+
+        answerMessage.setType(MESSAGE_TYPE);
+        answerMessage.setRoomId(messageFromClient.getRoomId());
+        answerMessage.setSender(messageFromClient.getSender());
+
+        switch (MESSAGE_TYPE) {
+
+            case ENTER:
+                answerMessage = messageUtil.enter(messageFromClient, answerMessage);
+                break;
+            case QUIT:
+                answerMessage = messageUtil.quit(messageFromClient, answerMessage);
+                break;
+            case TALK:
+                answerMessage = messageUtil.talk(messageFromClient, answerMessage);
+                break;
+            case CODE:
+                answerMessage = messageUtil.code(messageFromClient, answerMessage);
+                break;
+            case QUESTION:
+                answerMessage = messageUtil.question(messageFromClient, answerMessage);
+                break;
+            default:
+                log.error("알 수 없는 메시지 종류: {}", MESSAGE_TYPE);
+                throw new UnsupportedMessageTypeException("알 수 없는 메시지 종류입니다.");
+        }
+
+        answerMessage.setSendTime(getCurrentTime());
+
+        return answerMessage;
     }
 }

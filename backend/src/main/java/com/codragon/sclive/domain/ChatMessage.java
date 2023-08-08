@@ -3,27 +3,29 @@ package com.codragon.sclive.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import com.codragon.sclive.chat.MessageType;
+
+import java.util.Set;
+
 
 @Getter
 @Setter
 @ToString
 public class ChatMessage {
 
-    public enum MessageType{ //QUIT 추가
-        ENTER, QUIT, TALK, CODE, QUESTION
-    }
+    private MessageType type;       // Message Type
 
-    private MessageType type;
+    private String roomId;          // Room UUID
 
-    private String roomId; // uuid
+    private String sender;          // 보낸 사람
 
-    private String sender; // nickname
+    private String message;         // 보낸 메시지
 
-    private String message;
-    
-    private String sendTime; // 전송 시간
+    private String sendTime;        // 전송 시간
 
-    private String title; // 코드 제목
+    private String title;           // 코드 제목
 
-    private String summarization; // 요약
+    private String summarization;   // 코드 요약
+
+    private Set<String> participants;
 }

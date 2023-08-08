@@ -1,11 +1,14 @@
 package com.codragon.sclive.config;
 
+import com.codragon.sclive.domain.Code;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
 /**
@@ -32,19 +35,22 @@ public class RedisConfig {
         return new LettuceConnectionFactory(host, port);
     }
 
-    /**
-     * Load Helper class that simplifies Redis data access code
-     * TO-BE-Concerned:
-     * redisTemplate <userId, RefreshToken>으로 사용하기에 <String, String>으로 설정
-     * 추후에 다른 자료형의 데이터를 저장한다면, Generic Type 고려해보기
-     *
-     * @return RedisTemplate<String, String>
-     */
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
 
-        RedisTemplate<String, String>redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
+
+        // opsForValue 이용 시, 직렬화 설정
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+
+        // opsForHash 이용 시, 직렬화 설정
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Code.class));
+
+        // 이외의 Key-Value 쌍은 String 직렬화 사용
+        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
 
         return redisTemplate;
     }
