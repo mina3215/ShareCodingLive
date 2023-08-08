@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-
 import Mic from '@material-ui/icons/Mic';
 import MicOff from '@material-ui/icons/MicOff';
 import Videocam from '@material-ui/icons/Videocam';
@@ -23,132 +22,172 @@ import IconButton from '@material-ui/core/IconButton';
 
 import styled from 'styled-components';
 
+const ToolbarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+`;
+
 const Wrapper = styled.div`
-    position: absolute;
-    display: flex;
-    width:100%;
+  // position: fixed;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  width: 100%;
+  height: 10%;
+  background-color: #282828;
+  z-index: 9999;
+  & div {
+    width: 100%;
     height: 100%;
-    flex-direction: row;
-    align-items: center;
-    overflow: hidden;
-    & div {
-        width: 100%;
-        height: 100%;
-    }
-`
+  }
+`;
+
 const Icon = styled(IconButton)`
-    height: 100%;
-    color : white; 
-    & svg {
-        width: 45px;
-        height: 45px;
-    }
+  height: 100%;
+  color: white;
+  & svg {
+    width: 45px;
+    height: 45px;
+  }
+`;
+
+const UnderBarLeft = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  margin-left: 20px;
+`;
+
+const UnderBarMid = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
+const UnderBarRight = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  margin-right: 20px;
 `;
 
 export default class ToolbarComponent extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            mouseover : false
-        };
-        this.camStatusChanged = this.camStatusChanged.bind(this);
-        this.micStatusChanged = this.micStatusChanged.bind(this);
-        this.screenShare = this.screenShare.bind(this);
-        this.stopScreenShare = this.stopScreenShare.bind(this);
-        this.switchCamera = this.switchCamera.bind(this);
-        this.leaveSession = this.leaveSession.bind(this);
-        this.handsUp = this.handsUp.bind(this);
-    }
-    
-    handsUp(){
-        this.props.handsUp();
-    }
+  constructor(props) {
+    super(props);
+    this.toggleChat = this.toggleChat.bind(this);
+    this.state = {
+      mouseover: false,
+    };
+    this.camStatusChanged = this.camStatusChanged.bind(this);
+    this.micStatusChanged = this.micStatusChanged.bind(this);
+    this.screenShare = this.screenShare.bind(this);
+    this.stopScreenShare = this.stopScreenShare.bind(this);
+    this.leaveSession = this.leaveSession.bind(this);
+    this.handsUp = this.handsUp.bind(this);
+  }
 
-    micStatusChanged() {
-        this.props.micStatusChanged();
-    }
+  handsUp() {
+    this.props.handsUp();
+  }
 
-    camStatusChanged() {
-        this.props.camStatusChanged();
-    }
+  micStatusChanged() {
+    this.props.micStatusChanged();
+  }
 
-    screenShare() {
-        this.props.screenShare();
-    }
+  camStatusChanged() {
+    this.props.camStatusChanged();
+  }
 
-    stopScreenShare() {
-        this.props.stopScreenShare();
-    }
+  screenShare() {
+    this.props.screenShare();
+  }
 
-    switchCamera() {
-        this.props.switchCamera();
-    }
+  stopScreenShare() {
+    this.props.stopScreenShare();
+  }
 
-    leaveSession() {
-        this.props.leaveSession();
-    }
+  toggleFullscreen() {
+    alert('고쳐야 함!');
+  }
 
+  toggleChat() {
+    // handleToggleChat prop이 정의되었는지 출력
+    console.log(this.props.handleToggleChat);
 
-    render() {
-        const localUser = this.props.user;
-        return (
-            <Wrapper>
-                <div>
-                    <div>
-                        {/* TODO: 아이콘 위치 조절 */}
-                        <Icon onClick={this.camStatusChanged}>
-                            {localUser !== undefined && localUser.isVideoActive() ? (
-                                <Videocam />
-                            ) : (
-                                <VideocamOff color="secondary" />
-                            )}
-                        </Icon>
+    // Call the handleToggleChat function passed from the parent component
+    this.props.handleToggleChat();
+  }
 
-                        <Icon onClick={this.micStatusChanged}>
-                            {localUser !== undefined && localUser.isAudioActive() ? <Mic /> : <MicOff color="secondary" />}
-                        </Icon>
+  leaveSession() {
+    this.props.leaveSession();
+  }
 
+  render() {
+    const localUser = this.props.user;
+    return (
+      <Wrapper>
+        <div>
+          <ToolbarContainer>
+            {/* TODO: 아이콘 위치 조절 */}
+            <UnderBarLeft>
+              <Icon onClick={this.camStatusChanged}>
+                {localUser !== undefined && localUser.isVideoActive() ? (
+                  <Videocam />
+                ) : (
+                  <VideocamOff color="secondary" />
+                )}
+              </Icon>
 
-                        <Icon onClick={this.screenShare}>
-                            {localUser !== undefined && localUser.isScreenShareActive() ? <PictureInPicture /> : <ScreenShare />}
-                        </Icon>
+              <Icon onClick={this.micStatusChanged}>
+                {localUser !== undefined && localUser.isAudioActive() ? <Mic /> : <MicOff color="secondary" />}
+              </Icon>
+            </UnderBarLeft>
+            <UnderBarMid>
+              <Icon onClick={this.screenShare}>
+                {localUser !== undefined && localUser.isScreenShareActive() ? <PictureInPicture /> : <ScreenShare />}
+              </Icon>
 
-                        {localUser !== undefined &&
-                            localUser.isScreenShareActive() && (
-                                <Icon onClick={this.stopScreenShare} >
-                                    <StopScreenShare color="secondary" />
-                                </Icon>
-                        )}
+              {localUser !== undefined && localUser.isScreenShareActive() && (
+                <Icon onClick={this.stopScreenShare}>
+                  <StopScreenShare color="secondary" />
+                </Icon>
+              )}
 
-                        <Icon>
-                            <AccountCircleIcon/>
-                        </Icon>
+              <Icon>
+                <AccountCircleIcon />
+              </Icon>
 
-                        {/* 채팅 클릭 시 전체 적용 */}
-                        <Icon>
-                            <ChatIcon/>
-                        </Icon>
-                        
+              {/* 채팅 클릭 시 전체 적용 */}
+              <Icon onClick={this.toggleChat}>
+                <ChatIcon />
+              </Icon>
 
-                        <Icon onClick={this.handsUp}>
-                            <BackHandIcon/>
-                        </Icon>
+              <Icon onClick={this.handsUp}>
+                <BackHandIcon />
+              </Icon>
 
-                        <Icon>
-                            <SentimentSatisfiedAltIcon />
-                        </Icon>
-
-
-                        <Icon  onClick={this.toggleFullscreen}>
-                            {localUser !== undefined && this.state.fullscreen ? <FullscreenExit /> : <Fullscreen />}
-                        </Icon>
-                        <Icon>
-                            <LogoutIcon color={this.state.mouseover ? 'error':'white'} onClick={this.leaveSession} onMouseEnter={()=>this.setState({mouseover:true})} onMouseLeave={()=>this.setState({mouseover:false})} />
-                        </Icon>                          
-                    </div>
-                </div>
-            </Wrapper>
-        );
-    }
+              <Icon onClick={this.toggleFullscreen}>
+                {localUser !== undefined && this.state.fullscreen ? <FullscreenExit /> : <Fullscreen />}
+              </Icon>
+            </UnderBarMid>
+            <UnderBarRight>
+              <Icon>
+                <LogoutIcon
+                  color={this.state.mouseover ? 'error' : 'white'}
+                  onClick={this.leaveSession}
+                  onMouseEnter={() => this.setState({ mouseover: true })}
+                  onMouseLeave={() => this.setState({ mouseover: false })}
+                />
+              </Icon>
+            </UnderBarRight>
+          </ToolbarContainer>
+        </div>
+      </Wrapper>
+    );
+  }
 }
-;

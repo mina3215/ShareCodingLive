@@ -1,31 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import VideoRoomComponent from './VideoRoomComponent';
-// css
-import { Container, Grid } from '@material-ui/core';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
+import TabContainer from '../chatting/chat/TabContainer';
 import { useLocation } from 'react-router-dom';
 
-export const Wrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  min-height: 100vh;
-  height: 100vh;
-  width: 100%;
-  background-color: #404040;
-`
+  overflow: hidden;
+`;
 
+const VideoRoomWrapper = styled.div`
+  width: ${({ showChat }) => (showChat ? '75%' : '100%')};
+  transition: width 0.3s ease-in-out;
+`;
 
-function MeetingPage() {
+const TabContainerWrapper = styled.div`
+  width: ${({ showChat }) => (showChat ? '25%' : '0%')};
+  transition: width 0.3s ease-in-out;
+`;
 
+function MeetingPage(props) {
   const { state } = useLocation();
+
+  const [showChat, setShowChat] = useState(false);
+
+  const handleToggleChat = () => {
+    setShowChat((prevShowChat) => !prevShowChat);
+  };
 
   return (
     <Wrapper>
-      <VideoRoomComponent 
-        uuid={state.uuid}
-        isHost = {state.isHost}
-      />
+      <VideoRoomWrapper showChat={showChat}>
+        <VideoRoomComponent uuid={state.uuid} isHost={state.isHost} handleToggleChat={handleToggleChat} />
+      </VideoRoomWrapper>
+      <TabContainerWrapper showChat={showChat}>
+        <TabContainer />
+      </TabContainerWrapper>
     </Wrapper>
   );
 }
-export default MeetingPage;
 
+export default MeetingPage;

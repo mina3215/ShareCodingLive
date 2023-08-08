@@ -124,17 +124,18 @@ const EnterConference = (props) => {
 
   const [url, setURL] = useState('');
 
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
 
   function handleSubmit(e) {
-    const len = url.length
-    const uuid = url.slice(31,len)
+    const len = url.length;
+    const uuid = url.slice(31, len);
     console.log('넘길 uuid', uuid);
-    Navigate('/meeting', 
-    {state: { 
-      uuid: uuid,
-      isHost : false,
-    }})
+    Navigate('/meeting', {
+      state: {
+        uuid: uuid,
+        isHost: false,
+      },
+    });
   }
   return (
     <Wrapper>
@@ -144,8 +145,8 @@ const EnterConference = (props) => {
             size="small"
             label="링크"
             onChange={(e) => {
-              setURL(e.target.value.replace(/\s/g, ''))}
-            }
+              setURL(e.target.value.replace(/\s/g, ''));
+            }}
             value={url}
             name="url"
             validators={['required']}

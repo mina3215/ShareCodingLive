@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 import { makeStyles } from '@material-ui/core';
 import { toast } from 'react-toastify';
-import { setIsLoadingFalse,signup, checkNickname, setNicknameCheckedFalse, setEmailCheckedFalse, checkEmail } from '../authSlice';
+import { signup, checkNickname, setNicknameCheckedFalse, setEmailCheckedFalse, checkEmail } from '../authSlice';
 import { CommonButton, CommonTextValidator } from '../login/Login';
 // import logo from '../../../assets/logo.png';
 
@@ -82,10 +82,6 @@ export default function SignUp(props) {
   const toLoginHandler = () => {
     props.ToLogin(false);
   };
-
-  useEffect(()=> {
-    dispatch(setIsLoadingFalse());
-  },[]);
 
   useEffect(() => {
     setTimeout(() => {

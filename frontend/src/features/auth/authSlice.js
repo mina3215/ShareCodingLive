@@ -137,9 +137,6 @@ const authSlice = createSlice({
     resetUser: (state) => {
       state.user = {};
     },
-    setIsLoadingFalse: (state) => {
-      state.isLoading = false;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -183,5 +180,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setIsLoadingFalse, setNicknameCheckedFalse, setEmailCheckedFalse, resetUser } = authSlice.actions;
+export const { setNicknameCheckedFalse, setEmailCheckedFalse, resetUser } = authSlice.actions;
 export default authSlice.reducer;

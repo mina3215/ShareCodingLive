@@ -76,7 +76,7 @@ const TextTitle = styled.label`
   font-weight: bold;
   display: block;
   text-align: center;
-  margin-top: 25vh;
+  margin-top: 10vh;
 `;
 const TextLabel = styled.label`
   font-size: 15px;

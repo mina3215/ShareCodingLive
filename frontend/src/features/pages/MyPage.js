@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Container, Button } from '@material-ui/core';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 export const CommonButton = styled(Button)`
   width: 50%;
@@ -36,7 +37,7 @@ const Wrapper = styled(Container)`
   align-items: center;
 `;
 const MyPageContainer = styled.div`
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -63,13 +64,18 @@ const TextSubtitle = styled.label`
 const MyPage = (props) => {
   const toReservation = () => {
     props.ToMyPage(false);
+    props.ToUserInfo(false);
+    props.ToHistory(false);
   };
   const toUserInfo = () => {
     props.ToUserInfo(true);
     props.ToMyPage(false);
+    props.ToHistory(false);
   };
   const toLectureRecord = () => {
+    props.ToHistory(true);
     props.ToMyPage(false);
+    props.ToUserInfo(false);
   };
   return (
     <Wrapper>

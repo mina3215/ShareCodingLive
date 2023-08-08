@@ -13,7 +13,7 @@ const rootPersistConfig = {
 const rootReducer = combineReducers({
   // 리듀서 합
   auth: AuthReducer,
-  meeting : MeetingReducer
+  meeting: MeetingReducer,
 });
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 

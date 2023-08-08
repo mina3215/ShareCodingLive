@@ -86,6 +86,7 @@ const MainButton = (props) => {
   const openMyPage = () => {
     props.ToMyPage(true);
     props.ToUserInfo(false);
+    props.ToHistory(false);
   };
 
   const handleLogout = () => {

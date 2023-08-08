@@ -7,8 +7,6 @@ import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
 import { getUUIDLink } from '../meeting/meetingSlice';
 
-
-
 const Wrapper = styled(Container)`
   display: flex;
   height: 100vh;
@@ -130,48 +128,48 @@ const NewConference = (props) => {
   const classes = useStyles();
   const Navigate = useNavigate();
   const dispatch = useDispatch();
-  // const token = getToken();
-  const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE2NzYzMTMsImlhdCI6MTY5MTY3NjMxMywiZW1haWwiOiJhc2RmMTJAYS5hIiwibmlja25hbWUiOiJhc2RmIn0.JkVL6P6G2gdomidXpm3DAmVDpMX-Qj2H85WvYCy0hiE' 
+  const token = getToken();
 
   // 날짜 디폴트 값 오늘 날짜, 시간
   const dateNow = new Date();
-  const currentTime = "T" + dateNow.toTimeString().slice(0, 5);
+  const currentTime = 'T' + dateNow.toTimeString().slice(0, 5);
   const today = dateNow.toISOString().slice(0, 10);
   const now = today + currentTime;
-
 
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(now);
   const [uuid, setUUID] = useState(null);
   const [link, setLink] = useState(null);
-  
+
   // 방 생성 양식 제출 : uuid, link 저장
   function handleSubmit(e) {
     const data = {
-      token : token,
-      title : title
-    }
+      token: token,
+      title: title,
+    };
     dispatch(getUUIDLink(data))
-    .unwrap()
-    .then((res)=>{
-      setUUID(res.data.uuid);
-      setLink(res.data.link);
-    })
-    .catch(err=> console.log(err))
+      .unwrap()
+      .then((res) => {
+        setUUID(res.data.uuid);
+        setLink(res.data.link);
+      })
+      .catch((err) => console.log(err));
   }
 
   // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
-  function goTomeetingPage(){
-    Navigate('/meeting',{ state : {
-      uuid: uuid,
-      isHost : true,
-    } });
+  function goTomeetingPage() {
+    Navigate('/meeting', {
+      state: {
+        uuid: uuid,
+        isHost: true,
+      },
+    });
   }
 
   return (
     <Wrapper>
       <CreateRoomContainer>
-        {!(uuid && link)? (
+        {!(uuid && link) ? (
           <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
             {/* 제목 입력 필드 */}
             <CommonTextValidator
@@ -190,8 +188,10 @@ const NewConference = (props) => {
             <CommonTextValidator
               size="small"
               label=""
-              onChange={(e) => {setDate(e.target.value)}}
-              inputProps = {{min: now}}
+              onChange={(e) => {
+                setDate(e.target.value);
+              }}
+              inputProps={{ min: now }}
               value={date}
               validators={['required']}
               name="date"
@@ -202,19 +202,16 @@ const NewConference = (props) => {
               생성
             </CommonButton>
             <br />
-            <CommonButton grey="true">
-              예약
-            </CommonButton>
+            <CommonButton grey="true">예약</CommonButton>
           </ValidatorForm>
-        ):( 
+        ) : (
           <div>
             <h3>{link}</h3>
             <CommonButton green="true" onClick={goTomeetingPage}>
               시작
             </CommonButton>
           </div>
-        )
-      }
+        )}
       </CreateRoomContainer>
     </Wrapper>
   );

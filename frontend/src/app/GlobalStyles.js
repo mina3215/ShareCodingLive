@@ -53,6 +53,7 @@ const globalStyles = createGlobalStyle`
 
     ::-webkit-scrollbar-track {
         background-color: rgba(246, 245, 253, 0.5); /*스크롤바 트랙 색상*/
+				border-radius: 5px;
         
     }
 

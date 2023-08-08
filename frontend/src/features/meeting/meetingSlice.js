@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios from '../../common/api/http-common';
 
 // 액션
 
@@ -9,7 +9,7 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
     console.log(data);
     console.log(data.title);
     const response = await axios.post(
-      `http://192.168.100.210:8080/conference/create?title=${data.title}`,
+      `conference/create?title=${data.title}`,
       {},
       {
         headers: {
@@ -24,34 +24,9 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
   }
 });
 
-// 참여자들이 입장할 때 
-// export const = createAsyncThunk('GET_UUID_LINK', async (data, { rejectWithValue }) => {
-//   try {
-//     console.log(data);
-//     console.log(data.title);
-//     const response = await axios.post(
-//       `http://119.56.161.229:7777/conference/create?title=${data.title}`,
-//       {},
-//       {
-//         headers: {
-//           Authorization: `Bearer ${data.token}`,
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     );
-//     return response.data;
-//   } catch (err) {
-//     return rejectWithValue(err.response);
-//   }
-// });
-
-
-
-// 초기 값 
+// 초기 값
 const initialState = {
-  uuid: null,
-  roomTitle : null,
-  createTime : null,
+  isRef: null,
 };
 
 // 리덕스 슬라이스 생성
@@ -59,21 +34,22 @@ const meetingSlice = createSlice({
   name: 'meeting',
   initialState,
   reducers: {
-    userHandsUp: (state) => {
+    userHandsUp: (state) => {},
+    setRef: (state, action) => {
+      state.isRef = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
-    .addCase(getUUIDLink.fulfilled, (state) => {
-      console.log(state);
-    })
-    .addCase(getUUIDLink.rejected, (state)=>{
-      console.log(state);
-    })
-  }
-
+      .addCase(getUUIDLink.fulfilled, (state) => {
+        console.log(state);
+      })
+      .addCase(getUUIDLink.rejected, (state) => {
+        console.log(state);
+      });
+  },
 });
 
-// export const { setNicknameCheckedFalse, setEmailCheckedFalse, resetUser } = authSlice.actions;
+export const { setRef } = meetingSlice.actions;
 
 export default meetingSlice.reducer;
