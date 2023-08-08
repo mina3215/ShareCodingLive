@@ -18,6 +18,14 @@ public class MessageUtil {
     private final ChatGPTUtil chatGPTUtil;
     private final ParticipantService participantService;
 
+    public ChatMessage hand(ChatMessage senderMessage, ChatMessage returnMessage) {
+
+        returnMessage.setType(senderMessage.getType());
+        returnMessage.setSender(senderMessage.getSender());
+
+        return returnMessage;
+    }
+
     public ChatMessage enter(ChatMessage senderMessage, ChatMessage returnMessage) {
 
         String roomId = senderMessage.getRoomId();

@@ -87,6 +87,10 @@ public class MessageServiceImpl implements MessageService {
             case QUESTION:
                 answerMessage = messageUtil.question(messageFromClient, answerMessage);
                 break;
+            case HAND_UP:
+            case HAND_DOWN:
+                answerMessage = messageUtil.hand(messageFromClient, answerMessage);
+                break;
             default:
                 log.error("알 수 없는 메시지 종류: {}", MESSAGE_TYPE);
                 throw new UnsupportedMessageTypeException("알 수 없는 메시지 종류입니다.");
