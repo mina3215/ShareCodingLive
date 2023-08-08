@@ -1,11 +1,13 @@
-package com.codragon.sclive.service;
+package com.codragon.sclive.mapper;
 
 import com.codragon.sclive.dao.ReservationCreateDao;
 import com.codragon.sclive.dto.ReservationListResDto;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-public interface ReservationService {
+@Mapper
+public interface ReservationMapper {
 
     void create(ReservationCreateDao reservationCreateDao);
 

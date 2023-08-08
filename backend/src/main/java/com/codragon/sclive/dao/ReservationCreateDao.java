@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class ReservationCreateDao {
 
+    private String uuid;
+
     private String ownerEmail;
 
     private String title;
