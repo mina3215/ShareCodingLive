@@ -632,9 +632,17 @@ class VideoRoomComponent extends Component {
 
   async createSessionToken(sessionId) {
     try {
-      const response = await axios.post('conference/join', { owner: this.state.isHost, uuid: sessionId });
+      console.log('토큰', this.state.userToken);
+      console.log('세션아이디',sessionId);
+      const response = await axios.post('conference/join/', { owner: this.state.isHost, uuid: sessionId },
+      {        
+        headers: {
+        Authorization: `Bearer ${this.state.userToken}`,
+      }}
+    );
       return response.data;
     } catch (err) {
+      console.log(err);
       if (err.response.status === 403) {
         alert('없는 회의방입니다.');
         // 뒤로 보내기

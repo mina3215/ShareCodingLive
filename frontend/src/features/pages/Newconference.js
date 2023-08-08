@@ -150,6 +150,7 @@ const NewConference = (props) => {
     dispatch(getUUIDLink(data))
       .unwrap()
       .then((res) => {
+        console.log(res);
         setUUID(res.data.uuid);
         setLink(res.data.link);
       })

@@ -14,7 +14,6 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
       {
         headers: {
           Authorization: `Bearer ${data.token}`,
-          'Content-Type': 'application/json',
         },
       }
     );
