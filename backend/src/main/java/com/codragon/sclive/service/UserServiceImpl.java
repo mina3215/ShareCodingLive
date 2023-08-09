@@ -1,7 +1,11 @@
 package com.codragon.sclive.service;
 
+import com.codragon.sclive.chat.CodeService;
+import com.codragon.sclive.dao.Course;
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserHistoryCourse;
 import com.codragon.sclive.dao.UserUpdatePWDao;
+import com.codragon.sclive.domain.Code;
 import com.codragon.sclive.domain.UserEntity;
 import com.codragon.sclive.dto.TokenDto;
 import com.codragon.sclive.exception.CustomDBException;
@@ -19,17 +23,31 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserMapper userMapper;
+    // JWT 관련
     private final Jwt jwt;
     private final JWTUtil jwtUtil;
+
+    // Security 관련
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+
+    // Redis Code 관련
+    private final CodeService codeService;
+
+    // Mapper
+    private final UserMapper userMapper;
     private final ConferenceHistoryMapper conferenceHistoryMapper;
 
     @Override
@@ -82,12 +100,12 @@ public class UserServiceImpl implements UserService {
     public int updatePassword(UserUpdatePWDao user) {
         //비밀번호 일치 확인
         boolean isSamePW = passwordEncoder.matches(user.getBeforePW(), user.getPassword());
-        if(isSamePW){
+        if (isSamePW) {
             String encodedPW = passwordEncoder.encode(user.getAfterPW());
             user.setPassword(encodedPW);
             userMapper.updatePassword(user);
             return 1;
-        } else{
+        } else {
             return 0;
         }
     }
@@ -134,5 +152,27 @@ public class UserServiceImpl implements UserService {
     public UserDao getUserInfoByEmail(String email) {
         UserDao userDao = userMapper.getUserByEmail(email);
         return userDao;
+    }
+
+    @Override
+    public List<UserHistoryCourse> getCodeHistoryFromCourses(String userEmail) {
+
+        List<UserHistoryCourse> userHistoryCourses
+                = conferenceHistoryMapper.getUserConferenceHistory("minsu@ssafy.com");
+
+        for (UserHistoryCourse userHistoryCourse : userHistoryCourses) {
+
+            List<Course> courses = userHistoryCourse.getCourses();
+            for (Course course : courses) {
+
+                String courseUUID = course.getCourseUUID();
+                Map<String, Code> allCode = codeService.getAllCode(courseUUID);
+                ArrayList<Code> codes = new ArrayList<>(allCode.values());
+
+                course.setCodes(codes);
+            }
+        }
+
+        return userHistoryCourses;
     }
 }
