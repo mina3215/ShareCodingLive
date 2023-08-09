@@ -33,7 +33,7 @@ const Wrapper = styled(Container)`
 // `;
 
 const LoginContainer = styled.div`
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -110,13 +110,13 @@ export const CommonButton = styled(Button)`
   border-radius: 6px;
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#3b7ddd' : '#D9D9D9')};
+  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   margin-right: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#418eff' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 

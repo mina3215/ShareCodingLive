@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Container, Button } from '@material-ui/core';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 export const CommonButton = styled(Button)`
   width: 50%;
@@ -8,7 +9,7 @@ export const CommonButton = styled(Button)`
   padding: 0.4em 1em;
   background: ${(props) => {
     if (props.green) {
-      return '#3B7DDD';
+      return '#94C798';
     } else if (props.black) {
       return '#282828';
     } else if (props.darkgrey) {
@@ -19,7 +20,7 @@ export const CommonButton = styled(Button)`
   }};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   &:hover {
-    background: ${(props) => (props.green ? '#316dc5' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -36,7 +37,7 @@ const Wrapper = styled(Container)`
   align-items: center;
 `;
 const MyPageContainer = styled.div`
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -63,13 +64,18 @@ const TextSubtitle = styled.label`
 const MyPage = (props) => {
   const toReservation = () => {
     props.ToMyPage(false);
+    props.ToUserInfo(false);
+    props.ToHistory(false);
   };
   const toUserInfo = () => {
     props.ToUserInfo(true);
     props.ToMyPage(false);
+    props.ToHistory(false);
   };
   const toLectureRecord = () => {
+    props.ToHistory(true);
     props.ToMyPage(false);
+    props.ToUserInfo(false);
   };
   return (
     <Wrapper>

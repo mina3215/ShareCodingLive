@@ -10,7 +10,6 @@ import styled from 'styled-components';
 import { getToken } from '../../common/api/JWT-common';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Accordion from 'react-bootstrap/Accordion';
 
 // 컴포넌트
 import ModifyUserNickName from '../auth/modify/ModifyUserNickname';
@@ -22,9 +21,6 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  & .accordion-item {
-    background-color: #777777;
-  }
 `;
 
 const LogoWrapper = styled.div`
@@ -80,7 +76,7 @@ const TextTitle = styled.label`
   font-weight: bold;
   display: block;
   text-align: center;
-  margin-top: 25vh;
+  margin-top: 10vh;
 `;
 const TextLabel = styled.label`
   font-size: 15px;
@@ -104,12 +100,12 @@ const NickButton = styled(Button)`
   border-radius: 6px;
   // margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#3B7DDD' : '#D9D9D9')};
+  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#418eff' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -123,13 +119,13 @@ const PassButton = styled(Button)`
   border-radius: 6px;
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#3B7DDD' : '#D9D9D9')};
+  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   margin-right: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#418eff' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -192,48 +188,38 @@ const UserInfo = (props) => {
   return (
     <Wrapper>
       <TextTitle>회원정보</TextTitle>
-      <Accordion defaultActiveKey="0">
-        <Accordion.Item eventKey="0">
-          {/* <UserContainer> */}
-          <Accordion.Header>기본정보</Accordion.Header>
-          <Accordion.Body>
-            <TextLabel htmlFor="info">기본정보</TextLabel>
-            <NicknameContainer id="info">
-              <IconContainer>
-                <AccountCircleIcon color="active" />
-              </IconContainer>
-              <div>
-                <TextSubtitle>{userNickName}</TextSubtitle>
-              </div>
-              <NickButton green="true" onClick={nickEditHandler}>
-                수정
-              </NickButton>
-            </NicknameContainer>
-            <EmailContainer id="info">
-              <IconContainer>
-                <AlternateEmailIcon color="active" />
-              </IconContainer>
-              <div>
-                <TextSubtitle>{userEmail}</TextSubtitle>
-              </div>
-            </EmailContainer>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="1">
-          {/* <br /> */}
-          <Accordion.Header>Accordion Item #2</Accordion.Header>
-          <Accordion.Body>
-            {!nickEdit && !passwordEdit && (
-              <PassButton green="true" onClick={passwordEditHandler}>
-                비밀번호 수정
-              </PassButton>
-            )}
-            {nickEdit && <ModifyUserNickName modNick={setNickEdit} nickTouch={props.nickTouched} />}
-            {!nickEdit && passwordEdit && <ModifyPassword modPassword={setPasswordEdit} />}
-          </Accordion.Body>
-          {/* </UserContainer> */}
-        </Accordion.Item>
-      </Accordion>
+      <UserContainer>
+        <TextLabel htmlFor="info">기본정보</TextLabel>
+        <NicknameContainer id="info">
+          <IconContainer>
+            <AccountCircleIcon color="active" />
+          </IconContainer>
+          <div>
+            <TextSubtitle>{userNickName}</TextSubtitle>
+          </div>
+          <NickButton green="true" onClick={nickEditHandler}>
+            수정
+          </NickButton>
+        </NicknameContainer>
+        <EmailContainer id="info">
+          <IconContainer>
+            <AlternateEmailIcon color="active" />
+          </IconContainer>
+          <div>
+            <TextSubtitle>{userEmail}</TextSubtitle>
+          </div>
+        </EmailContainer>
+
+        <br />
+
+        {!nickEdit && !passwordEdit && (
+          <PassButton green="true" onClick={passwordEditHandler}>
+            비밀번호 수정
+          </PassButton>
+        )}
+        {nickEdit && <ModifyUserNickName modNick={setNickEdit} nickTouch={props.nickTouched} />}
+        {!nickEdit && passwordEdit && <ModifyPassword modPassword={setPasswordEdit} />}
+      </UserContainer>
     </Wrapper>
   );
 };

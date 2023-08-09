@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Tesseract from 'tesseract.js';
 import html2canvas from 'html2canvas';
 import saveAs from 'file-saver';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import { Button } from '@material-ui/core';
 
 // 컴포넌트
 import Login from '../auth/login/Login';
@@ -18,28 +16,7 @@ import UserInfo from '../pages/UserInfo';
 // style
 import { Container, Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import captureIcon from '../../assets/captureIcon.png';
-
-const CommonButton = styled(Button)`
-  width: 90px;
-  border-radius: 6px;
-  margin: 1em 0em 0em 0em;
-  padding: 0.4em 0em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
-  color: ${(props) => (props.grey ? '#262626' : 'white')};
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
-    color: ${(props) => (props.grey ? 'white' : '#262626')};
-  }
-
-  &:disabled {
-    opacity: 0.35;
-    color: ${(props) => (props.grey ? 'white' : 'black')};
-  }
-`;
+import ConferenceHistory from '../pages/ConferenceHistory';
 
 const FullScreenContainer = styled(Container)`
   height: 100vh;
@@ -75,7 +52,8 @@ const AuthContainer = styled(Container)`
 
 const AuthInnerContainer = styled(Container)`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   height: 80%;
   border-radius: 10px;
@@ -92,33 +70,20 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const CustomImg = styled.img`
-  width: 60px;
-  height: 60px;
-  margin-top: 10px;
-`;
-
 function Home() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [signupToggle, setSignupToggle] = useState(false);
   const [myPageToggle, setMyPageToggle] = useState(false);
   const [userInfoToggle, setUserInfoToggle] = useState(false);
+  const [historyToggle, setHistoryToggle] = useState(false);
   const [nickChanged, setnickChanged] = useState(false);
   const [ocrResult, setOcrResult] = useState('');
-  const [progress, setProgress] = useState(0);
+
   const divRef = useRef(null);
 
   const handleOcrResult = useCallback((result) => {
     setOcrResult(result);
   }, []);
-
-  const handleOcrProgress = (info) => {
-    const { status, progress } = info;
-    if (status === 'recognizing text') {
-      // progress를 0 ~ 100 사이의 값으로 변환하여 업데이트합니다.
-      setProgress(Math.floor(progress * 100));
-    }
-  };
 
   const handleDownload = async () => {
     if (!divRef.current) return;
@@ -143,9 +108,7 @@ function Home() {
       document.body.removeChild(link);
 
       // 캡쳐된 이미지 OCR 진행
-      Tesseract.recognize(canvas, 'eng+kor', {
-        logger: (info) => handleOcrProgress(info),
-      })
+      Tesseract.recognize(canvas, 'eng+kor')
         .catch((err) => {
           console.error('Error during OCR:', err);
         })
@@ -165,19 +128,20 @@ function Home() {
     // console.log(signupToggle, 'signupToggle');
     // console.log(myPageToggle, 'myPageToggle');
     // console.log(userInfoToggle, 'userInfoToggle');
-  }, [authenticated, signupToggle, myPageToggle, userInfoToggle, nickChanged]);
+  }, [authenticated, signupToggle, myPageToggle, userInfoToggle, nickChanged, historyToggle]);
   return (
     <Wrapper>
       <FullScreenContainer>
         <Grid container alignItems="center">
           <Grid item xs={6} container>
             <PromotionContainer ref={divRef}>
-              {/* <CommonButton green="true" onClick={handleDownload}>
-                {<CustomImg src={captureIcon} alt="captureIcon" />}
-              </CommonButton>
-              <ProgressBar variant="success" label={`${progress}%`} now={progress}></ProgressBar> */}
               {authenticated && (
-                <MainButton ChangeLogout={setAuthenticated} ToMyPage={setMyPageToggle} ToUserInfo={setUserInfoToggle} />
+                <MainButton
+                  ChangeLogout={setAuthenticated}
+                  ToMyPage={setMyPageToggle}
+                  ToUserInfo={setUserInfoToggle}
+                  ToHistory={setHistoryToggle}
+                />
               )}
               {!authenticated && <Promotion />}
             </PromotionContainer>
@@ -193,10 +157,12 @@ function Home() {
                     ToUserInfo={setUserInfoToggle}
                   />
                 )}
-                {authenticated && !signupToggle && !myPageToggle && !userInfoToggle && <Reservation />}
+                {authenticated && !signupToggle && !myPageToggle && !userInfoToggle && !historyToggle && (
+                  <Reservation />
+                )}
                 {signupToggle && <SignUp ToLogin={setSignupToggle} />}
-                {authenticated && myPageToggle && !userInfoToggle && (
-                  <MyPage ToMyPage={setMyPageToggle} ToUserInfo={setUserInfoToggle} />
+                {authenticated && myPageToggle && !userInfoToggle && !historyToggle && (
+                  <MyPage ToMyPage={setMyPageToggle} ToUserInfo={setUserInfoToggle} ToHistory={setHistoryToggle} />
                 )}
                 {authenticated && userInfoToggle && (
                   <UserInfo
@@ -205,10 +171,14 @@ function Home() {
                     nickTouched={setnickChanged}
                   />
                 )}
+                {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
+                  <ConferenceHistory />
+                )}
               </AuthInnerContainer>
             </AuthContainer>
           </Grid>
         </Grid>
+        {/* <button onClick={handleDownload}>다운로드</button> */}
       </FullScreenContainer>
     </Wrapper>
   );
