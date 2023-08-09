@@ -171,8 +171,8 @@ const NewConference = (props) => {
           uuid: uuid,
           isHost: true,
         },
-      });
     })
+  })
     .catch()
   }
 

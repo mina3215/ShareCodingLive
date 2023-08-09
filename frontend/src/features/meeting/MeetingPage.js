@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import VideoRoomComponent from './VideoRoomComponent';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import TabContainer from '../chatting/chat/TabContainer';
+import Socket from '../socket/Socket';
 import { useLocation } from 'react-router-dom';
 
 const Wrapper = styled.div`
@@ -27,14 +27,13 @@ function MeetingPage(props) {
   const handleToggleChat = () => {
     setShowChat((prevShowChat) => !prevShowChat);
   };
-
   return (
     <Wrapper>
       <VideoRoomWrapper showChat={showChat}>
         <VideoRoomComponent uuid={state.uuid} isHost={state.isHost} handleToggleChat={handleToggleChat} />
       </VideoRoomWrapper>
       <TabContainerWrapper  showChat={showChat}>
-        <TabContainer uuid={state.uuid}  />
+        <Socket uuid={state.uuid}  />
       </TabContainerWrapper>
     </Wrapper>
   );

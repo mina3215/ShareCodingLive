@@ -14,10 +14,13 @@ let ws = Stomp.over(sock);
 let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
-const roomId = localStorage.getItem('wschat.roomId')
-const sender = localStorage.getItem('wschat.sender')
+let roomId = '';
+let sender = 'nickname';
 
 const Socket = (props) => {
+  roomId = props.uuid;
+
+  console.log('받바다받바답다다바다받',roomId);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 

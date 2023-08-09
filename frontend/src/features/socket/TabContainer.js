@@ -6,12 +6,12 @@ import QuestionTab from './QuestionTab';
 
 //style
 import styled from 'styled-components';
-import chattingIcon_white from '../assets/chattingIcon_white.png';
-import chattingIcon_black from '../assets/chattingIcon_black.png';
-import codingIcon_white from '../assets/codingIcon_white.png';
-import codingIcon_black from '../assets/codingIcon_black.png';
-import questionmark_white from '../assets/questionmark_white.png';
-import questionmark_black from '../assets/questionmark_black.png';
+import chattingIcon_white from '../../assets/chattingIcon_white.png';
+import chattingIcon_black from '../../assets/chattingIcon_black.png';
+import codingIcon_white from '../../assets/codingIcon_white.png';
+import codingIcon_black from '../../assets/codingIcon_black.png';
+import questionmark_white from '../../assets/questionmark_white.png';
+import questionmark_black from '../../assets/questionmark_black.png';
 
 
 import {useEffect} from 'react';
