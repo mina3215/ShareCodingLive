@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Container, Button, makeStyles } from '@material-ui/core';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { getToken } from '../../common/api/JWT-common';
+import { getUUIDLink } from '../meeting/meetingSlice';
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -25,7 +29,7 @@ const Logo = styled.img`
   margin-bottom: 10px;
 `;
 
-const LoginContainer = styled.div`
+const CreateRoomContainer = styled.div`
   height: 100vh;
   display: flex;
   flex: 1;
@@ -49,6 +53,8 @@ const TextSubtitle = styled.label`
   display: block;
   text-align: center;
 `;
+
+// 날짜 입력 필드
 
 export const CommonTextValidator = styled(TextValidator)`
   opacity: 0.8;
@@ -120,59 +126,95 @@ export const CommonButton = styled(Button)`
 
 const NewConference = (props) => {
   const classes = useStyles();
+  const Navigate = useNavigate();
+  const dispatch = useDispatch();
+  // const token = getToken();
+  const token =
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE2NzYzMTMsImlhdCI6MTY5MTY3NjMxMywiZW1haWwiOiJhc2RmMTJAYS5hIiwibmlja25hbWUiOiJhc2RmIn0.JkVL6P6G2gdomidXpm3DAmVDpMX-Qj2H85WvYCy0hiE';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // 날짜 디폴트 값 오늘 날짜, 시간
+  const dateNow = new Date();
+  const currentTime = 'T' + dateNow.toTimeString().slice(0, 5);
+  const today = dateNow.toISOString().slice(0, 10);
+  const now = today + currentTime;
 
-  const signUpHandler = () => {
-    props.ChangeSignUp(true);
-  };
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState(now);
+  const [uuid, setUUID] = useState(null);
+  const [link, setLink] = useState(null);
 
-  function handleSubmit(e) {}
+  // 방 생성 양식 제출 : uuid, link 저장
+  function handleSubmit(e) {
+    const data = {
+      token: token,
+      title: title,
+    };
+    dispatch(getUUIDLink(data))
+      .unwrap()
+      .then((res) => {
+        setUUID(res.data.uuid);
+        setLink(res.data.link);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
+  function goTomeetingPage() {
+    Navigate('/meeting', {
+      state: {
+        uuid: uuid,
+        isHost: true,
+      },
+    });
+  }
+
   return (
     <Wrapper>
-      {/* <LogoWrapper>
-        <Logo to="/" src={logo} />
-      </LogoWrapper> */}
-
-      <LoginContainer>
-        <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-          <TextTitle>NewConference</TextTitle>
-          <TextSubtitle>쉐코라 시작하기</TextSubtitle>
-          {/* 이메일 입력 필드 */}
-          <CommonTextValidator
-            islogininput="true"
-            size="small"
-            type="email"
-            label="Email"
-            onChange={(e) => setEmail(e.target.value.replace(/\s/g, ''))}
-            name="email"
-            value={email}
-            validators={['required', 'isEmail']}
-            errorMessages={['정보를 입력해주세요', '이메일 형식으로 입력해주세요']}
-            variant="outlined"
-          />
-          {/* 비밀번호 입력 필드 */}
-          <CommonTextValidator
-            size="small"
-            label="비밀번호"
-            onChange={(e) => setPassword(e.target.value.replace(/\s/g, ''))}
-            value={password}
-            name="password"
-            type="password"
-            validators={['required']}
-            errorMessages={['정보를 입력해주세요']}
-            variant="outlined"
-          />
-          <CommonButton green="true" type="submit">
-            로그인
-          </CommonButton>
-          <br />
-          <CommonButton onClick={signUpHandler} grey="true">
-            회원가입
-          </CommonButton>
-        </ValidatorForm>
-      </LoginContainer>
+      <CreateRoomContainer>
+        {!(uuid && link) ? (
+          <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
+            {/* 제목 입력 필드 */}
+            <CommonTextValidator
+              islogininput="true"
+              size="small"
+              type="title"
+              label="제목을 입력하세요"
+              onChange={(e) => setTitle(e.target.value)}
+              name="title"
+              value={title}
+              validators={['required']}
+              errorMessages={['회의 제목을 입력하세요']}
+              variant="outlined"
+            />
+            {/* 날짜 입력 필드 */}
+            <CommonTextValidator
+              size="small"
+              label=""
+              onChange={(e) => {
+                setDate(e.target.value);
+              }}
+              inputProps={{ min: now }}
+              value={date}
+              validators={['required']}
+              name="date"
+              type="datetime-local"
+              variant="outlined"
+            />
+            <CommonButton green="true" type="submit">
+              생성
+            </CommonButton>
+            <br />
+            <CommonButton grey="true">예약</CommonButton>
+          </ValidatorForm>
+        ) : (
+          <div>
+            <h3>{link}</h3>
+            <CommonButton green="true" onClick={goTomeetingPage}>
+              시작
+            </CommonButton>
+          </div>
+        )}
+      </CreateRoomContainer>
     </Wrapper>
   );
 };

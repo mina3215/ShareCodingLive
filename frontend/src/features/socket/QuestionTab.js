@@ -1,49 +1,69 @@
 import React from 'react';
-import { List, ListItem, ListItemText, Paper } from '@mui/material';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-import './question.css'
+// import './question.css'
+
+// import styled from 'styled-components';
+
+const ChatContainer = styled(Paper)(({ theme }) => ({
+  // width: '300px',
+  // height: '400px',
+  border: '1px solid #ccc',
+  borderRadius: '5px',
+  overflow: 'hidden',
+}));
+
+const ChatList = styled(List)({
+  padding: '0',
+  listStyleType: 'none',
+  margin: '0',
+  maxHeight: '100%',
+  overflowY: 'scroll',
+});
+
+const ChatItem = styled(ListItem)(({ theme }) => ({
+  borderBottom: '1px solid #ccc',
+  padding: '10px',
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+}));
+
+const AuthorText = styled(Typography)(({ theme }) => ({
+  fontSize: '12px',
+  marginBottom: '5px',
+  marginRight: '7px'
+}));
+
 
 const QuestionTab = (props) => {
   const fetchMoreData = () => {
     // Your logic to fetch more data goes here
   };
-
   return (
     <div>
-      <div>질문탭 컨텐츠</div>
-      {console.log("질문탭")}
-      <Paper elevation={3} style={{ maxHeight: 400, overflow: 'auto' }}>
-        <InfiniteScroll
-          dataLength={props.messages.length}
-          next={fetchMoreData}
-          hasMore={true} // You should implement your own logic to determine if there's more data to load
-          // loader={<h4>Loading...</h4>}
-          scrollableTarget="scrollableDiv" // Provide the ID of the scrollable div
-        >
-          <List>
-            {props.messages.map((message, index) => (
-              message.type === 'QUESTION' ? 
-              <ListItem key={index} className="message-list-item">
-                <div className="message-header">
-                  {/* sender : 보낸 사람   time : 보낸 시간 */}
-                  <p className="sender">{message.sender}</p>
-                  <p className="message-time">{message.time}</p>
-                </div>
-                
-                {/* message : 메시지 본문 */}
-                <ListItemText primary={message.message} />
-              </ListItem>
-              : null
-            ))}
-          </List>
-          </InfiniteScroll>
-      </Paper>
+      {/* <Box display="flex" justifyContent="center" alignItems="center" height="100vh"> */}
+        <ChatContainer elevation={3}>
+        <ChatList>
+          {props.messages.map((message, index) => 
+            message.type === 'QUESTION' ? (
+            <ChatItem key={index}>
+              <AuthorText>{message.sender}</AuthorText>
+              <ListItemText primary={message.message} />
+            </ChatItem>
+          ) : null
+          )}
+        </ChatList>
+      </ChatContainer>
+    {/* </Box> */}
+  </div>
+    
 
-    </div>
+    
+  );
+};
 
-  )
-  
-}
+
 
 export default QuestionTab;

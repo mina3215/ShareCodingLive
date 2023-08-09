@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Container, Button, makeStyles } from '@material-ui/core';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
+import { useNavigate } from 'react-router-dom';
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -121,53 +122,39 @@ export const CommonButton = styled(Button)`
 const EnterConference = (props) => {
   const classes = useStyles();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [url, setURL] = useState('');
 
-  const signUpHandler = () => {
-    props.ChangeSignUp(true);
-  };
+  const Navigate = useNavigate();
 
-  function handleSubmit(e) {}
+  function handleSubmit(e) {
+    const len = url.length;
+    const uuid = url.slice(31, len);
+    console.log('넘길 uuid', uuid);
+    Navigate('/meeting', {
+      state: {
+        uuid: uuid,
+        isHost: false,
+      },
+    });
+  }
   return (
     <Wrapper>
-      {/* <LogoWrapper>
-        <Logo to="/" src={logo} />
-      </LogoWrapper> */}
-
       <LoginContainer>
         <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-          <TextTitle>EnterConference</TextTitle>
-          <TextSubtitle>쉐코라 시작하기</TextSubtitle>
-          <CommonTextValidator
-            islogininput="true"
-            size="small"
-            type="email"
-            label="Email"
-            onChange={(e) => setEmail(e.target.value.replace(/\s/g, ''))}
-            name="email"
-            value={email}
-            validators={['required', 'isEmail']}
-            errorMessages={['정보를 입력해주세요', '이메일 형식으로 입력해주세요']}
-            variant="outlined"
-          />
           <CommonTextValidator
             size="small"
-            label="비밀번호"
-            onChange={(e) => setPassword(e.target.value.replace(/\s/g, ''))}
-            value={password}
-            name="password"
-            type="password"
+            label="링크"
+            onChange={(e) => {
+              setURL(e.target.value.replace(/\s/g, ''));
+            }}
+            value={url}
+            name="url"
             validators={['required']}
-            errorMessages={['정보를 입력해주세요']}
+            errorMessages={['링크를 입력하세요!']}
             variant="outlined"
           />
           <CommonButton green="true" type="submit">
-            로그인
-          </CommonButton>
-          <br />
-          <CommonButton onClick={signUpHandler} grey="true">
-            회원가입
+            회의 참여
           </CommonButton>
         </ValidatorForm>
       </LoginContainer>

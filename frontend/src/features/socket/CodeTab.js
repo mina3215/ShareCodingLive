@@ -4,17 +4,20 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
+
 // import { Button } from '@mui/material';
+
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
 // 복사 이모티콘
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 
-const Accordion = styled((props) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
+const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
+  // border: `1px solid ${theme.palette.divider}`,
+  backgroundColor: '#3d4146',
+  borderRadius: '10px',
+  marginBottom: '20px',
   '&:not(:last-child)': {
     borderBottom: 0,
   },
@@ -24,15 +27,9 @@ const Accordion = styled((props) => (
 }));
 
 const AccordionSummary = styled((props) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
-    {...props}
-  />
+  <MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />} {...props} />
 ))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
+  backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
   flexDirection: 'row-reverse',
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(90deg)',
@@ -44,7 +41,10 @@ const AccordionSummary = styled((props) => (
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
+  backgroundColor: '#62676e',
+  borderBottomLeftRadius: '10px',
+  borderBottomRightRadius: '10px',
+  // borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
 const CodeTab = (props) => {
@@ -69,22 +69,34 @@ const CodeTab = (props) => {
 
   return (
     <div>
-      {console.log("코드탭")}
-      <div>코드탭 컨텐츠</div>
       <div>
-        {props.messages.map((message, index) => (
-            message.type === 'CODE' ? 
-            <Accordion key={index} expanded={expanded === `message_${index}`} onChange={handleChange(`message_${index}`)}>
+        {props.messages.map((message, index) =>
+          message.type === 'CODE' ? (
+            <Accordion
+              key={index}
+              expanded={expanded === `message_${index}`}
+              onChange={handleChange(`message_${index}`)}
+            >
               {/* 제목 표시 */}
               <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                <Typography >
-                  <span>{message.title}</span>
-                  <span>{message.sender}</span>
-                  <span>{message.time}</span>
-                  </Typography>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <span style={{ color: 'white', fontSize: '16px' }}>{message.title}</span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'flex-end',
+                      marginTop: '5px',
+                      marginLeft: '5px',
+                    }}
+                  >
+                    <span style={{ fontSize: '14px', color: '#748aaa' }}>단비씌</span>
+                    <span style={{ color: '#c6d2e3', fontSize: '14px', marginLeft: '20px' }}>{message.time}</span>
+                  </div>
+                </div>
               </AccordionSummary>
               {/* 코드 본문 표시(아코디언 펼쳐지면보여질 내용) */}
-              <AccordionDetails >
+              <AccordionDetails>
                 {/* FIXME: 질문 코드 창 예쁘게, 사이즈 줄이면 따라서 움직이게 */}
                 {/* FIXME: textarea 코드 모아보기에서는 수정 안되게 */}
                 {/* FIXME: 코드 복사 버튼 만들기 */}
@@ -93,30 +105,41 @@ const CodeTab = (props) => {
                   {/* <SyntaxHighlighter language="javascript" style={docco}>
                     <textarea name="" id="" cols="30" rows="10">{message.message}</textarea>
                   </SyntaxHighlighter> */}
-                  <div style={{
-                    position: 'relative',
-                    display: 'inline-block',  // 컨테이너 크기를 내용에 맞게 조절
-                  }}>
-
+                  <div
+                    style={{
+                      position: 'relative',
+                      display: 'inline-block', // 컨테이너 크기를 내용에 맞게 조절
+                    }}
+                  >
                     {/* 복사 버튼 */}
-                    <ContentCopyIcon size="small" variant="outlined" onClick={() => handleCopy(message.message)} style={{
-                      position: 'absolute', top: 0, right: 0, padding: '2px',
-                      minWidth: '5px', // 원하는 크기로 조절
-                      minHeight: '5px'}} />
+                    <ContentCopyIcon
+                      size="small"
+                      variant="outlined"
+                      onClick={() => handleCopy(message.message)}
+                      style={{
+                        position: 'absolute',
+                        top: '15px',
+                        right: '12px',
+                        padding: '2px',
+                        minWidth: '5px', // 원하는 크기로 조절
+                        minHeight: '5px',
+                      }}
+                    />
 
                     {/* textarea는 defaultValue 안에 값 줘야지 console에 에러가 안뜸 */}
-                    <textarea readOnly name="" id="" cols="30" rows="10" defaultValue={message.message} style={{
-                      padding: '8px',
-                      borderRadius: '4px',
-                      border: '1px solid #ccc',
-                      resize: 'none',
-                    }}>
-                    </textarea>
+                    {console.log("언어: ", message.language)}
+                    <div>
+                      <SyntaxHighlighter language={message.language} PreTag="div">
+                        {message.message}
+                      </SyntaxHighlighter>
+                      <h3>{message.summarization}</h3>
+                    </div>
                   </div>
                 </div>
               </AccordionDetails>
             </Accordion>
-            : null))}
+          ) : null
+        )}
       </div>
     </div>
     

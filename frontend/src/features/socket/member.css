@@ -1,0 +1,48 @@
+/* styles.css */
+
+/* 전체 화면 가운데 정렬 */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f5f5f5;
+}
+
+/* 참가자 목록 컨테이너 스타일링 */
+.container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  width: 400px;
+}
+
+/* 제목 스타일링 */
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+/* 목록 스타일링 */
+.participant-list {
+  list-style: none;
+  padding: 0;
+}
+
+/* 참가자 아이템 스타일링 */
+.participant-item {
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0;
+}
+
+/* 마지막 아이템의 아래 경계선 제거 */
+.participant-item:last-child {
+  border-bottom: none;
+}
+
+/* 텍스트 스타일링 */
+.participant-name {
+  font-size: 1.1rem;
+}

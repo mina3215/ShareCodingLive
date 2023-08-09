@@ -17,14 +17,35 @@ let reconnect = 0;
 const roomId = localStorage.getItem('wschat.roomId')
 const sender = localStorage.getItem('wschat.sender')
 
-const Socket = () => {
+const Socket = (props) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
-  // const [chatmessage, setChatMessage] = useState([])
+  // // 손 든 정보를 props로 받아옴.
+  // const hand = props.hand
 
-  // const [memmessage, setMemMessage] = useState([])
+  // 손들기 테스트용
+  const [hand, setHand] = useState(false)
 
+  // 이거도 손들기 테스트용
+  const changeHand = () => {
+    setHand(!hand)
+  }
+
+
+  // 채팅 컴포넌트 보여주기 위한 변수
+  const [activeChatTab, setActiveChatTab] = useState(false);
+
+  // 참가자 컴포넌트 보여주기 위한 변수
+  const [activeParticipantsTab, setActiveParticipantsTab] = useState(true);
+
+  // 참가자 컴포넌트 / 채팅 컴포넌트 보여주기 위한 함수
+  const changeTab = () => {
+    setActiveChatTab(!activeChatTab);
+    setActiveParticipantsTab(!activeParticipantsTab);
+  };
+  
+  // 화면 처음 랜더링 되면 소켓 연결 
   useEffect(() => {
     connectWebSocket();
   }, []);
@@ -43,6 +64,22 @@ const Socket = () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
+
+  // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
+  useEffect(() => {
+
+    if (ws.connected) {
+      if (hand) {
+        console.log("hand is true: ", ws)
+        ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag:'' }));
+      }
+      else if (!hand) {
+        console.log("hand is false: ", ws)
+        ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_DOWN', roomId, sender, messag:'' }));
+      }
+    }
+
+  }, [hand])
 
 
   const connectWebSocket = () => {
@@ -85,30 +122,10 @@ const Socket = () => {
   const recvMessage = (recv) => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime , title: recv.title, summarization: recv.summarization, participants: recv.participants},
+      { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime , title: recv.title, summarization: recv.summarization, participants: recv.participants, language:recv.language},
       
     ]);
   };
-  // const recvMessage = (recv) => {
-  //   console.log("recvMessage: ", recv)
-  //   // 참가자 관련 메시지
-  //   if (recv.type === 'ENTER' || recv.type === 'QUIT') {
-  //     setMemMessage((prevMemMerbers) => [
-  //       ...prevMemMerbers,
-  //       { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime},
-      
-  //     ]);
-  //   }
-  //   // 채팅 관련 메시지
-  //   else if (recv.type === 'TALK' || recv.type === 'CODE' || recv.type === 'QUESTION') {
-  //     setChatMessage((prevChatMessage) => [
-  //       ...prevChatMessage,
-  //       { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime , title: recv.title, summarization: recv.summarization},
-      
-  //     ]);
-
-  //   }
-  // }
 
   // socket 연결 끊기
   const offConnect = () => {
@@ -119,8 +136,13 @@ const Socket = () => {
 
   return (
     <div>
-      <TabContainer messages={messages} propsfunction1={sendMessage} propsfunction2={offConnect}/>
-      <Members messages={messages}/>
+
+      {activeChatTab === true && <TabContainer messages={messages} propsfunction1={sendMessage} propsfunction2={offConnect}/>}
+      {activeParticipantsTab === true && <Members messages={messages}/>}
+
+      <button onClick={changeHand}>손들기</button>
+
+      <button onClick={changeTab}>채팅 or 참가자</button>
     </div>
   )
 };
