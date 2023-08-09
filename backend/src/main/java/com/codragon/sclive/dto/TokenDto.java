@@ -14,4 +14,6 @@ public class TokenDto {
     private String ACCESS_TOKEN;
 
     private String REFRESH_TOKEN;
+
+    private String nickname;
 }
