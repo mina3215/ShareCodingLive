@@ -86,6 +86,7 @@ public class UserController {
             responseDto = UserLoginResDto.builder()
                     .httpStatusCode(200)
                     .message("정상적으로 로그인이 완료됐습니다.")
+                    .nickname(tokenDto.getNickname())
                     .build();
         } else {
             responseDto = UserLoginResDto.builder()

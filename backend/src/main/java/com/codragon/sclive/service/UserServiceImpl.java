@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
             tokenDto.setLoginSuccessful(true);
             tokenDto.setACCESS_TOKEN(accessToken);
             tokenDto.setREFRESH_TOKEN(refreshToken);
+            tokenDto.setNickname(loginUser.getUserNickname());
 
             // redis에 RefreshToken 저장
             jwtUtil.saveUserRefreshToken(userDao.getEmail(), refreshToken);
