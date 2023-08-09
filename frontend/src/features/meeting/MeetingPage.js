@@ -24,7 +24,6 @@ function MeetingPage(props) {
   const { state } = useLocation();
 
   const [showChat, setShowChat] = useState(false);
-
   const handleToggleChat = () => {
     setShowChat((prevShowChat) => !prevShowChat);
   };
@@ -34,8 +33,8 @@ function MeetingPage(props) {
       <VideoRoomWrapper showChat={showChat}>
         <VideoRoomComponent uuid={state.uuid} isHost={state.isHost} handleToggleChat={handleToggleChat} />
       </VideoRoomWrapper>
-      <TabContainerWrapper showChat={showChat}>
-        <TabContainer />
+      <TabContainerWrapper  showChat={showChat}>
+        <TabContainer uuid={state.uuid}  />
       </TabContainerWrapper>
     </Wrapper>
   );

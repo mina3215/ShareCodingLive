@@ -23,6 +23,21 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
   }
 });
 
+export const createRoom = createAsyncThunk('CREATE_ROOM', async (data, {rejectWithValue}) => {
+  const params = new URLSearchParams();
+  params.append('roomId', data.uuid);
+  axios.post('/chat/room', params)
+    .then((response) => {
+      console.log(response.data);
+      // setRoomName('');
+    })
+    .catch((error) => {
+      console.log(error)
+      return rejectWithValue(error.response);
+    });
+});
+
+
 // 초기 값
 const initialState = {
   isRef: null,

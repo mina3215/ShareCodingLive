@@ -1,0 +1,29 @@
+/* CSS 파일 */
+.message-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sender {
+  font-size: 12px;
+  margin: 0;
+}
+
+.message-time {
+  font-size: 12px;
+  margin: 0;
+}
+
+.message-text {
+  margin-top: 5px;
+}

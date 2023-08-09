@@ -74,7 +74,7 @@ const ChattingTab = (props) => {
     <div>
       <ListContainer className="list-group">
         {props.messages.map((message, index) =>
-          message.type === 'TALK' || message.type === 'ENTER' ? (
+          message.type === 'TALK' ? (
             <div className="message" key={index}>
               <MessageContainerWithIcon>
                 <SenderIcon>박{/* <p className="sender">{message.sender[0]}</p> */}</SenderIcon>
@@ -97,7 +97,9 @@ const ChattingTab = (props) => {
         )}
       </ListContainer>
     </div>
+    
   );
+  
 };
 
 export default ChattingTab;

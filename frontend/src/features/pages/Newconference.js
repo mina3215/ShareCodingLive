@@ -5,7 +5,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
-import { getUUIDLink } from '../meeting/meetingSlice';
+import { createRoom, getUUIDLink } from '../meeting/meetingSlice';
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -155,16 +155,25 @@ const NewConference = (props) => {
         setLink(res.data.link);
       })
       .catch((err) => console.log(err));
+    
   }
 
   // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
   function goTomeetingPage() {
-    Navigate('/meeting', {
-      state: {
-        uuid: uuid,
-        isHost: true,
-      },
-    });
+    const data = {
+      title: uuid,
+    };
+    dispatch(createRoom(data))
+    .unwrap()
+    .then((res) =>{
+      Navigate('/meeting', {
+        state: {
+          uuid: uuid,
+          isHost: true,
+        },
+      });
+    })
+    .catch()
   }
 
   return (
