@@ -124,6 +124,7 @@ export const CommonButton = styled(Button)`
   }
 `;
 
+
 const NewConference = (props) => {
   const classes = useStyles();
   const Navigate = useNavigate();
@@ -166,9 +167,8 @@ const NewConference = (props) => {
     dispatch(createRoom(data))
     .unwrap()
     .then((res) =>{
-      Navigate('/meeting', {
+      Navigate(`/meeting/${uuid}`, {
         state: {
-          uuid: uuid,
           isHost: true,
         },
     })

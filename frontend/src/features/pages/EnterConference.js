@@ -130,9 +130,8 @@ const EnterConference = (props) => {
     const len = url.length;
     const uuid = url.slice(31, len);
     console.log('넘길 uuid', uuid);
-    Navigate('/meeting', {
+    Navigate(`/meeting/${uuid}`, {
       state: {
-        uuid: uuid,
         isHost: false,
       },
     });

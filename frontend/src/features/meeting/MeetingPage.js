@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import VideoRoomComponent from './VideoRoomComponent';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
-import Socket from '../socket/Socket';
 import { useLocation } from 'react-router-dom';
+import ReactDOM from 'react-dom';
+
+import Socket from '../socket/Socket';
+import styled from 'styled-components';
+
+
+import VideoRoomComponent from './VideoRoomComponent';
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,8 +24,15 @@ const TabContainerWrapper = styled.div`
 `;
 
 function MeetingPage(props) {
-  const { state } = useLocation();
+  const location = useLocation();
+  const { pathname, state } = location;
 
+  // props 
+  const uuid = pathname.slice(9);
+  const isHost = state? state.isHost : false;
+  
+  console.log(uuid, isHost);
+  
   const [showChat, setShowChat] = useState(false);
   const handleToggleChat = () => {
     setShowChat((prevShowChat) => !prevShowChat);
@@ -30,10 +40,10 @@ function MeetingPage(props) {
   return (
     <Wrapper>
       <VideoRoomWrapper showChat={showChat}>
-        <VideoRoomComponent uuid={state.uuid} isHost={state.isHost} handleToggleChat={handleToggleChat} />
+        <VideoRoomComponent uuid={uuid} isHost={isHost} handleToggleChat={handleToggleChat} />
       </VideoRoomWrapper>
       <TabContainerWrapper  showChat={showChat}>
-        <Socket uuid={state.uuid}  />
+        <Socket uuid={uuid}  />
       </TabContainerWrapper>
     </Wrapper>
   );
