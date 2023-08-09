@@ -12,6 +12,7 @@ import MainButton from '../pages/MainButton';
 import Promotion from '../pages/Promotion';
 import MyPage from '../pages/MyPage';
 import UserInfo from '../pages/UserInfo';
+import LeftConferenceHistory from '../pages/LeftConferenceHistory';
 
 // style
 import { Container, Grid } from '@material-ui/core';
@@ -77,7 +78,9 @@ function Home() {
   const [userInfoToggle, setUserInfoToggle] = useState(false);
   const [historyToggle, setHistoryToggle] = useState(false);
   const [nickChanged, setnickChanged] = useState(false);
+  
   const [ocrResult, setOcrResult] = useState('');
+
   const divRef = useRef(null);
 
   const handleOcrResult = useCallback((result) => {
@@ -134,7 +137,7 @@ function Home() {
         <Grid container alignItems="center">
           <Grid item xs={6} container>
             <PromotionContainer ref={divRef}>
-              {authenticated && (
+              {authenticated && !historyToggle && (
                 <MainButton
                   ChangeLogout={setAuthenticated}
                   ToMyPage={setMyPageToggle}
@@ -142,7 +145,13 @@ function Home() {
                   ToHistory={setHistoryToggle}
                 />
               )}
+
+              {/* 예약 왼쪽 */}
+              {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
+                  <LeftConferenceHistory />
+                )}
               {!authenticated && <Promotion />}
+            
             </PromotionContainer>
           </Grid>
           <Grid item xs={6} container alignItems="center">

@@ -1,4 +1,4 @@
-const code_data =  [
+const left_code_data =  [
   {
     "dateOfCourse": "2023-08-09",
     "courses": [
@@ -92,6 +92,6 @@ const code_data =  [
       }
     ]
   }
-];
+]
 
-export default code_data;
+export default left_code_data;
