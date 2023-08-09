@@ -8,7 +8,9 @@ import com.codragon.sclive.exception.CustomDBException;
 import com.codragon.sclive.exception.DBErrorCode;
 import com.codragon.sclive.jwt.JWTUtil;
 import com.codragon.sclive.jwt.Jwt;
+import com.codragon.sclive.mapper.ConferenceHistoryMapper;
 import com.codragon.sclive.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final JWTUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final ConferenceHistoryMapper conferenceHistoryMapper;
 
     @Override
     public TokenDto login(UserDao userDao) {
@@ -72,14 +76,6 @@ public class UserServiceImpl implements UserService {
         }
 
         return tokenDto;
-    }
-
-    public UserServiceImpl(UserMapper userMapper, Jwt jwt, JWTUtil jwtUtil, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
-        this.userMapper = userMapper;
-        this.jwt = jwt;
-        this.jwtUtil = jwtUtil;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override
