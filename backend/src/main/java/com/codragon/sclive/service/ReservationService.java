@@ -11,5 +11,8 @@ public interface ReservationService {
 
     List<ReservationListResDto> list(String userEmail);
 
+    int update(ReservationCreateDao reservationCreateDao);
+
     int delete(String uuid);
+
 }

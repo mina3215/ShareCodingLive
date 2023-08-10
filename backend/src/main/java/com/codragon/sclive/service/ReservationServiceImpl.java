@@ -29,6 +29,12 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public int update(ReservationCreateDao reservationCreateDao) {
+        int res = reservationMapper.update(reservationCreateDao);
+        return res;
+    }
+
+    @Override
     public int delete(String uuid) {
         return reservationMapper.delete(uuid);
     }

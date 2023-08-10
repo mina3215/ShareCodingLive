@@ -5,6 +5,7 @@ import com.codragon.sclive.domain.HttpResult;
 import com.codragon.sclive.domain.UserEntity;
 import com.codragon.sclive.dto.ReservationCreateReqDto;
 import com.codragon.sclive.dto.ReservationListResDto;
+import com.codragon.sclive.dto.ReservationUpdateReqDto;
 import com.codragon.sclive.service.ReservationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,13 +62,34 @@ public class ReservationController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
+    @ApiOperation(value = "예약 리스트 수정", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로 필요\n반환값 : \n")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PostMapping("/update")
+    public ResponseEntity<HttpResult> update(@ApiIgnore @AuthenticationPrincipal UserEntity user, @RequestBody ReservationUpdateReqDto reservationUpdateReqDto){
+        String email = user.getUserEmail();
+        ReservationCreateDao reservationCreateDao = reservationUpdateReqDto.reqToDto();
+        reservationCreateDao.setOwnerEmail(email);
+        int res = reservationService.update(reservationCreateDao);
+
+        HttpResult result;
+        if(res==1){
+            result = HttpResult.getSuccess();
+        } else{
+            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "예약 업데이트 실패");
+        }
+        return ResponseEntity.status(result.getStatus()).body(result);
+    }
+
     //예약 삭제 isActive = 3
     @ApiOperation(value = "예약, 시작 전인 회의 삭제", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로 필요\n반환값 : \n")
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<HttpResult> delete(@RequestParam String uuid){
         int res = reservationService.delete(uuid);
 

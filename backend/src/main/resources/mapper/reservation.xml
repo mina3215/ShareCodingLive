@@ -20,6 +20,10 @@
           and is_active = 2
     </select>
 
+    <update id="update">
+        update conference set start_time = #{reservationTime}, title = #{title} where course_id = #{uuid}
+    </update>
+
     <delete id="delete" parameterType="String">
         update conference
         set is_active = 3
