@@ -21,7 +21,7 @@ public class FCMNoticeService {
 //        Optional<Users> user = usersRepository.findById(requestDto.getTargetUserId());
         UserDao user = new UserDao();//userService.getUserInfoByEmail(email);
         user.setEmail("hello");
-        String firebaseToken = "f9lau0jxv_HqebClOdmiYA:APA91bEWojAdBQKO_w3puevJ7goFJgr0aBcG8RNJqzqxZ39ckukwp5bfoIkgDb_hX-J8h2Wu5dtuTa0EPYww4b6vXcil3iZYXfrskykDK83FjHCza02eWIlLzv0xzNuRxYvPC8TLv3nC";
+        String firebaseToken = "dDiMx3JJwq5GCqD7kcBUZh:APA91bH9eGlgnYmiAANYb5-ZFl3c4ods16wwLVN7Ps13D42z8W3zr9fWKY_pa9AUFFwR5AKr1xYoOkwTYrzUVlj54UsNe7qbKDHgn9nPZbIv2Z415jBTamzQPmcLIX1wS4oJvg0PYwhJ";
         if (user != null) {
 //            if (user.get().getFirebaseToken() != null) {
             if (firebaseToken != null) {

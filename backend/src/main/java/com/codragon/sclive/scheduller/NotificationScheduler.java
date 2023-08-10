@@ -10,44 +10,55 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class NotificationScheduler {
+//    private final Map<String, ThreadPoolTaskScheduler> schedulerMap = new ConcurrentHashMap<>();
+
     private ThreadPoolTaskScheduler scheduler;
-    private String cron = "0 0 17 09 08 ?";
-    private FCMNoticeReqDto requestDto = null;
+    private List<String> cronList = new ArrayList<>();
+    private List<FCMNoticeReqDto> requestDtos =  new ArrayList<>();
     private FirebaseMessaging firebaseMessaging;
 
     public NotificationScheduler() {
     }
 
+    public void addSchedule(String cron, FCMNoticeReqDto fCMNoticeReqDto) {
+        cronList.add(cron);
+        requestDtos.add(fCMNoticeReqDto);
+        if (scheduler != null) {
+            scheduler.schedule(getRunnable(cron, fCMNoticeReqDto), getTrigger(cron));
+        }
+    }
     public void startScheduler() {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.initialize();
-        // scheduler setting
-        scheduler.schedule(getRunnable(), getTrigger());
-    }
-
-    public void changeCronSet(String cron) {
-        this.cron = cron;
-    }
-
-    public void setRequestDto(FCMNoticeReqDto fcmNoticeReqDto){
-        this.requestDto = fcmNoticeReqDto;
+        for (int i = 0; i < cronList.size(); i++) {
+            String cron = cronList.get(i);
+            FCMNoticeReqDto fCMNoticeReqDto = requestDtos.get(i);
+            scheduler.schedule(getRunnable(cron, fCMNoticeReqDto), getTrigger(cron));
+        }
     }
 
     public void stopScheduler() {
         scheduler.shutdown();
     }
 
-    private Runnable getRunnable() {
-        // do something
+    private Runnable getRunnable(String cron, FCMNoticeReqDto fCMNoticeReqDto) {
         return () -> {
-            System.out.println("!!!!!!!!!!!!!"+this.requestDto);
+            System.out.println(new Date().toString());
+            System.out.println(fCMNoticeReqDto.getTitle());
+            cronList.remove(cron);
+            requestDtos.remove(fCMNoticeReqDto);
         };
     }
 
-    private Trigger getTrigger() {
+    private Trigger getTrigger(String cron) {
         // cronSetting
         return new CronTrigger(cron);
     }
