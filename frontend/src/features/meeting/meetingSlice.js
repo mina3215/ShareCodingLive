@@ -8,9 +8,9 @@ import axios from 'axios';
 export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { rejectWithValue }) => {
   try {
     console.log(data);
-    console.log(data.title);
+    console.log(data.uuid);
     const response = await axios.post(
-      `https://i9d109.p.ssafy.io/api/conference/create?title=${data.title}`,
+      `https://i9d109.p.ssafy.io/api/conference/create?title=${data.uuid}`,
       {},
       {
         headers: {

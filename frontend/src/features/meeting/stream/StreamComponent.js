@@ -31,6 +31,10 @@ const Reaction = styled.div`
   }
 `;
 
+const HandDiv = styled.div`
+  position: absolute;
+`;
+
 export default class StreamComponent extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +43,13 @@ export default class StreamComponent extends Component {
     this.handlePressKey = this.handlePressKey.bind(this);
     this.toggleNicknameForm = this.toggleNicknameForm.bind(this);
     this.toggleSound = this.toggleSound.bind(this);
+    // this.inputRef = React.createRef();
   }
+
+  // componentDidMount() {
+  //   this.props.handleChildRef(this.inputRef);
+  //   console.log(this.inputRef, 'ref');
+  // }
 
   handleChange(event) {
     this.setState({ nickname: event.target.value });
@@ -75,8 +85,15 @@ export default class StreamComponent extends Component {
         {this.props.user && this.props.user.getStreamManager() ? (
           <CamOff>
             {!this.props.user.isVideoActive() ? <Name>{this.props.user.getNickname()}</Name> : null}
-            <Reaction>{this.props.user.isReaction() === 'hand' ? <BackHandIcon /> : null}</Reaction>
-            <OvVideoComponent cam={this.props.cam} user={this.props.user} mutedSound={this.state.mutedSound} />
+            <HandDiv>
+              <Reaction style={{ color: '#ffb500' }}>
+                {!this.props.user.isHost() && this.props.user.isReaction() === 'hand' ? <BackHandIcon /> : null}
+              </Reaction>
+            </HandDiv>
+            <div>
+              {/* <div ref={(ref) => this.props.handleChildRef(ref)}> */}
+              <OvVideoComponent cam={this.props.cam} user={this.props.user} mutedSound={this.state.mutedSound} />
+            </div>
           </CamOff>
         ) : null}
       </div>

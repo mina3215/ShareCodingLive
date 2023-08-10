@@ -33,12 +33,12 @@ export default class OvVideoComponent extends Component {
   decideHeight() {
     if (this.props.user.isHost()) {
       if (this.props.cam) {
-        return '450px';
+        return '56vh';
       } else {
-        return '100vh';
+        return '88vh';
       }
     }
-    return '240px';
+    return '26vh';
   }
 
   render() {

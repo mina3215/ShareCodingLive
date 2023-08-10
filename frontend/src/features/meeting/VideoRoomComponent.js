@@ -19,8 +19,8 @@ import './VideoRoomComponent.css';
 const HostCam = styled.div`
   position: relative;
   display: flex;
-  width: 50%;
-  height: 50%;
+  // width: 50%;
+  height: 55%;
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
@@ -30,11 +30,13 @@ const HostCam = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column-reverse;
+  background-color: #161616;
   height: 50vh;
 `;
 const ContainerCam = styled.div`
   display: flex;
   flex-direction: column;
+  background-color: #161616;
   height: 50vh;
 `;
 
@@ -47,7 +49,7 @@ const ParticipantCams = styled.div`
   align-items: center;
   background-color: #282828;
   width: 100%;
-  height: 63%;
+  height: 32vh;
   position: relative;
 `;
 
@@ -62,10 +64,11 @@ const Toolbar = styled.div`
 const Cam = styled.div`
   position: relative;
   // width: 290px;
-  height: 185px;
+  height: 40vh;
+  align-items: center;
   overflow: hidden;
   // margin-top: 15px;
-  margin-bottom: 26px;
+  margin-bottom: 1.5vh;
   margin-left: 15px;
   display: flex;
   justify-content: flex-start;
@@ -90,8 +93,8 @@ const ParticipantCam = styled.div`
 
 const IndividualCam = styled.div`
   flex: 0 0 auto;
-  width: 323px; /* 참가자 화면의 너비 설정 */
-  height: 185px; /* 참가자 화면의 높이 설정 */
+  width: 20vw; /* 참가자 화면의 너비 설정 */
+  height: 28vh; /* 참가자 화면의 높이 설정 */
   overflow: hidden;
   // border: 1px solid #ccc;
 `;
@@ -298,6 +301,7 @@ class VideoRoomComponent extends Component {
     if (mySession) {
       mySession.disconnect();
     }
+    // TODO: 호스트 나간거 알려주기 
     // Empty all properties...
     this.OV = null;
     this.setState({
@@ -550,65 +554,75 @@ class VideoRoomComponent extends Component {
     return (
       <Fragment>
         {localUser && localUser.streamManager ? (
-          <div>
+          <div style={{ height: '100vh' }}>
             <DialogExtensionComponent
               showDialog={this.state.showExtensionDialog}
               cancelClicked={this.closeDialogExtension}
             />
-            <ContainerCam>
-              {this.state.showCam && (
-                <ParticipantCams>
-                  {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
-                    <Cam>
-                      <StreamComponent
-                        cam={this.state.showCam}
-                        user={localUser}
-                        handleNickname={this.nicknameChanged}
-                      />
-                    </Cam>
+            {/* <ContainerCam> */}
+            {this.state.showCam && (
+              <ParticipantCams>
+                {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
+                  <Cam>
+                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} />
+                  </Cam>
+                )}
+
+                {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
+                {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
+                {/* TODO: 여기 로직 변경  */}
+                <ParticipantCam>
+                  {this.state.subscribers.map((sub, i) =>
+                    i <= camNumbers ? (
+                      <IndividualCam key={i}>
+                        <StreamComponent
+                          cam={this.state.showCam}
+                          user={sub}
+                          streamId={sub.streamManager.stream.streamId}
+                        />
+                      </IndividualCam>
+                    ) : null
                   )}
-                  <ParticipantCam>
-                    {this.state.subscribers.map((sub, i) =>
-                      i <= camNumbers ? (
-                        <IndividualCam key={i}>
-                          <StreamComponent
-                            cam={this.state.showCam}
-                            user={sub}
-                            streamId={sub.streamManager.stream.streamId}
-                          />
-                        </IndividualCam>
-                      ) : null
-                    )}
-                  </ParticipantCam>
-                </ParticipantCams>
-              )}
-              <button style={{ backgroundColor: '#242424' }} onClick={this.ParticipantCamShow}>
+                </ParticipantCam>
+              </ParticipantCams>
+            )}
+            <div style={{ backgroundColor: '#242424', display: 'grid' }}>
+              <button onClick={this.ParticipantCamShow}>
                 <FontAwesomeIcon icon={faBars} style={{ color: 'white' }} />
               </button>
-              <HostCam>
+            </div>
+            <div style={{ backgroundColor: '#161616' }}>
+              <HostCam ref={(ref) => this.props.handleChildRef(ref)}>
                 {hostUser !== undefined && hostUser.getStreamManager() !== undefined && (
-                  <div>
-                    <StreamComponent cam={this.state.showCam} user={hostUser} />
-                  </div>
+                  <StreamComponent
+                    // handleChildRef={this.props.handleChildRef}
+                    cam={this.state.showCam}
+                    user={hostUser}
+                  />
                 )}
               </HostCam>
-            </ContainerCam>
-            <Container>
-              <Toolbar>
-                <ToolbarComponent
-                  sessionId={mySessionId}
-                  user={localUser}
-                  showNotification={this.state.messageReceived}
-                  camStatusChanged={this.camStatusChanged}
-                  micStatusChanged={this.micStatusChanged}
-                  screenShare={this.screenShare}
-                  stopScreenShare={this.stopScreenShare}
-                  leaveSession={this.leaveSession}
-                  handsUp={this.handsUp}
-                  handleToggleChat={this.props.handleToggleChat}
-                />
-              </Toolbar>
-            </Container>
+            </div>
+            {/* </ContainerCam> */}
+            {/* TODO: 호스트 캠, 스크린 두기 */}
+            {/* <Container> */}
+            {/* <Toolbar> */}
+            <ToolbarComponent
+              sessionId={mySessionId}
+              user={localUser}
+              showNotification={this.state.messageReceived}
+              camStatusChanged={this.camStatusChanged}
+              micStatusChanged={this.micStatusChanged}
+              screenShare={this.screenShare}
+              stopScreenShare={this.stopScreenShare}
+              leaveSession={this.leaveSession}
+              handsUp={this.handsUp}
+              handleToggleChat={this.props.handleToggleChat}
+              handleToggleMember={this.props.handleToggleMember}
+              handleHandUp={this.props.handleHandUp}
+              setCapture={this.props.setCapture}
+            />
+            {/* </Toolbar> */}
+            {/* </Container> */}
           </div>
         ) : (
           // 비디오 안 불러왔으면 아무것도 안보이게 해놓음
@@ -628,18 +642,22 @@ class VideoRoomComponent extends Component {
   async createSessionToken(sessionId) {
     try {
       console.log('토큰', this.state.userToken);
-      console.log('세션아이디',sessionId);
-      const response = await axios.post('conference/join/', { owner: this.state.isHost, uuid: sessionId },
-      {        
-        headers: {
-        Authorization: `Bearer ${this.state.userToken}`,
-      }}
-    );
+      console.log('세션아이디', sessionId);
+      const response = await axios.post(
+        'conference/join/',
+        { owner: this.state.isHost, uuid: sessionId },
+        {
+          headers: {
+            Authorization: `Bearer ${this.state.userToken}`,
+          },
+        }
+      );
       return response.data;
     } catch (err) {
       console.log(err);
       if (err.response.status === 403) {
         alert('없는 회의방입니다.');
+        // 뒤로 보내기
         window.history.back();
       }
       console.log(err);

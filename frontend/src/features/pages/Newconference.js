@@ -162,7 +162,7 @@ const NewConference = (props) => {
   // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
   function goTomeetingPage() {
     const data = {
-      title: uuid,
+      uuid: uuid,
     };
     dispatch(createRoom(data))
     .unwrap()
