@@ -14,9 +14,16 @@ export const getCodeData = createAsyncThunk('GET_CODE_DATA', async (userInfo, { 
 
 // 초기값 설정
 const initialState = {
-  history: null,
-  date: null,
-  course: null,
+  course: {
+        "title": "C++ 수업",
+        "teacher": "테스트 유저",
+        "codes": [
+          {
+            "title": "코드 제목",
+            "content": "코드 내용",
+            "created_time": "Fri Aug 04 16:36:01 KST 2023",
+            "summarization": "코드 요약"
+          }]}
 };
 
 // 리덕스 슬라이스 생성
@@ -25,25 +32,22 @@ const pagesSlice = createSlice({
   initialState,
   reducers: {
     resetCodeData: (state) => {
-      state.codes = [];   
+      state.course = [];   
     },
     setCourse: (state, action) => {
       state.course = action.payload;
       console.log(state.course);
     },
   },
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(getCodeData.pending, (state) => {
-  //       state.isLoading = true;
-  //     })
-  //     .addCase(getCodeData.fulfilled, (state) => {
-  //       state.isLoading = false;
-  //     })
-  //     .addCase(getCodeData.rejected, (state) => {
-  //       state.isLoading = false;
-  //     }
-  // }
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCodeData.fulfilled, (state, actions) => {
+        state.course = actions.payload;
+      })
+      .addCase(getCodeData.rejected, (state)=>{
+        state.course = null;
+      });
+    }
 });
 
 export const { resetCodeData, setCourse } = pagesSlice.actions;

@@ -1,97 +1,102 @@
-const code_data =  [
+const code_data = [
   {
-    "dateOfCourse": "2023-08-09",
-    "courses": [
-      {
-        "title": "C++ 수업",
-        "teacher": "테스트 유저",
-        "codes": [
-          {
-            "title": "코드 제목",
-            "content": "코드 내용",
-            "created_time": "Fri Aug 04 16:36:01 KST 2023",
-            "summarization": "코드 요약"
-          }
-        ]
-      }
-    ]
+    title: 'C++ 수업',
+    codes: [
+      { codeTitle: '더하기 코드', code: 'print(num1 + num2)', summarization: '요약 1', language: 'python' },
+      { codeTitle: '빼기 코드', code: 'print(num1 - num2)', summarization: '요약 2', language: 'python' },
+      { codeTitle: '나누기 코드', code: 'print(num1 / num2)', summarization: '요약 3', language: 'python' },
+    ],
   },
   {
-    "dateOfCourse": "2023-08-10",
-    "courses": [
+    title: '사용자 관리 코드',
+    codes: [
+      { codeTitle: '코드 제목 1', code: `cout << "Hello!" << end`, summarization: '요약 B', language: 'c' },
       {
-        "title": "Java 수업",
-        "teacher": "admin",
-        "codes": [
-          {
-            "title": "코드 제목",
-            "content": "코드 내용",
-            "created_time": "Fri Aug 04 16:41:45 KST 2023",
-            "summarization": "코드 요약"
-          },
-          {
-            "title": "코드 제목",
-            "content": "코드 내용",
-            "created_time": "Fri Aug 04 16:34:32 KST 2023",
-            "summarization": "코드 요약"
-          }
-        ]
+        codeTitle: 'Socket으로 사용자 관리',
+        code: `const recvMessage = (recv) => {
+        if (recv.type === 'ENTER') {
+          setMembers((prevMerbers) => [
+            ...prevMerbers,
+            { sender: recv.sender, members: recv.message},
+          ]);
+        }
+        else if (recv.type === 'QUIT') {
+          setMembers(members.filter(member => member !== recv.sender))
+    
+        }
+        else if (recv.type === 'TALK') {
+          setChats((prevChats) => [
+            ...prevChats,
+            { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime},
+          
+          ]);
+    
+        }
+        else if (recv.type === 'QUESTION') {
+          setQuestions((prevQuestions) => [
+            ...prevQuestions,
+            { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime},
+          
+          ]);
+    
+        }
+        else if (recv.type === 'CODE') {
+          setCodes((prevCodes) => [
+            ...prevCodes,
+            { type: recv.type, sender: recv.sender, message: recv.message, time: recv.sendTime , title: recv.title, summarization: recv.summarization},
+          
+          ]);
+    
+        }
+        
+      };`,
+        summarization: '요약 A',
+        language: 'javascript',
       },
-      {
-        "title": "고급 Java",
-        "teacher": "테스트 유저",
-        "codes": [
-          {
-            "title": null,
-            "content": "extra&extra",
-            "created_time": null,
-            "summarization": null
-          },
-          {
-            "title": null,
-            "content": "contentCC",
-            "created_time": null,
-            "summarization": null
-          },
-          {
-            "title": null,
-            "content": "contentCC",
-            "created_time": null,
-            "summarization": null
-          },
-          {
-            "title": null,
-            "content": "contentCC",
-            "created_time": null,
-            "summarization": null
-          },
-          {
-            "title": null,
-            "content": "@Bean\n    public RedisTemplate<?, ?> redisTemplate() {\n\n        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();\n        redisTemplate.setConnectionFactory(redisConnectionFactory());\n\n        redisTemplate.setKeySerializer(new StringRedisSerializer());   // Key: String\n        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));\n\n        // Hash Operation 사용 시\n        redisTemplate.setHashKeySerializer(new StringRedisSerializer());\n        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Code.class));\n\n        // 혹은 아래 설정으로 모든 Key / Value Serialization을 변경할 수 있음\n        redisTemplate.setDefaultSerializer(new StringRedisSerializer());\n\n        return redisTemplate;\n    }",
-            "created_time": null,
-            "summarization": null
-          }
-        ]
-      }
-    ]
+    ],
   },
   {
-    "dateOfCourse": "2023-08-11",
-    "courses": [
-      {
-        "title": "Python 수업",
-        "teacher": "admin",
-        "codes": [
-          {
-            "title": "코드 제목",
-            "content": "코드 내용",
-            "created_time": "Fri Aug 04 16:33:13 KST 2023",
-            "summarization": "코드 요약"
-          }
-        ]
-      }
-    ]
-  }
+    title: '테스트 수업',
+    codes: [
+      { codeTitle: '제목 1', code: '코드 1', summarization: '요약 1', language: 'test' },
+      { codeTitle: '제목 2', code: '코드 2', summarization: '요약 2', language: 'test' },
+    ],
+  },
+  {
+    title: '테스트 수업',
+    codes: [
+      { codeTitle: '제목 1', code: '코드 1', summarization: '요약 1', language: 'test' },
+      { codeTitle: '제목 2', code: '코드 2', summarization: '요약 2', language: 'test' },
+    ],
+  },
+  {
+    title: '테스트 수업',
+    codes: [
+      { codeTitle: '제목 1', code: '코드 1', summarization: '요약 1', language: 'test' },
+      { codeTitle: '제목 2', code: '코드 2', summarization: '요약 2', language: 'test' },
+    ],
+  },
+  {
+    title: '테스트 수업',
+    codes: [
+      { codeTitle: '제목 1', code: '코드 1', summarization: '요약 1', language: 'test' },
+      { codeTitle: '제목 2', code: '코드 2', summarization: '요약 2', language: 'test' },
+    ],
+  },
+  {
+    title: '테스트 수업',
+    codes: [
+      { codeTitle: '제목 1', code: '코드 1', summarization: '요약 1', language: 'test' },
+      { codeTitle: '제목 2', code: '코드 2', summarization: '요약 2', language: 'test' },
+    ],
+  },
+  {
+    title: '테스트 수업',
+    codes: [
+      { codeTitle: '제목 1', code: '코드 1', summarization: '요약 1', language: 'test' },
+      { codeTitle: '제목 2', code: '코드 2', summarization: '요약 2', language: 'test' },
+    ],
+  },
 ];
 
 export default code_data;
