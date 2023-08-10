@@ -49,7 +49,7 @@ const ParticipantCams = styled.div`
   align-items: center;
   background-color: #282828;
   width: 100%;
-  // height: 63%;
+  height: 32vh;
   position: relative;
 `;
 
@@ -64,10 +64,11 @@ const Toolbar = styled.div`
 const Cam = styled.div`
   position: relative;
   // width: 290px;
-  height: 185px;
+  height: 40vh;
+  align-items: center;
   overflow: hidden;
   // margin-top: 15px;
-  margin-bottom: 26px;
+  margin-bottom: 1.5vh;
   margin-left: 15px;
   display: flex;
   justify-content: flex-start;
@@ -92,8 +93,8 @@ const ParticipantCam = styled.div`
 
 const IndividualCam = styled.div`
   flex: 0 0 auto;
-  width: 323px; /* 참가자 화면의 너비 설정 */
-  height: 185px; /* 참가자 화면의 높이 설정 */
+  width: 20vw; /* 참가자 화면의 너비 설정 */
+  height: 28vh; /* 참가자 화면의 높이 설정 */
   overflow: hidden;
   // border: 1px solid #ccc;
 `;
