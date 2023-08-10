@@ -567,10 +567,6 @@ class VideoRoomComponent extends Component {
                       />
                     </Cam>
                   )}
-
-                  {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
-                  {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
-                  {/* TODO: 여기 로직 변경  */}
                   <ParticipantCam>
                     {this.state.subscribers.map((sub, i) =>
                       i <= camNumbers ? (
@@ -597,7 +593,6 @@ class VideoRoomComponent extends Component {
                 )}
               </HostCam>
             </ContainerCam>
-            {/* TODO: 호스트 캠, 스크린 두기 */}
             <Container>
               <Toolbar>
                 <ToolbarComponent

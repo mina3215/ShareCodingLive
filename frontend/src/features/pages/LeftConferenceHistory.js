@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setCourse } from './pagesSlice/pagesSlice';
+
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +10,7 @@ import Pagination from 'react-bootstrap/Pagination';
 
 import left_code_data from './LeftCodeData';
 import styled from 'styled-components';
+
 
 const ClassAccordionContainer = styled.div`
   max-width: 1000px;
@@ -86,10 +90,14 @@ const PageNumberContainer = styled.div`
 `;
 
 const CourseSection = ({ course, isDActiveSection, setDActiveIndex, sectionIndex }) => {
-  console.log(course);
+  const dispatch = useDispatch();
+  const toggleSection = (course) => {
+    setDActiveIndex(isDActiveSection? null: sectionIndex);
+    dispatch(setCourse(course));
+  }
   return (
     <div>
-      <CourseStyle isDActiveSection={isDActiveSection}  onClick={()=>{setDActiveIndex(isDActiveSection? null: sectionIndex)}}>
+      <CourseStyle isDActiveSection={isDActiveSection}  onClick={()=>{toggleSection(course)}}>
         <div>{course.title}</div>
         <div style={{fontSize: '11px', marginTop:'5px'}}>{course.teacher}</div>
       </CourseStyle>
@@ -105,8 +113,11 @@ const CorseContainerIndividual = styled.div`
 `;
 
 const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) => {
-  const [dActiveIndex, setDActiveIndex] = useState('');
-
+  const [dActiveIndex, setDActiveIndex] = useState(0);
+  const toggleSection = (date) => {
+    const nextIndex = isActiveSection ? null : sectionIndex;
+    setActiveIndex(nextIndex);
+  };
   return (
     <CorseContainerIndividual isactive={isActiveSection}>
       <AccordionTitleStyles
@@ -114,7 +125,7 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
           borderBottomLeftRadius: isActiveSection ? '0' : '5px',
           borderBottomRightRadius: isActiveSection ? '0' : '5px',
         }}
-        onClick={() => {setActiveIndex(isActiveSection? null:sectionIndex)}}
+        onClick={()=>{toggleSection(date.dateOfCourse)}}
       >
         <CourseTitleContainer>
           <div> </div>
@@ -142,7 +153,7 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
 
 const courses = left_code_data;
 const LeftConferenceHistory = () => {
-  const [activeIndex, setActiveIndex] = useState();
+  const [activeIndex, setActiveIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
   const indexOfLastCode = currentPage * codesPerPage;
