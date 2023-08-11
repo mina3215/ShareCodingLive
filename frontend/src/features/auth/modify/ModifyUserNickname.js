@@ -20,18 +20,6 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const LogoWrapper = styled.div`
-  flex: 0.4;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Logo = styled.img`
-  cursor: pointer;
-  width: 400px;
-  height: 100px;
-`;
-
 const ModifyContainer = styled.div`
   height: 80%;
   width: 100%;
@@ -187,7 +175,7 @@ export default function ModifyUserNickName(props) {
             // fullWidth
           />
           <CommonButton
-            grey="true"
+            green="true"
             onClick={doCheckNickname}
             disabled={isNicknameChecked || !newNickname || isValidInputNickname}
           >

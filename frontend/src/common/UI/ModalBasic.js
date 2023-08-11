@@ -12,7 +12,7 @@ const ModalContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #d9d9d9;
+  background-color: #ffff;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,11 @@ const CloseButton = styled(Button)`
   height: 2em;
   border-radius: 50%;
   font-size: 30px;
-  background-color: #a4a4a4;
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
+  );
   color: white;
 
   &:hover {

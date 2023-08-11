@@ -31,10 +31,9 @@ const PromotionContainer = styled(Container)`
   justify-content: space-between;
   height: 80vh;
   align-items: center;
-  // border: 2px solid black;
   background-color: white;
   border-radius: 10px;
-  margin-left: 10%;
+  margin-left: 0;
   margin-right: 5%;
 `;
 
@@ -43,11 +42,10 @@ const AuthContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   height: 80vh;
-  // border: 2px solid black;
   border-radius: 10px;
-  background-color: #484848;
+  background-color: #ffff;
   margin-left: 5%;
-  margin-right: 10%;
+  margin-right: 0;
 `;
 
 const AuthInnerContainer = styled(Container)`
@@ -57,6 +55,7 @@ const AuthInnerContainer = styled(Container)`
   align-items: center;
   height: 80%;
   border-radius: 10px;
+  border: 3px solid #2d2f42;
   background-color: white;
   margin: 10%;
 `;
