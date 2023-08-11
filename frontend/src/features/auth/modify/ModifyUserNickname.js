@@ -125,6 +125,8 @@ export default function ModifyUserNickName(props) {
     dispatch(modifyNickname(data))
       .unwrap()
       .then(() => {
+        // props.ToMypage(true);
+        props.ToUserInfo(false);
         props.modNick(false);
         toast.success('😀 닉네임 변경이 완료되었습니다');
         props.nickTouch(true);

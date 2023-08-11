@@ -95,6 +95,9 @@ export default function ModifyPassword(props) {
       .unwrap()
       .then(() => {
         deleteToken();
+        props.ToUserInfo(false);
+        props.ToMypage(false);
+        props.ChangeLogin(false);
         props.modPassword(false);
         toast.success('비밀번호 수정이 완료되었습니다. 다시 로그인해주세요');
       })

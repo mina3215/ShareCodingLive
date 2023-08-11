@@ -168,6 +168,8 @@ function Home() {
                     hangeLogout={setAuthenticated}
                     ToUserInfo={setUserInfoToggle}
                     nickTouched={setnickChanged}
+                    ToMyPage={setMyPageToggle}
+                    ChangeLogin={setAuthenticated}
                   />
                 )}
                 {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (

@@ -215,8 +215,22 @@ const UserInfo = (props) => {
             비밀번호 수정
           </PassButton>
         )} */}
-        {nickEdit && <ModifyUserNickName modNick={setNickEdit} nickTouch={props.nickTouched} />}
-        {!nickEdit && <ModifyPassword modPassword={setPasswordEdit} />}
+        {nickEdit && (
+          <ModifyUserNickName
+            ToUserInfo={props.ToUserInfo}
+            ToMyPage={props.ToMyPage}
+            modNick={setNickEdit}
+            nickTouch={props.nickTouched}
+          />
+        )}
+        {!nickEdit && (
+          <ModifyPassword
+            ToUserInfo={props.ToUserInfo}
+            ToMyPage={props.ToMyPage}
+            ChangeLogin={props.ChangeLogin}
+            modPassword={setPasswordEdit}
+          />
+        )}
       </UserContainer>
     </Wrapper>
   );
