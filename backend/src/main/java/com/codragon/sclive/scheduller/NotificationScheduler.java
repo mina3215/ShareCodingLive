@@ -52,7 +52,6 @@ public class NotificationScheduler {
     private Runnable getRunnable(String cron, FCMNoticeReqDto fCMNoticeReqDto) {
         return () -> {
             System.out.println(new Date().toString());
-            System.out.println(fCMNoticeReqDto.getTitle());
             cronList.remove(cron);
             requestDtos.remove(fCMNoticeReqDto);
         };
