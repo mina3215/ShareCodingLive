@@ -13,11 +13,14 @@ import Promotion from '../pages/Promotion';
 import MyPage from '../pages/MyPage';
 import UserInfo from '../pages/UserInfo';
 import LeftConferenceHistory from '../pages/LeftConferenceHistory';
+import ConferenceHistory from '../pages/ConferenceHistory';
+
 
 // style
 import { Container, Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import ConferenceHistory from '../pages/ConferenceHistory';
+import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const FullScreenContainer = styled(Container)`
   height: 100vh;
@@ -72,6 +75,7 @@ const Wrapper = styled.div`
 `;
 
 function Home() {
+
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [signupToggle, setSignupToggle] = useState(false);
   const [myPageToggle, setMyPageToggle] = useState(false);
@@ -148,7 +152,13 @@ function Home() {
 
               {/* 예약 왼쪽 */}
               {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
-                  <LeftConferenceHistory />
+                  <div class="parent" style={{width: '100%'}}> 
+                    <div class="child" style={{ width: '28vw',top:'20vh', display:'flex', justifyContent:'space-between'}}>
+                      <ArrowBackIcon style={{ cursor:'pointer', color:'#4B4F82'}} onClick={()=>{setMyPageToggle(!myPageToggle);setHistoryToggle(!historyToggle)}} />
+                      <HomeIcon style={{cursor:'pointer', color:'#4B4F82'}} onClick={()=>{setHistoryToggle(!historyToggle)}}/>
+                    </div>
+                    <LeftConferenceHistory />
+                  </div>
                 )}
               {!authenticated && <Promotion />}
             
