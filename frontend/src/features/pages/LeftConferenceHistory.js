@@ -46,7 +46,6 @@ const CourseTitleIcon = styled.div`
 const CourseStyle = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: ${props => props.isDActiveSection? '#C2CFE0':'white'};
   align-items: center;
   cursor: pointer;
   padding: 10px;
@@ -97,7 +96,7 @@ const CourseSection = ({ course, isDActiveSection, setDActiveIndex, sectionIndex
   }
   return (
     <div>
-      <CourseStyle isDActiveSection={isDActiveSection}  onClick={()=>{toggleSection(course)}}>
+      <CourseStyle style={{ backgroundColor:`${isDActiveSection? '#C2CFE0':'white'}`}} onClick={()=>{toggleSection(course)}}>
         <div>{course.title}</div>
         <div style={{fontSize: '11px', marginTop:'5px'}}>{course.teacher}</div>
       </CourseStyle>
@@ -106,7 +105,6 @@ const CourseSection = ({ course, isDActiveSection, setDActiveIndex, sectionIndex
 };
 
 const CorseContainerIndividual = styled.div`
-  border: 2px solid ${props => (props.isactive ? '#40409C' : '#2a2d52')};
   border-radius:5px;
   margin-bottom: 10px;
   overflow: hidden;
@@ -120,7 +118,7 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
     setDActiveIndex();
   };
   return (
-    <CorseContainerIndividual isactive={isActiveSection}>
+    <CorseContainerIndividual style={{  border: `2px solid ${ isActiveSection ? '#40409C' : '#2a2d52'}`}}>
       <AccordionTitleStyles
         style={{
           borderBottomLeftRadius: isActiveSection ? '0' : '5px',
@@ -132,7 +130,8 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
           <div> </div>
           <div>{date.dateOfCourse}</div>
           <CourseTitleIcon>
-            <Arrows isActiveSection={isActiveSection}>
+            <Arrows>
+            {/* <Arrows isActiveSection={isActiveSection}> */}
               <FontAwesomeIcon icon={isActiveSection ? faAngleDown : faAngleRight} />
             </Arrows>
           </CourseTitleIcon>
@@ -152,9 +151,9 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   );
 };
 
-const courses = left_code_data;
 const LeftConferenceHistory = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const courses = left_code_data;
+  const [leftactiveindex, setLeftActiveIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
   const indexOfLastCode = currentPage * codesPerPage;
@@ -171,9 +170,8 @@ const LeftConferenceHistory = () => {
         <DateAccordian
           date={date}
           key={index}
-          isActiveSection={index === activeIndex}
-          // setActiveIndex={setActiveIndex}
-          setActiveIndex={(i)=>{setActiveIndex(i)}}
+          isActiveSection={index === leftactiveindex}
+          setActiveIndex={setLeftActiveIndex}
           sectionIndex={index}
         />
       ))}
