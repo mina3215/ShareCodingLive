@@ -153,7 +153,7 @@ function Home() {
               {/* 예약 왼쪽 */}
               {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
                   <div class="parent" style={{width: '100%'}}> 
-                    <div class="child" style={{ width: '28vw',top:'20vh', display:'flex', justifyContent:'space-between'}}>
+                    <div class="child" style={{ width: '28vw',top:'20vh', display:'flex', position:'absolute', justifyContent:'space-between'}}>
                       <ArrowBackIcon style={{ cursor:'pointer', color:'#4B4F82'}} onClick={()=>{setMyPageToggle(!myPageToggle);setHistoryToggle(!historyToggle)}} />
                       <HomeIcon style={{cursor:'pointer', color:'#4B4F82'}} onClick={()=>{setHistoryToggle(!historyToggle)}}/>
                     </div>

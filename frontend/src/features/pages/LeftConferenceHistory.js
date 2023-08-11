@@ -117,6 +117,7 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   const toggleSection = (date) => {
     const nextIndex = isActiveSection ? null : sectionIndex;
     setActiveIndex(nextIndex);
+    setDActiveIndex();
   };
   return (
     <CorseContainerIndividual isactive={isActiveSection}>
