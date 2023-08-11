@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setCourse } from './pagesSlice/pagesSlice';
+import { setCourse, getCodeData } from './pagesSlice/pagesSlice';
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -131,7 +131,6 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
           <div>{date.dateOfCourse}</div>
           <CourseTitleIcon>
             <Arrows>
-            {/* <Arrows isActiveSection={isActiveSection}> */}
               <FontAwesomeIcon icon={isActiveSection ? faAngleDown : faAngleRight} />
             </Arrows>
           </CourseTitleIcon>
@@ -151,14 +150,30 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   );
 };
 
-const LeftConferenceHistory = () => {
-  const courses = left_code_data;
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE3NDE1MTYsImlhdCI6MTY5MTc0MTUxNiwiZW1haWwiOiJtaW5zdUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6Im1pbnN1In0.dvqrXC1sH3YWvpwdCZsxwxu144E7E5PSIRrUiOhG_BI';
+
+
+const LeftConference = () => {
+  const dispatch = useDispatch();
+  const [courses, setCourses] = useState('');
+  useEffect(()=>{getcode()},[])
+
+  const getcode = ()=>{
+    const data = {
+      token: token
+    }
+    dispatch(getCodeData(data)).unwrap()
+    .then((res)=>{setCourses(res); console.log(res)}
+    ).catch();
+    
+  }
+  
   const [leftactiveindex, setLeftActiveIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
   const indexOfLastCode = currentPage * codesPerPage;
   const indexOfFirstCode = indexOfLastCode - codesPerPage;
-  const currentCodes = courses.slice(indexOfFirstCode, indexOfLastCode);
+  const currentCodes = courses ? courses.slice(indexOfFirstCode, indexOfLastCode):'';
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -166,7 +181,7 @@ const LeftConferenceHistory = () => {
 
   return (
     <ClassAccordionContainer>
-      {currentCodes.map((date, index) => (
+      {courses&&currentCodes.map((date, index) => (
         <DateAccordian
           date={date}
           key={index}
@@ -188,4 +203,4 @@ const LeftConferenceHistory = () => {
   );
 };
 
-export default LeftConferenceHistory;
+export default LeftConference;

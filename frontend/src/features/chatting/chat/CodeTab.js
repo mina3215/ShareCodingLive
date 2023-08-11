@@ -7,11 +7,31 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 // import { Button } from '@mui/material';
 
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 // 복사 이모티콘
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
+const SummaryInlineStyle = {
+  // textShadow: 'none',
+  marginTop: '20px',
+  borderRadius: '10px',
+  fontSize: '14px',
+  backgroundColor: '#c3d6f2',
+  width: '19vw',
+  height: '20vh',
+  overflow: 'auto',
+  padding: '15px',
+};
+
+const SyntaxInlineStyle = {
+  borderRadius: '10px',
+  fontSize: '14px',
+  backgroundColor: '#c3d6f2',
+  width: '19vw',
+  height: '20vh',
+  padding: '30px',
+};
 
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
   // border: `1px solid ${theme.palette.divider}`,
@@ -41,6 +61,8 @@ const AccordionSummary = styled((props) => (
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
+  display: 'flex',
+  justifyContent: 'Center',
   backgroundColor: '#62676e',
   borderBottomLeftRadius: '10px',
   borderBottomRightRadius: '10px',
@@ -48,12 +70,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }));
 
 const CodeTab = (props) => {
-
   const [expanded, setExpanded] = React.useState('');
 
   // 이거는 눌렀을때 아코디언 열리게 하기 위한 함수 중 하나
   const handleChange = (panel) => (event, newExpanded) => {
-    console.log(newExpanded)
+    console.log(newExpanded);
     setExpanded(newExpanded ? panel : false);
   };
 
@@ -118,7 +139,7 @@ const CodeTab = (props) => {
                       onClick={() => handleCopy(message.message)}
                       style={{
                         position: 'absolute',
-                        top: '15px',
+                        top: '12px',
                         right: '12px',
                         padding: '2px',
                         minWidth: '5px', // 원하는 크기로 조절
@@ -127,12 +148,12 @@ const CodeTab = (props) => {
                     />
 
                     {/* textarea는 defaultValue 안에 값 줘야지 console에 에러가 안뜸 */}
-                    {console.log("언어: ", message.language)}
+                    {console.log('언어: ', message.language)}
                     <div>
-                      <SyntaxHighlighter language={message.language} PreTag="div">
+                      <SyntaxHighlighter customStyle={SyntaxInlineStyle} language={message.language} PreTag="div">
                         {message.message}
                       </SyntaxHighlighter>
-                      <h3>{message.summarization}</h3>
+                      <div style={SummaryInlineStyle}>{message.summarization}</div>
                     </div>
                   </div>
                 </div>
@@ -142,9 +163,7 @@ const CodeTab = (props) => {
         )}
       </div>
     </div>
-    
-  )
-  
-}
+  );
+};
 
 export default CodeTab;

@@ -4,7 +4,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Pagination from 'react-bootstrap/Pagination';
-import code_data from './CodeData';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
@@ -150,9 +149,11 @@ const FullWrapper = styled.div`
 `
 
 const ConferenceHistory = () => {
+  console.log(useSelector((state)=>state.pages))
   const course = useSelector((state) => state.pages.course);
-  const codes = course.codes;
-  const title = course.title;
+  console.log('날 괴롭히지마',course);
+  const codes = course? course.codes:null;
+  const title = course?course.title:null;
   console.log('여기서 받았다',course,);
   const [activeIndex, setActiveIndex] = useState();
   // const [currentPage, setCurrentPage] = useState(1);
@@ -178,7 +179,7 @@ const ConferenceHistory = () => {
         <div style={{marginRight: '2vw'}}>{title}</div>
       </CourseTitleContainer>
     </AccordionTitleStyles>
-    {codes.map((code, index) => (
+    {codes && codes.map((code, index) => (
       <CodeAccordion
         code={code}
         key={index}

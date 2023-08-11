@@ -8,19 +8,45 @@ export const CommonButton = styled(Button)`
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
   background: ${(props) => {
-    if (props.green) {
-      return '#94C798';
-    } else if (props.black) {
-      return '#282828';
-    } else if (props.darkgrey) {
-      return '#484848';
+    if (props.darkgrey) {
+      return '#2D2F42';
     } else if (props.grey) {
       return '#d9d9d9';
     }
   }};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => {
+      if (props.green) {
+        return '#4e5171';
+      } else if (props.darkgrey) {
+        return '#4e5171';
+      } else if (props.grey) {
+        return '#959595';
+      }
+    }};
+    color: ${(props) => (props.grey ? 'white' : '#262626')};
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    color: ${(props) => (props.grey ? 'white' : 'black')};
+  }
+`;
+
+export const GradCommonButton = styled(Button)`
+  width: 50%;
+  border-radius: 6px;
+  margin: 1em 0em 0em 0em;
+  padding: 0.4em 1em;
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#410471' : '#D9D9D9')}
+  );
+  color: ${(props) => (props.grey ? '#262626' : 'white')};
+  &:hover {
+    background: ${(props) => (props.green ? '#6889be' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -76,6 +102,7 @@ const MyPage = (props) => {
     props.ToHistory(true);
     props.ToMyPage(false);
     props.ToUserInfo(false);
+
   };
   return (
     <Wrapper>
@@ -84,9 +111,9 @@ const MyPage = (props) => {
         <br />
         <TextSubtitle>CODESHARELIVE</TextSubtitle>
         <br />
-        <CommonButton green="true" onClick={toUserInfo}>
+        <GradCommonButton green="true" onClick={toUserInfo}>
           회원정보
-        </CommonButton>
+        </GradCommonButton>
         <CommonButton darkgrey="true" onClick={toLectureRecord}>
           강의기록
         </CommonButton>

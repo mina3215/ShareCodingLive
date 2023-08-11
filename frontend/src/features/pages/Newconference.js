@@ -5,28 +5,13 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
-import { createRoom, getUUIDLink } from '../meeting/meetingSlice';
+import { getUUIDLink } from '../meeting/meetingSlice';
 
 const Wrapper = styled(Container)`
   display: flex;
   height: 100vh;
   justify-content: center;
   align-items: center;
-`;
-
-const LogoWrapper = styled(Container)`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const Logo = styled.img`
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  margin-bottom: 10px;
 `;
 
 const CreateRoomContainer = styled.div`
@@ -36,22 +21,6 @@ const CreateRoomContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-`;
-
-const TextTitle = styled.label`
-  font-size: 30px;
-  color: #262626;
-  font-weight: bold;
-  display: block;
-  text-align: center;
-`;
-
-const TextSubtitle = styled.label`
-  font-size: 15px;
-  color: #262626;
-  padding: 1.5em 0;
-  display: block;
-  text-align: center;
 `;
 
 // 날짜 입력 필드
@@ -108,13 +77,17 @@ export const CommonButton = styled(Button)`
   border-radius: 6px;
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
+  );
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   margin-right: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#9a95ee' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -123,7 +96,6 @@ export const CommonButton = styled(Button)`
     color: ${(props) => (props.grey ? 'white' : 'black')};
   }
 `;
-
 
 const NewConference = (props) => {
   const classes = useStyles();
@@ -156,24 +128,15 @@ const NewConference = (props) => {
         setLink(res.data.link);
       })
       .catch((err) => console.log(err));
-    
   }
 
   // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
   function goTomeetingPage() {
-    const data = {
-      uuid: uuid,
-    };
-    dispatch(createRoom(data))
-    .unwrap()
-    .then((res) =>{
-      Navigate(`/meeting/${uuid}`, {
-        state: {
-          isHost: true,
-        },
-    })
-  })
-    .catch()
+    Navigate(`/meeting/${uuid}`, {
+      state: {
+        isHost: true,
+      },
+    });
   }
 
   return (

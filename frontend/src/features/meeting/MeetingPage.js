@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 
 import saveAs from 'file-saver';
-import Socket from '../socket/Socket';
+import Socket from '../chatting/chat/Socket';
 import styled from 'styled-components';
 
 import VideoRoomComponent from './VideoRoomComponent';

@@ -16,6 +16,7 @@ import Error500 from '../common/error/Error500';
 import MeetingPage from '../features/meeting/MeetingPage';
 
 const Wrapper = styled.div`
+  background: linear-gradient(to bottom, #2d2f42, #4c5085);
   background-color: #d9d9d9;
 `;
 

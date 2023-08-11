@@ -11,7 +11,7 @@ import { Button, Container } from '@material-ui/core';
 import newConf from '../../assets/newConf.png';
 import enterConf from '../../assets/enterConf.png';
 import myPage from '../../assets/myPage.png';
-import logouticon from '../../assets/logouticon.png';
+import logouticon from '../../assets/logout_darkblue.png';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -24,18 +24,49 @@ export const CommonButton = styled(Button)`
   border-radius: 20px;
   background: ${(props) => {
     if (props.green) {
-      return '#94C798';
+      return '#2D2F42';
     } else if (props.black) {
       return '#282828';
     } else if (props.darkgrey) {
-      return '#484848';
+      return '#2D2F42';
     } else if (props.grey) {
       return '#d9d9d9';
     }
   }};
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => {
+      if (props.green) {
+        return '#4e5171';
+      } else if (props.darkgrey) {
+        return '#4e5171';
+      } else if (props.grey) {
+        return '#959595';
+      }
+    }};
+    color: ${(props) => (props.grey ? 'white' : '#262626')};
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    color: ${(props) => (props.grey ? 'white' : 'black')};
+  }
+`;
+
+export const GradCommonButton = styled(Button)`
+  width: 100px;
+  height: 100px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#410471' : '#D9D9D9')}
+  );
+  color: ${(props) => (props.grey ? '#262626' : 'white')};
+  &:hover {
+    background: ${(props) => (props.green ? '#6889be' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -114,9 +145,9 @@ const MainButton = (props) => {
   return (
     <CustomPromotionContainer>
       <CustomButtomDiv>
-        <CommonButton id="newConference" onClick={showCreateModal} black="true">
+        <GradCommonButton id="newConference" onClick={showCreateModal} green="true">
           <CustomImg src={newConf} alt="newConf" />
-        </CommonButton>
+        </GradCommonButton>
         <label htmlFor="newConference">새 회의</label>
         <CommonButton id="myPage" onClick={openMyPage} darkgrey="true">
           <CustomImg src={myPage} alt="myPage" />

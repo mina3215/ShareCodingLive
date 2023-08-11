@@ -12,9 +12,8 @@ import MainButton from '../pages/MainButton';
 import Promotion from '../pages/Promotion';
 import MyPage from '../pages/MyPage';
 import UserInfo from '../pages/UserInfo';
-import LeftConferenceHistory from '../pages/LeftConferenceHistory';
 import ConferenceHistory from '../pages/ConferenceHistory';
-
+import LeftConference from '../pages/LeftConference';
 
 // style
 import { Container, Grid } from '@material-ui/core';
@@ -35,10 +34,9 @@ const PromotionContainer = styled(Container)`
   justify-content: space-between;
   height: 80vh;
   align-items: center;
-  // border: 2px solid black;
   background-color: white;
   border-radius: 10px;
-  margin-left: 10%;
+  margin-left: 0;
   margin-right: 5%;
 `;
 
@@ -47,11 +45,10 @@ const AuthContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   height: 80vh;
-  // border: 2px solid black;
   border-radius: 10px;
-  background-color: #484848;
+  background-color: #ffff;
   margin-left: 5%;
-  margin-right: 10%;
+  margin-right: 0;
 `;
 
 const AuthInnerContainer = styled(Container)`
@@ -61,6 +58,7 @@ const AuthInnerContainer = styled(Container)`
   align-items: center;
   height: 80%;
   border-radius: 10px;
+  border: 3px solid #2d2f42;
   background-color: white;
   margin: 10%;
 `;
@@ -75,14 +73,12 @@ const Wrapper = styled.div`
 `;
 
 function Home() {
-
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [signupToggle, setSignupToggle] = useState(false);
   const [myPageToggle, setMyPageToggle] = useState(false);
   const [userInfoToggle, setUserInfoToggle] = useState(false);
   const [historyToggle, setHistoryToggle] = useState(false);
   const [nickChanged, setnickChanged] = useState(false);
-  
   const [ocrResult, setOcrResult] = useState('');
 
   const divRef = useRef(null);
@@ -149,19 +145,37 @@ function Home() {
                   ToHistory={setHistoryToggle}
                 />
               )}
-
               {/* 예약 왼쪽 */}
               {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
-                  <div class="parent" style={{width: '100%'}}> 
-                    <div class="child" style={{ width: '28vw',top:'20vh', display:'flex', position:'absolute', justifyContent:'space-between'}}>
-                      <ArrowBackIcon style={{ cursor:'pointer', color:'#4B4F82'}} onClick={()=>{setMyPageToggle(!myPageToggle);setHistoryToggle(!historyToggle)}} />
-                      <HomeIcon style={{cursor:'pointer', color:'#4B4F82'}} onClick={()=>{setHistoryToggle(!historyToggle)}}/>
-                    </div>
-                    <LeftConferenceHistory />
+                <div className="parent" style={{ width: '100%' }}>
+                  <div
+                    className="child"
+                    style={{
+                      width: '35vw',
+                      top: '20vh',
+                      display: 'flex',
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <ArrowBackIcon
+                      style={{ cursor: 'pointer', color: '#4B4F82' }}
+                      onClick={() => {
+                        setMyPageToggle(!myPageToggle);
+                        setHistoryToggle(!historyToggle);
+                      }}
+                    />
+                    <HomeIcon
+                      style={{ cursor: 'pointer', color: '#4B4F82' }}
+                      onClick={() => {
+                        setHistoryToggle(!historyToggle);
+                      }}
+                    />
                   </div>
-                )}
+                  <LeftConference />
+                </div>
+              )}
               {!authenticated && <Promotion />}
-            
             </PromotionContainer>
           </Grid>
           <Grid item xs={6} container alignItems="center">
@@ -187,6 +201,8 @@ function Home() {
                     hangeLogout={setAuthenticated}
                     ToUserInfo={setUserInfoToggle}
                     nickTouched={setnickChanged}
+                    ToMyPage={setMyPageToggle}
+                    ChangeLogin={setAuthenticated}
                   />
                 )}
                 {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
@@ -196,7 +212,7 @@ function Home() {
             </AuthContainer>
           </Grid>
         </Grid>
-        <button onClick={handleDownload}>다운로드</button>
+        {/* <button onClick={handleDownload}>다운로드</button> */}
       </FullScreenContainer>
     </Wrapper>
   );

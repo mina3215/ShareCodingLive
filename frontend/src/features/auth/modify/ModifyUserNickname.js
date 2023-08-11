@@ -20,18 +20,6 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const LogoWrapper = styled.div`
-  flex: 0.4;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Logo = styled.img`
-  cursor: pointer;
-  width: 400px;
-  height: 100px;
-`;
-
 const ModifyContainer = styled.div`
   height: 80%;
   width: 100%;
@@ -137,6 +125,8 @@ export default function ModifyUserNickName(props) {
     dispatch(modifyNickname(data))
       .unwrap()
       .then(() => {
+        // props.ToMypage(true);
+        props.ToUserInfo(false);
         props.modNick(false);
         toast.success('😀 닉네임 변경이 완료되었습니다');
         props.nickTouch(true);
@@ -161,15 +151,6 @@ export default function ModifyUserNickName(props) {
   }
   return (
     <Wrapper>
-      {/* <LogoWrapper>
-							<Logo
-								src={logo}
-								onClick={() => {
-									navigate('/');
-								}}
-							/>
-						</LogoWrapper> */}
-
       <ModifyContainer>
         <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
           {/* 닉네임 입력 필드 */}
@@ -187,7 +168,7 @@ export default function ModifyUserNickName(props) {
             // fullWidth
           />
           <CommonButton
-            grey="true"
+            green="true"
             onClick={doCheckNickname}
             disabled={isNicknameChecked || !newNickname || isValidInputNickname}
           >
