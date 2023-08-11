@@ -12,11 +12,14 @@ import MainButton from '../pages/MainButton';
 import Promotion from '../pages/Promotion';
 import MyPage from '../pages/MyPage';
 import UserInfo from '../pages/UserInfo';
+import ConferenceHistory from '../pages/ConferenceHistory';
+// import LeftConference from '../pages/LeftConference';
 
 // style
 import { Container, Grid } from '@material-ui/core';
 import styled from 'styled-components';
-import ConferenceHistory from '../pages/ConferenceHistory';
+import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const FullScreenContainer = styled(Container)`
   height: 100vh;
@@ -134,13 +137,43 @@ function Home() {
         <Grid container alignItems="center">
           <Grid item xs={6} container>
             <PromotionContainer ref={divRef}>
-              {authenticated && (
+              {authenticated && !historyToggle && (
                 <MainButton
                   ChangeLogout={setAuthenticated}
                   ToMyPage={setMyPageToggle}
                   ToUserInfo={setUserInfoToggle}
                   ToHistory={setHistoryToggle}
                 />
+              )}
+              {/* 예약 왼쪽 */}
+              {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
+                <div className="parent" style={{ width: '100%' }}>
+                  <div
+                    className="child"
+                    style={{
+                      width: '28vw',
+                      top: '20vh',
+                      display: 'flex',
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <ArrowBackIcon
+                      style={{ cursor: 'pointer', color: '#4B4F82' }}
+                      onClick={() => {
+                        setMyPageToggle(!myPageToggle);
+                        setHistoryToggle(!historyToggle);
+                      }}
+                    />
+                    <HomeIcon
+                      style={{ cursor: 'pointer', color: '#4B4F82' }}
+                      onClick={() => {
+                        setHistoryToggle(!historyToggle);
+                      }}
+                    />
+                    {/* <LeftConference /> */}
+                  </div>
+                </div>
               )}
               {!authenticated && <Promotion />}
             </PromotionContainer>

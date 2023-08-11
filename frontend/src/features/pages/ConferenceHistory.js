@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,6 +7,8 @@ import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Pagination from 'react-bootstrap/Pagination';
 import code_data from './CodeData';
 import styled from 'styled-components';
+import { getToken } from '../../common/api/JWT-common';
+import { getCodeData } from './pagesSlice';
 
 const ClassAccordionContainer = styled.div`
   max-width: 1000px;
@@ -181,7 +184,10 @@ const ConferenceHistory = () => {
   const [activeIndex, setActiveIndex] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
-
+  // const token = getToken();
+  const token =
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE3Mjk4OTAsImlhdCI6MTY5MTcyOTg5MCwiZW1haWwiOiJtaW5zdUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6Im1pbnN1In0.L2VOSwEk6coqU9hGk7x1VeqMLW2FYD8uedjsYROdZ2k';
+  const dispatch = useDispatch();
   const indexOfLastCode = currentPage * codesPerPage;
   const indexOfFirstCode = indexOfLastCode - codesPerPage;
   const currentCodes = courses.slice(indexOfFirstCode, indexOfLastCode);
@@ -189,6 +195,32 @@ const ConferenceHistory = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  useEffect(() => {
+    const data = {
+      token,
+    };
+    dispatch(getCodeData(data))
+      .unwrap()
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        // if (err.status === 400) {
+        //   toast.error('비밀번호를 다시 입력해주세요');
+        // } else if (err.status === 401) {
+        //   toast.error('다시 로그인해주세요');
+        //   props.hangeLogout(true);
+        //   props.ToUserInfo(false);
+        // } else if (err.status === 404) {
+        //   toast.error('다시 로그인해주세요');
+        //   props.hangeLogout(true);
+        //   props.ToUserInfo(false);
+        // } else if (err.status === 500) {
+        //   navigate('/error');
+        // }
+      });
+  }, []);
 
   return (
     <ClassAccordionContainer>

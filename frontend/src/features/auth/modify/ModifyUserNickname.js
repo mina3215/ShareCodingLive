@@ -151,15 +151,6 @@ export default function ModifyUserNickName(props) {
   }
   return (
     <Wrapper>
-      {/* <LogoWrapper>
-							<Logo
-								src={logo}
-								onClick={() => {
-									navigate('/');
-								}}
-							/>
-						</LogoWrapper> */}
-
       <ModifyContainer>
         <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
           {/* 닉네임 입력 필드 */}
