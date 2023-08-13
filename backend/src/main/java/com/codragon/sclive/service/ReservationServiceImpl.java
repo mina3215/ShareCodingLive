@@ -38,4 +38,9 @@ public class ReservationServiceImpl implements ReservationService {
     public int delete(String uuid) {
         return reservationMapper.delete(uuid);
     }
+
+    @Override
+    public void save(String userEmail, String fcm_access_token) {
+        reservationMapper.save(userEmail, fcm_access_token);
+    }
 }

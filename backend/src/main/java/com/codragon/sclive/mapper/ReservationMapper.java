@@ -17,4 +17,5 @@ public interface ReservationMapper {
 
     int delete(String uuid);
 
+    void save(String email, String fcm_access_token);
 }

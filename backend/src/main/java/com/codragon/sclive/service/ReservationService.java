@@ -15,4 +15,5 @@ public interface ReservationService {
 
     int delete(String uuid);
 
+    void save(String userEmail, String fcm_access_token);
 }

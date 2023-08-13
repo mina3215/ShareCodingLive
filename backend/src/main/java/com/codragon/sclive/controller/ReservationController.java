@@ -101,4 +101,13 @@ public class ReservationController {
         }
         return ResponseEntity.status(result.getStatus()).body(result);
     }
+
+    @ApiOperation(value = "FCM에서 발급해주는 Token 받기")
+    @PostMapping("/token")
+    public ResponseEntity<HttpResult> getFCMAccessToken(@ApiIgnore @AuthenticationPrincipal UserEntity user, @RequestBody String FCM_ACCESS_TOKEN) {
+        log.info("FCM-Access-Token: {}", FCM_ACCESS_TOKEN);
+        reservationService.save(user.getUserEmail(), FCM_ACCESS_TOKEN);
+        HttpResult result = HttpResult.getSuccess();
+        return ResponseEntity.status(result.getStatus()).body(result);
+    }
 }

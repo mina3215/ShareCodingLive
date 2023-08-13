@@ -18,6 +18,7 @@
         from conference
         where owner_email = #{email}
           and is_active = 2
+        order by start_time asc
     </select>
 
     <update id="update">
@@ -29,4 +30,10 @@
         set is_active = 3
         where course_id = #{uuid}
     </delete>
+
+    <update id="save" parameterType="String">
+        update user
+        set fcm_access_token = #{fcm_access_token}
+        where email = #{email}
+    </update>
 </mapper>
