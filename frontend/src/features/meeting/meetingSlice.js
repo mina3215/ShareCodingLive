@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from '../../common/api/http-common';
 import axios from 'axios';
 
 // 액션
@@ -7,14 +8,14 @@ import axios from 'axios';
 export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { rejectWithValue }) => {
   try {
     console.log(data);
-    console.log(data.title);
+    console.log(data.uuid);
     const response = await axios.post(
-      `http://192.168.100.210:8080/conference/create?title=${data.title}`,
+      `https://i9d109.p.ssafy.io/api/conference/create?title=${data.uuid}`,
       {},
       {
         headers: {
-          Authorization: `Bearer ${data.token}`,
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.token}`,
         },
       }
     );
@@ -23,6 +24,18 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
     return rejectWithValue(err.response);
   }
 });
+
+export const createRoom = createAsyncThunk('CREATE_ROOM', async (data, {rejectWithValue}) => {
+  const params = new URLSearchParams();
+  params.append('roomId', data.uuid);
+  try {
+    const response = await axios.post('http://192.168.100.132:8080/ws/chat', params)
+    console.log(response.data);  
+  }catch(err){
+      console.log('에렁레어ㅔ러에러ㅔ어레어',err)
+    }
+});
+
 
 // 초기 값
 const initialState = {

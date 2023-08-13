@@ -6,15 +6,17 @@ import BackHandIcon from '@mui/icons-material/BackHand';
 
 import styled from 'styled-components';
 
-const Name = styled.h1`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+const CamOff = styled.div`
+  position: relative;
   z-index: 9999;
 `;
-const CamOff = styled.div`
-  z-index: 9999;
+
+const Name = styled.div`
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
 `;
 
 const Reaction = styled.div`
@@ -29,6 +31,10 @@ const Reaction = styled.div`
   }
 `;
 
+const HandDiv = styled.div`
+  position: absolute;
+`;
+
 export default class StreamComponent extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +43,13 @@ export default class StreamComponent extends Component {
     this.handlePressKey = this.handlePressKey.bind(this);
     this.toggleNicknameForm = this.toggleNicknameForm.bind(this);
     this.toggleSound = this.toggleSound.bind(this);
+    // this.inputRef = React.createRef();
   }
+
+  // componentDidMount() {
+  //   this.props.handleChildRef(this.inputRef);
+  //   console.log(this.inputRef, 'ref');
+  // }
 
   handleChange(event) {
     this.setState({ nickname: event.target.value });
@@ -71,11 +83,18 @@ export default class StreamComponent extends Component {
     return (
       <div>
         {this.props.user && this.props.user.getStreamManager() ? (
-          <div>
-            <CamOff>{!this.props.user.isVideoActive() ? <Name>{this.props.user.getNickname()}</Name> : null}</CamOff>
-            <Reaction>{this.props.user.isReaction() === 'hand' ? <BackHandIcon /> : null}</Reaction>
-            <OvVideoComponent user={this.props.user} mutedSound={this.state.mutedSound} />
-          </div>
+          <CamOff>
+            {!this.props.user.isVideoActive() ? <Name>{this.props.user.getNickname()}</Name> : null}
+            <HandDiv>
+              <Reaction style={{ color: '#ffb500' }}>
+                {!this.props.user.isHost() && this.props.user.isReaction() === 'hand' ? <BackHandIcon /> : null}
+              </Reaction>
+            </HandDiv>
+            <div>
+              {/* <div ref={(ref) => this.props.handleChildRef(ref)}> */}
+              <OvVideoComponent cam={this.props.cam} user={this.props.user} mutedSound={this.state.mutedSound} />
+            </div>
+          </CamOff>
         ) : null}
       </div>
     );

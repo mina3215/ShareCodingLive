@@ -17,23 +17,8 @@ const Wrapper = styled(Container)`
   align-items: center;
 `;
 
-// const LogoWrapper = styled(Container)`
-//   display: flex;
-//   flex: 1;
-//   justify-content: center;
-//   align-items: center;
-//   flex-direction: column;
-// `;
-
-// const Logo = styled.img`
-//   width: 100%;
-//   height: 100%;
-//   flex: 1;
-//   margin-bottom: 10px;
-// `;
-
 const LoginContainer = styled.div`
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -110,13 +95,18 @@ export const CommonButton = styled(Button)`
   border-radius: 6px;
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
+  // background: linear-gradient(to bottom, #2d2f42, #4c5085);
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
+  );
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   margin-right: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#9a95ee' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -164,10 +154,10 @@ export default function Login(props) {
       })
       .catch((err) => {
         if (err.status === 400) {
-          toast.error('입력하신 정보 확인해주세요');
+          toast.error('입력하신 정보를 확인해주세요');
         } else if (err.status === 409) {
           toast.error('이미 로그인된 사용자입니다');
-        } else if (err.status === 403) {
+        } else if (err.status === 401) {
           toast.error('아이디와 비밀번호를 다시 확인해주세요');
           deleteToken();
           props.ChangeLogin(null);
@@ -194,6 +184,7 @@ export default function Login(props) {
             size="small"
             type="email"
             label="Email"
+            // color="primary"
             onChange={(e) => setEmail(e.target.value.replace(/\s/g, ''))}
             name="email"
             value={email}

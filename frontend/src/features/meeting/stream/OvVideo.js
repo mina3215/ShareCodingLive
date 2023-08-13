@@ -4,6 +4,7 @@ export default class OvVideoComponent extends Component {
   constructor(props) {
     super(props);
     this.videoRef = React.createRef();
+    this.decideHeight = this.decideHeight.bind(this);
   }
 
   componentDidMount() {
@@ -29,6 +30,17 @@ export default class OvVideoComponent extends Component {
     }
   }
 
+  decideHeight() {
+    if (this.props.user.isHost()) {
+      if (this.props.cam) {
+        return '56vh';
+      } else {
+        return '88vh';
+      }
+    }
+    return '26vh';
+  }
+
   render() {
     return (
       <video
@@ -36,6 +48,7 @@ export default class OvVideoComponent extends Component {
         id={'video-' + this.props.user.getStreamManager().stream.streamId}
         ref={this.videoRef}
         muted={this.props.mutedSound}
+        style={{ height: this.decideHeight() }}
       />
     );
   }

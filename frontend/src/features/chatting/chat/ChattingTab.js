@@ -97,9 +97,7 @@ const ChattingTab = (props) => {
         )}
       </ListContainer>
     </div>
-    
   );
-  
 };
 
 export default ChattingTab;

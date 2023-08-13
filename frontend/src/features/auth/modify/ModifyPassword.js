@@ -20,18 +20,6 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const LogoWrapper = styled.div`
-  flex: 0.4;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Logo = styled.img`
-  cursor: pointer;
-  width: 400px;
-  height: 100px;
-`;
-
 const ModifyContainer = styled.div`
   height: 80%;
   width: 100%;
@@ -46,13 +34,17 @@ export const CommonButton = styled(Button)`
   border-radius: 6px;
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
+  );
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   margin-right: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#9a95ee' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -103,6 +95,9 @@ export default function ModifyPassword(props) {
       .unwrap()
       .then(() => {
         deleteToken();
+        props.ToUserInfo(false);
+        props.ToMypage(false);
+        props.ChangeLogin(false);
         props.modPassword(false);
         toast.success('비밀번호 수정이 완료되었습니다. 다시 로그인해주세요');
       })
@@ -183,7 +178,7 @@ export default function ModifyPassword(props) {
             size="small"
             fullWidth
           />
-          <CommonButton disabled={!newPassword || !isPasswordSame} mauve="true" type="submit">
+          <CommonButton disabled={!newPassword || !isPasswordSame} green="true" type="submit">
             비밀번호 변경하기
           </CommonButton>
         </ValidatorForm>

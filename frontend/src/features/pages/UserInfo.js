@@ -23,22 +23,11 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-const LogoWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Logo = styled.img`
-  cursor: pointer;
-  width: 400px;
-  height: 200px;
-`;
-
 const UserContainer = styled.div`
+  margin-top: 5vh;
   height: 50vh;
   display: flex;
+  width: 25vw;
   flex: 1;
   justify-content: center;
   align-items: flex-start;
@@ -46,7 +35,9 @@ const UserContainer = styled.div`
 `;
 
 const NicknameContainer = styled(Container)`
-  background-color: #d9d9d9;
+  background-color: #ffff;
+  border: 3px solid #2d2f42;
+  border-bottom: none;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -56,7 +47,9 @@ const NicknameContainer = styled(Container)`
 `;
 
 const EmailContainer = styled(Container)`
-  background-color: #d9d9d9;
+  background-color: #ffff;
+  border: 3px solid #2d2f42;
+  border-top: none;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -66,7 +59,7 @@ const EmailContainer = styled(Container)`
 `;
 
 const IconContainer = styled.div`
-	margin-top: 5px
+	margin-top: 5px;
   margin-right: 10px;
 `;
 
@@ -76,7 +69,7 @@ const TextTitle = styled.label`
   font-weight: bold;
   display: block;
   text-align: center;
-  margin-top: 25vh;
+  margin-top: 4vh;
 `;
 const TextLabel = styled.label`
   font-size: 15px;
@@ -100,12 +93,16 @@ const NickButton = styled(Button)`
   border-radius: 6px;
   // margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
+	background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
+  );
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#9a95ee' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -114,26 +111,26 @@ const NickButton = styled(Button)`
     color: ${(props) => (props.grey ? 'white' : 'black')};
   }
 `;
-const PassButton = styled(Button)`
-  width: 50%;
-  border-radius: 6px;
-  margin: 1em 0em 0em 0em;
-  padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
-  color: ${(props) => (props.grey ? '#262626' : 'white')};
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
-    color: ${(props) => (props.grey ? 'white' : '#262626')};
-  }
+// const PassButton = styled(Button)`
+//   width: 50%;
+//   border-radius: 6px;
+//   margin: 1em 0em 0em 0em;
+//   padding: 0.4em 1em;
+//   background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
+//   color: ${(props) => (props.grey ? '#262626' : 'white')};
+//   display: block;
+//   margin-left: auto;
+//   margin-right: auto;
+//   &:hover {
+//     background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+//     color: ${(props) => (props.grey ? 'white' : '#262626')};
+//   }
 
-  &:disabled {
-    opacity: 0.35;
-    color: ${(props) => (props.grey ? 'white' : 'black')};
-  }
-`;
+//   &:disabled {
+//     opacity: 0.35;
+//     color: ${(props) => (props.grey ? 'white' : 'black')};
+//   }
+// `;
 
 const UserInfo = (props) => {
   const dispatch = useDispatch();
@@ -212,13 +209,27 @@ const UserInfo = (props) => {
 
         <br />
 
-        {!nickEdit && !passwordEdit && (
+        {/* {!nickEdit && !passwordEdit && (
           <PassButton green="true" onClick={passwordEditHandler}>
             비밀번호 수정
           </PassButton>
+        )} */}
+        {nickEdit && (
+          <ModifyUserNickName
+            ToUserInfo={props.ToUserInfo}
+            ToMyPage={props.ToMyPage}
+            modNick={setNickEdit}
+            nickTouch={props.nickTouched}
+          />
         )}
-        {nickEdit && <ModifyUserNickName modNick={setNickEdit} nickTouch={props.nickTouched} />}
-        {!nickEdit && passwordEdit && <ModifyPassword modPassword={setPasswordEdit} />}
+        {!nickEdit && (
+          <ModifyPassword
+            ToUserInfo={props.ToUserInfo}
+            ToMyPage={props.ToMyPage}
+            ChangeLogin={props.ChangeLogin}
+            modPassword={setPasswordEdit}
+          />
+        )}
       </UserContainer>
     </Wrapper>
   );

@@ -7,26 +7,16 @@ import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
 import { getUUIDLink } from '../meeting/meetingSlice';
 
+import axios from 'axios';
+
+// 복사 이모티콘
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 const Wrapper = styled(Container)`
   display: flex;
   height: 100vh;
   justify-content: center;
   align-items: center;
-`;
-
-const LogoWrapper = styled(Container)`
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const Logo = styled.img`
-  width: 100%;
-  height: 100%;
-  flex: 1;
-  margin-bottom: 10px;
 `;
 
 const CreateRoomContainer = styled.div`
@@ -36,22 +26,6 @@ const CreateRoomContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-`;
-
-const TextTitle = styled.label`
-  font-size: 30px;
-  color: #262626;
-  font-weight: bold;
-  display: block;
-  text-align: center;
-`;
-
-const TextSubtitle = styled.label`
-  font-size: 15px;
-  color: #262626;
-  padding: 1.5em 0;
-  display: block;
-  text-align: center;
 `;
 
 // 날짜 입력 필드
@@ -108,13 +82,17 @@ export const CommonButton = styled(Button)`
   border-radius: 6px;
   margin: 1em 0em 0em 0em;
   padding: 0.4em 1em;
-  background: ${(props) => (props.green ? '#94C798' : '#D9D9D9')};
+  background: linear-gradient(
+    to bottom,
+    ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
+    ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
+  );
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;
   margin-right: auto;
   &:hover {
-    background: ${(props) => (props.green ? '#7ec783' : '#a1a1a1')};
+    background: ${(props) => (props.green ? '#9a95ee' : '#a1a1a1')};
     color: ${(props) => (props.grey ? 'white' : '#262626')};
   }
 
@@ -128,9 +106,7 @@ const NewConference = (props) => {
   const classes = useStyles();
   const Navigate = useNavigate();
   const dispatch = useDispatch();
-  // const token = getToken();
-  const token =
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE2NzYzMTMsImlhdCI6MTY5MTY3NjMxMywiZW1haWwiOiJhc2RmMTJAYS5hIiwibmlja25hbWUiOiJhc2RmIn0.JkVL6P6G2gdomidXpm3DAmVDpMX-Qj2H85WvYCy0hiE';
+  const token = getToken();
 
   // 날짜 디폴트 값 오늘 날짜, 시간
   const dateNow = new Date();
@@ -143,6 +119,8 @@ const NewConference = (props) => {
   const [uuid, setUUID] = useState(null);
   const [link, setLink] = useState(null);
 
+  const [reserved, setReserved] = useState(false)
+
   // 방 생성 양식 제출 : uuid, link 저장
   function handleSubmit(e) {
     const data = {
@@ -152,21 +130,52 @@ const NewConference = (props) => {
     dispatch(getUUIDLink(data))
       .unwrap()
       .then((res) => {
+        console.log(res);
         setUUID(res.data.uuid);
         setLink(res.data.link);
       })
       .catch((err) => console.log(err));
   }
 
+  // 방 예약 양식 제출 : 
+  function reserHandleSubmit(e) {
+    axios({
+      method: 'post',
+      url: 'http://119.56.161.229:7777/reservation/create',
+      data:{title:title, reservationTime:date},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE5NDY1MzYsImlhdCI6MTY5MTk0NjUzNiwiZW1haWwiOiJwYXJrMUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6IuuwleuwleuwlSJ9.U5jvMgplOv6YNd_WEq5PMkTrVa7Nlo5eYAIWEMt-m5Q',
+      }
+    })
+      .then((response) => {
+          console.log(response);
+          // 예약 하고 나서 모달 창 끄기 해야 함.
+          setReserved(!reserved)
+          setUUID('reserved');
+          setLink('reserved');
+
+      });
+  }
+
   // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
   function goTomeetingPage() {
-    Navigate('/meeting', {
+    Navigate(`/meeting/${uuid}`, {
       state: {
-        uuid: uuid,
         isHost: true,
       },
     });
   }
+
+  // 링크 복사하는 함수
+  const handleCopy = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  };
 
   return (
     <Wrapper>
@@ -204,16 +213,34 @@ const NewConference = (props) => {
               생성
             </CommonButton>
             <br />
-            <CommonButton grey="true">예약</CommonButton>
+            <CommonButton grey="true" onClick={reserHandleSubmit}>
+              예약
+            </CommonButton>
           </ValidatorForm>
-        ) : (
+        ) : !reserved ?(
           <div>
+            {/* 복사 버튼 */}
+            <ContentCopyIcon
+              size="small"
+              variant="outlined"
+              onClick={() => handleCopy(link)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                padding: '2px',
+                minWidth: '5px', // 원하는 크기로 조절
+                minHeight: '5px',
+              }}
+            />
             <h3>{link}</h3>
             <CommonButton green="true" onClick={goTomeetingPage}>
               시작
             </CommonButton>
           </div>
-        )}
+        ) : <div>
+            <h3>회의가 예약 되었습니다.</h3>
+          </div>}
       </CreateRoomContainer>
     </Wrapper>
   );

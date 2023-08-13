@@ -12,10 +12,14 @@ import MainButton from '../pages/MainButton';
 import Promotion from '../pages/Promotion';
 import MyPage from '../pages/MyPage';
 import UserInfo from '../pages/UserInfo';
+import ConferenceHistory from '../pages/ConferenceHistory';
+import LeftConference from '../pages/LeftConference';
 
 // style
 import { Container, Grid } from '@material-ui/core';
 import styled from 'styled-components';
+import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const FullScreenContainer = styled(Container)`
   height: 100vh;
@@ -30,10 +34,9 @@ const PromotionContainer = styled(Container)`
   justify-content: space-between;
   height: 80vh;
   align-items: center;
-  // border: 2px solid black;
   background-color: white;
   border-radius: 10px;
-  margin-left: 10%;
+  margin-left: 0;
   margin-right: 5%;
 `;
 
@@ -42,19 +45,20 @@ const AuthContainer = styled(Container)`
   justify-content: center;
   align-items: center;
   height: 80vh;
-  // border: 2px solid black;
   border-radius: 10px;
-  background-color: #484848;
+  background-color: #ffff;
   margin-left: 5%;
-  margin-right: 10%;
+  margin-right: 0;
 `;
 
 const AuthInnerContainer = styled(Container)`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   height: 80%;
   border-radius: 10px;
+  border: 3px solid #2d2f42;
   background-color: white;
   margin: 10%;
 `;
@@ -73,8 +77,10 @@ function Home() {
   const [signupToggle, setSignupToggle] = useState(false);
   const [myPageToggle, setMyPageToggle] = useState(false);
   const [userInfoToggle, setUserInfoToggle] = useState(false);
+  const [historyToggle, setHistoryToggle] = useState(false);
   const [nickChanged, setnickChanged] = useState(false);
   const [ocrResult, setOcrResult] = useState('');
+
   const divRef = useRef(null);
 
   const handleOcrResult = useCallback((result) => {
@@ -124,15 +130,50 @@ function Home() {
     // console.log(signupToggle, 'signupToggle');
     // console.log(myPageToggle, 'myPageToggle');
     // console.log(userInfoToggle, 'userInfoToggle');
-  }, [authenticated, signupToggle, myPageToggle, userInfoToggle, nickChanged]);
+  }, [authenticated, signupToggle, myPageToggle, userInfoToggle, nickChanged, historyToggle]);
   return (
     <Wrapper>
       <FullScreenContainer>
         <Grid container alignItems="center">
           <Grid item xs={6} container>
             <PromotionContainer ref={divRef}>
-              {authenticated && (
-                <MainButton ChangeLogout={setAuthenticated} ToMyPage={setMyPageToggle} ToUserInfo={setUserInfoToggle} />
+              {authenticated && !historyToggle && (
+                <MainButton
+                  ChangeLogout={setAuthenticated}
+                  ToMyPage={setMyPageToggle}
+                  ToUserInfo={setUserInfoToggle}
+                  ToHistory={setHistoryToggle}
+                />
+              )}
+              {/* 예약 왼쪽 */}
+              {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
+                <div className="parent" style={{ width: '100%' }}>
+                  <div
+                    className="child"
+                    style={{
+                      width: '35vw',
+                      top: '20vh',
+                      display: 'flex',
+                      position: 'absolute',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <ArrowBackIcon
+                      style={{ cursor: 'pointer', color: '#4B4F82' }}
+                      onClick={() => {
+                        setMyPageToggle(!myPageToggle);
+                        setHistoryToggle(!historyToggle);
+                      }}
+                    />
+                    <HomeIcon
+                      style={{ cursor: 'pointer', color: '#4B4F82' }}
+                      onClick={() => {
+                        setHistoryToggle(!historyToggle);
+                      }}
+                    />
+                  </div>
+                  <LeftConference />
+                </div>
               )}
               {!authenticated && <Promotion />}
             </PromotionContainer>
@@ -148,23 +189,30 @@ function Home() {
                     ToUserInfo={setUserInfoToggle}
                   />
                 )}
-                {authenticated && !signupToggle && !myPageToggle && !userInfoToggle && <Reservation />}
+                {authenticated && !signupToggle && !myPageToggle && !userInfoToggle && !historyToggle && (
+                  <Reservation />
+                )}
                 {signupToggle && <SignUp ToLogin={setSignupToggle} />}
-                {authenticated && myPageToggle && !userInfoToggle && (
-                  <MyPage ToMyPage={setMyPageToggle} ToUserInfo={setUserInfoToggle} />
+                {authenticated && myPageToggle && !userInfoToggle && !historyToggle && (
+                  <MyPage ToMyPage={setMyPageToggle} ToUserInfo={setUserInfoToggle} ToHistory={setHistoryToggle} />
                 )}
                 {authenticated && userInfoToggle && (
                   <UserInfo
                     hangeLogout={setAuthenticated}
                     ToUserInfo={setUserInfoToggle}
                     nickTouched={setnickChanged}
+                    ToMyPage={setMyPageToggle}
+                    ChangeLogin={setAuthenticated}
                   />
+                )}
+                {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
+                  <ConferenceHistory />
                 )}
               </AuthInnerContainer>
             </AuthContainer>
           </Grid>
         </Grid>
-        <button onClick={handleDownload}>다운로드</button>
+        {/* <button onClick={handleDownload}>다운로드</button> */}
       </FullScreenContainer>
     </Wrapper>
   );

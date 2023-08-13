@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import axios from 'axios';
+import axios from '../../common/api/http-common';
 import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import DialogExtensionComponent from './dialog-extension/DialogExtension';
@@ -9,26 +9,34 @@ import UserModel from './models/user-model';
 import ToolbarComponent from './toolbar/ToolbarComponent';
 
 import { getToken as getLocalToken } from '../../common/api/JWT-common';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // css
 import styled from 'styled-components';
 import './VideoRoomComponent.css';
+
 const HostCam = styled.div`
-  position: absolute;
+  position: relative;
   display: flex;
-  width: 50%;
-  height: 50%;
-  top: 250px;
+  // width: 50%;
+  height: 55%;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  // top: 250px;
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column-reverse;
+  background-color: #161616;
   height: 50vh;
 `;
 const ContainerCam = styled.div`
   display: flex;
   flex-direction: column;
+  background-color: #161616;
   height: 50vh;
 `;
 
@@ -36,12 +44,12 @@ const ParticipantCams = styled.div`
   // flex: 1;
   top: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: unwrap;
   justify-content: flex-start;
   align-items: center;
   background-color: #282828;
   width: 100%;
-  height: 63%;
+  height: 32vh;
   position: relative;
 `;
 
@@ -49,27 +57,50 @@ const Toolbar = styled.div`
   display: flex;
   align-items: center;
   background-color: #282828;
-  // height: 10%;
+  position: relative;
+  z-index: 9999;
 `;
 
 const Cam = styled.div`
   position: relative;
-  width: 310px;
-  height: 90%;
-  // overflow: hidden;
-  margin-right: 15px;
+  // width: 290px;
+  height: 40vh;
+  align-items: center;
+  overflow: hidden;
+  // margin-top: 15px;
+  margin-bottom: 1.5vh;
   margin-left: 15px;
+  display: flex;
+  justify-content: flex-start;
   flex-shrink: 0;
   & div {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    // position: relative;
+    // width: 320px;
+    overflow: hidden;
   }
+`;
+
+const ParticipantCam = styled.div`
+  display: flex;
+  overflow-x: auto;
+  gap: 12px; /* 참가자 화면 사이의 간격 설정 */
+  max-width: 100%; /* 부모 컨테이너의 크기에 맞춤 */
+  margin-bottom: 15px; /* 하단 여백 설정 */
+  margin-top: 20px; /* 하단 여백 설정 */
+  margin-left: 15px; /* 하단 여백 설정 */
+  height: 28.5vh;
+`;
+
+const IndividualCam = styled.div`
+  flex: 0 0 auto;
+  width: 20vw; /* 참가자 화면의 너비 설정 */
+  height: 28vh; /* 참가자 화면의 높이 설정 */
+  overflow: hidden;
+  // border: 1px solid #ccc;
 `;
 
 var localUser = new UserModel();
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000/';
-const APPLICATION_SERVER_URL = 'http://192.168.100.210:8080/';
 
 class VideoRoomComponent extends Component {
   constructor(props) {
@@ -80,9 +111,8 @@ class VideoRoomComponent extends Component {
     let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
     this.remotes = [];
     this.localUserAccessAllowed = false;
-    // const userToken = getLocalToken(); // 주소가 쉐코라랑 달라서 잠깐 보류
-    const userToken =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE2NzYzMTMsImlhdCI6MTY5MTY3NjMxMywiZW1haWwiOiJhc2RmMTJAYS5hIiwibmlja25hbWUiOiJhc2RmIn0.JkVL6P6G2gdomidXpm3DAmVDpMX-Qj2H85WvYCy0hiE';
+    const userToken = getLocalToken(); // 주소가 쉐코라랑 달라서 잠깐 보류
+
     this.state = {
       mySessionId: uuid,
       myUserName: userName,
@@ -97,6 +127,7 @@ class VideoRoomComponent extends Component {
       isHost: isHost, // 나는 host 인가?
       isReact: false, // 손을 들었는가?
       userToken: userToken, // localStorage 토큰
+      showCam: true,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -112,6 +143,7 @@ class VideoRoomComponent extends Component {
 
     this.handsUp = this.handsUp.bind(this);
     this.detectMic = this.detectMic.bind(this);
+    this.ParticipantCamShow = this.ParticipantCamShow.bind(this);
   }
 
   // 마운트 시 시작하는 함수
@@ -129,6 +161,10 @@ class VideoRoomComponent extends Component {
   // 윈도우 창을 닫을 때
   onbeforeunload(event) {
     this.leaveSession();
+  }
+
+  ParticipantCamShow() {
+    this.setState({ showCam: !this.state.showCam });
   }
 
   joinSession() {
@@ -197,7 +233,7 @@ class VideoRoomComponent extends Component {
       videoSource: videoDevices[0].deviceId,
       publishAudio: localUser.isAudioActive(),
       publishVideo: localUser.isVideoActive(),
-      resolution: '320x240',
+      resolution: this.state.isHost ? '1280x720' : '320x240',
       frameRate: 30,
       insertMode: 'APPEND',
       mirror: false,
@@ -265,6 +301,7 @@ class VideoRoomComponent extends Component {
     if (mySession) {
       mySession.disconnect();
     }
+    // TODO: 호스트 나간거 알려주기 
     // Empty all properties...
     this.OV = null;
     this.setState({
@@ -517,56 +554,75 @@ class VideoRoomComponent extends Component {
     return (
       <Fragment>
         {localUser && localUser.streamManager ? (
-          <div>
+          <div style={{ height: '100vh' }}>
             <DialogExtensionComponent
               showDialog={this.state.showExtensionDialog}
               cancelClicked={this.closeDialogExtension}
             />
-            <ContainerCam>
+            {/* <ContainerCam> */}
+            {this.state.showCam && (
               <ParticipantCams>
                 {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
                   <Cam>
-                    <StreamComponent user={localUser} handleNickname={this.nicknameChanged} />
+                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} />
                   </Cam>
                 )}
 
                 {/* TODO: 창 줄이거나 채팅창 켜지면 사람 수 조절  */}
                 {/* TODO: 옆으로 넘어가는 케러셀 제작 */}
                 {/* TODO: 여기 로직 변경  */}
-                {this.state.subscribers.map((sub, i) =>
-                  i <= camNumbers ? (
-                    <Cam key={i}>
-                      {console.log('구독자 정보', sub)}
-                      <StreamComponent user={sub} streamId={sub.streamManager.stream.streamId} />
-                    </Cam>
-                  ) : null
-                )}
+                <ParticipantCam>
+                  {this.state.subscribers.map((sub, i) =>
+                    i <= camNumbers ? (
+                      <IndividualCam key={i}>
+                        <StreamComponent
+                          cam={this.state.showCam}
+                          user={sub}
+                          streamId={sub.streamManager.stream.streamId}
+                        />
+                      </IndividualCam>
+                    ) : null
+                  )}
+                </ParticipantCam>
               </ParticipantCams>
-              <HostCam>
+            )}
+            <div style={{ backgroundColor: '#242424', display: 'grid' }}>
+              <button onClick={this.ParticipantCamShow}>
+                <FontAwesomeIcon icon={faBars} style={{ color: 'white' }} />
+              </button>
+            </div>
+            <div style={{ backgroundColor: '#161616' }}>
+              <HostCam ref={(ref) => this.props.handleChildRef(ref)}>
                 {hostUser !== undefined && hostUser.getStreamManager() !== undefined && (
-                  <div>
-                    <StreamComponent user={hostUser} />
-                  </div>
+                  <StreamComponent
+                    // handleChildRef={this.props.handleChildRef}
+                    cam={this.state.showCam}
+                    user={hostUser}
+                  />
                 )}
               </HostCam>
-            </ContainerCam>
+            </div>
+            {/* </ContainerCam> */}
             {/* TODO: 호스트 캠, 스크린 두기 */}
-            <Container>
-              <Toolbar>
-                <ToolbarComponent
-                  sessionId={mySessionId}
-                  user={localUser}
-                  showNotification={this.state.messageReceived}
-                  camStatusChanged={this.camStatusChanged}
-                  micStatusChanged={this.micStatusChanged}
-                  screenShare={this.screenShare}
-                  stopScreenShare={this.stopScreenShare}
-                  leaveSession={this.leaveSession}
-                  handsUp={this.handsUp}
-                  handleToggleChat={this.props.handleToggleChat}
-                />
-              </Toolbar>
-            </Container>
+            {/* <Container> */}
+            {/* <Toolbar> */}
+            <ToolbarComponent
+              sessionId={mySessionId}
+              user={localUser}
+              showNotification={this.state.messageReceived}
+              camStatusChanged={this.camStatusChanged}
+              micStatusChanged={this.micStatusChanged}
+              screenShare={this.screenShare}
+              stopScreenShare={this.stopScreenShare}
+              leaveSession={this.leaveSession}
+              handsUp={this.handsUp}
+              handleToggleChat={this.props.handleToggleChat}
+              handleToggleMember={this.props.handleToggleMember}
+              handleHandUp={this.props.handleHandUp}
+              setCapture={this.props.setCapture}
+            />
+            {/* </Toolbar> */}
+            {/* </Container> */}
           </div>
         ) : (
           // 비디오 안 불러왔으면 아무것도 안보이게 해놓음
@@ -585,18 +641,20 @@ class VideoRoomComponent extends Component {
 
   async createSessionToken(sessionId) {
     try {
+      console.log('토큰', this.state.userToken);
+      console.log('세션아이디', sessionId);
       const response = await axios.post(
-        APPLICATION_SERVER_URL + 'conference/join',
+        'conference/join/',
         { owner: this.state.isHost, uuid: sessionId },
         {
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${this.state.userToken}`,
           },
         }
       );
       return response.data;
     } catch (err) {
+      console.log(err);
       if (err.response.status === 403) {
         alert('없는 회의방입니다.');
         // 뒤로 보내기

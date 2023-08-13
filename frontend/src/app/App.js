@@ -14,9 +14,9 @@ import Home from '../features/home/Home';
 import Error404 from '../common/error/Error404';
 import Error500 from '../common/error/Error500';
 import MeetingPage from '../features/meeting/MeetingPage';
-import Socket from '../features/socket';
 
 const Wrapper = styled.div`
+  background: linear-gradient(to bottom, #2d2f42, #4c5085);
   background-color: #d9d9d9;
 `;
 
@@ -51,8 +51,8 @@ function App() {
             <Route path="/" element={<Home />} />
             {/* 경로 매핑 되지 않을 시 404 오류 페이지 */}
             <Route path="*" element={<Error404 />} />
-            <Route path="/meeting" element={<MeetingPage />} />
-            <Route path="/chatting" element={<Socket />} />
+            {/* 음.. */}
+            <Route path="/meeting/:uuid" element={<MeetingPage />} />
           </Routes>
         </BrowserRouter>
         <StyledToastContainer
