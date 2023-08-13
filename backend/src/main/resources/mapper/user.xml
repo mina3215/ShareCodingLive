@@ -21,6 +21,6 @@
         delete from user where email = #{email}
     </delete>
     <select id="getUserByEmail" parameterType="String">
-        select nickname, email, password, role from user where email = #{email}
+        select nickname, email, password, role, fcm_access_token from user where email = #{email}
     </select>
 </mapper>

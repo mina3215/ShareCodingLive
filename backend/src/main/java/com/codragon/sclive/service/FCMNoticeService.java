@@ -23,7 +23,7 @@ public class FCMNoticeService {
     // 토큰은 redis에 저장
 
     public String sendNotificationByToken(FCMNoticeReqDao reqDao) {
-        log.info("sendNotification");
+        log.debug("sendNotification");
 //       String firebaseToken = "dDiMx3JJwq5GCqD7kcBUZh:APA91bH9eGlgnYmiAANYb5-ZFl3c4ods16wwLVN7Ps13D42z8W3zr9fWKY_pa9AUFFwR5AKr1xYoOkwTYrzUVlj54UsNe7qbKDHgn9nPZbIv2Z415jBTamzQPmcLIX1wS4oJvg0PYwhJ";
 //        String firebaseToken = "f9lau0jxv_HqebClOdmiYA:APA91bHQ56lueFIeT9jHy16lQUy7K5i4SXKkY7XUOkoVSCD4USwGZkjR3vcMpaTfKoiRihNnuyVD7CaGlvFa21KJeGBT5OBr2YvOMYrLHYJnN-t8pFUmRWtPnuDeDPksyae6cikNDHQA";
         String firebaseToken = reqDao.getToken();//tokens.get(reqDao.getTargetEmail());

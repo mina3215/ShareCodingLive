@@ -20,6 +20,8 @@ public class UserDao {
 
     private String role;
 
+    private String fcmToken;
+
     public UserResDto getUserdaoToDto() {
         UserResDto userResDto = new UserResDto();
         userResDto.setEmail(this.email);
