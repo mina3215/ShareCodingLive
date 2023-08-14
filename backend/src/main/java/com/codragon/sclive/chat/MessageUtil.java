@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -74,8 +76,12 @@ public class MessageUtil {
             log.info("comment: {}", comment.get().getBody().getChoices().get(0).getMessage().content);
 
             returnMessage.setTitle(title.get().getBody().getChoices().get(0).getMessage().content);
-            returnMessage.setMessage(comment.get().getBody().getChoices().get(0).getMessage().content);
             returnMessage.setSummarization(summarize.get().getBody().getChoices().get(0).getMessage().content);
+
+            ArrayList<String> codeInfo = convertCode(comment.get().getBody().getChoices().get(0).getMessage().content);
+            returnMessage.setLanguage(codeInfo.get(0));
+            returnMessage.setMessage(codeInfo.get(1));
+
         } catch (InterruptedException | ExecutionException e) {
             log.error("ChatGPT 통신 에러");
             e.getStackTrace();
@@ -87,5 +93,25 @@ public class MessageUtil {
     public ChatMessage question(ChatMessage senderMessage, ChatMessage returnMessage) {
         returnMessage.setMessage(senderMessage.getMessage().substring(1));
         return returnMessage;
+    }
+
+    private ArrayList<String> convertCode(String chatGPTCode) {
+
+        // 코드 언어가 표기된 백틱 언어와 분리
+        String[] splitString = chatGPTCode.split("\\n", 2);
+
+        // 이 코드의 언어 추출
+        String language = splitString[0].substring(3);
+
+        // 백틱 제거한 코드만 추출
+        int len = splitString[1].length();
+        String code = splitString[1].substring(0, len - 4);
+        
+        // 언어, 코드
+        ArrayList<String> result = new ArrayList<>();
+        result.add(language);
+        result.add(code);
+
+        return result;
     }
 }

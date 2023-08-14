@@ -26,7 +26,7 @@ public class MessageServiceImpl implements MessageService {
     private String getCurrentTime() {
 
         LocalDateTime now = LocalDateTime.now();
-        String currentTime = now.format(DateTimeFormatter.ofPattern("a hh시 mm분"));
+        String currentTime = now.format(DateTimeFormatter.ofPattern("a hh:mm"));
 
         return currentTime;
     }

@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class Jwt {
 
-    private final int FIVE_MINUTES = 1000 * 60 * 50;
+    private final int FIVE_MINUTES = 1000 * 60 * 5 * 1000;
     private final int THREE_DAYS = 1000 * 60 * 60 * 24 * 3;
 
     // 헤더 설정

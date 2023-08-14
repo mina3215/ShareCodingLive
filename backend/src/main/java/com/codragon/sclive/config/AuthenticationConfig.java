@@ -41,6 +41,7 @@ public class AuthenticationConfig {
                     .userPassword(findUser.getPassword())
                     .userNickname(findUser.getNickname())
                     .userRole(findUser.getRole())
+                    .fcm_access_token(findUser.getFcm_access_token())
                     .build();
 
             return user;

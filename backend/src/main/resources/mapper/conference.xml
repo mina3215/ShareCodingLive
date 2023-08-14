@@ -16,6 +16,6 @@
     </update>
 
     <update id="end">
-        update conference set end_time=now() where course_id = #{uuid} and owner_email = #{email}
+        update conference set end_time=now(), is_active = 0 where course_id = #{uuid} and owner_email = #{email}
     </update>
 </mapper>

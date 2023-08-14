@@ -24,6 +24,8 @@ public class UserEntity implements UserDetails {
 
     private String userRole;
 
+    private String fcm_access_token;
+
     public String getUserRole() {
         final String PREFIX = "ROLE_";
         return PREFIX.concat(userRole);

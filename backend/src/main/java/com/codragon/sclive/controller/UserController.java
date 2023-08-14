@@ -1,6 +1,7 @@
 package com.codragon.sclive.controller;
 
 import com.codragon.sclive.dao.UserDao;
+import com.codragon.sclive.dao.UserHistoryCourse;
 import com.codragon.sclive.dao.UserUpdatePWDao;
 import com.codragon.sclive.domain.HttpResult;
 import com.codragon.sclive.domain.UserEntity;
@@ -15,7 +16,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +23,13 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 @Api(value = "유저 API", tags = {"User"})
+@Slf4j
 @RestController
 @RequestMapping("/user")
-@Slf4j
 public class UserController {
 
     private final Jwt jwt;
@@ -86,6 +87,7 @@ public class UserController {
             responseDto = UserLoginResDto.builder()
                     .httpStatusCode(200)
                     .message("정상적으로 로그인이 완료됐습니다.")
+                    .nickname(tokenDto.getNickname())
                     .build();
         } else {
             responseDto = UserLoginResDto.builder()
@@ -95,25 +97,6 @@ public class UserController {
         }
 
         return ResponseEntity.status(responseDto.getHttpStatusCode()).body(responseDto);
-    }
-
-
-    @GetMapping("/cookie")
-    public String getCookie(HttpServletResponse response){
-//        ResponseCookie cookie1 = ResponseCookie.from("hcookie", "hello")
-//                .path("/")
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .build();
-//        response.addHeader("Set-Cookie", cookie1.toString());
-//        HttpResult result =  HttpResult.getSuccess();
-
-
-        Cookie cookie = new Cookie("hello", "hicookie");
-        cookie.setMaxAge(10000);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        return "Cookie";
     }
 
     @ApiOperation(value = "로그아웃", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
@@ -250,5 +233,10 @@ public class UserController {
         HttpResult result = HttpResult.getSuccess();
         result.setData(userResDto);
         return ResponseEntity.status(result.getStatus()).body(result);
+    }
+
+    @GetMapping("/history/code")
+    public List<UserHistoryCourse> getCodeHistory(@ApiIgnore @AuthenticationPrincipal UserEntity user) {
+        return userService.getCodeHistoryFromCourses(user.getUserEmail());
     }
 }

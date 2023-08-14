@@ -27,5 +27,7 @@ public class ChatMessage {
 
     private String summarization;   // 코드 요약
 
+    private String language;
+
     private Set<String> participants;
 }
