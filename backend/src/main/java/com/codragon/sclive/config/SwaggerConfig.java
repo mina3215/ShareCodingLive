@@ -47,6 +47,7 @@ public class SwaggerConfig {
     public Docket api() {
 
         return new Docket(DocumentationType.SWAGGER_2)
+//                .host("i9d109.p.ssafy.io:8094/api")
                 .globalRequestParameters(initParameters())
                 .select()
                 .apis(RequestHandlerSelectors.any())

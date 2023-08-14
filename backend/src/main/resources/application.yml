@@ -1,8 +1,14 @@
 server:
-  port: 8080
-  address: 0.0.0.0
-  servlet:
-    context-path: /api
+  port: 443
+#  address: 0.0.0.0
+#  servlet:
+#    context-path: /api
+  ssl:
+    key-store: keystore.p12
+    key-store-type: PKCS12
+    key-store-password: qwer1234
+    enabled: true
+
 
 # ============================= #
 # ====== Local Database ======= #
@@ -36,3 +42,8 @@ logging:
 chatgpt:
   api-key: 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
   url: https://api.openai.com/v1/chat/completions
+
+#springfox:
+#  documentation:
+#    swagger-ui:
+#      base-url: https://i9d109.p.ssafy.io:8094/
