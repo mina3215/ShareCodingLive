@@ -335,12 +335,12 @@ const Reservation = () => {
                     <ChatContainer elevation={3}>
                     <ChatList>
                       {reservations.map((reservation, index) => 
-                        reservation.startTime >= date ? 
+                        // reservation.startTime >= date ? 
                         <ChatItem key={index} onClick={()=>reserList(reservation)}>
                           <ListItemText primary={reservation.title} />
                           <AuthorText>{reservation.startTime}</AuthorText>
                         </ChatItem>
-                        : null
+                        // : null
                       )}
                     </ChatList>
                   </ChatContainer>
