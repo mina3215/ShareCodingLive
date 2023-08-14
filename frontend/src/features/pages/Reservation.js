@@ -12,12 +12,19 @@ import axios from '../../common/api/http-common';
 // 여기부터는 예약 리스트 보여주는 css
 
 const ChatContainer = styled(Paper)(({ theme }) => ({
-  // width: '300px',
   height: '350px',
-  border: '1px solid #ccc',
-  borderRadius: '5px',
+  // border: 'px solid #2d2f42',
+  borderRadius: '10px',
+  padding: '10px',
   overflow: 'hidden',
+  // Add min-height property here
+  minHeight: '350px', // Adjust this value to your preference
 }));
+
+const CustomListItemText = styled(ListItemText)({
+  fontsize: '30px',
+  width: '8vw',
+});
 
 const ChatList = styled(List)({
   padding: '0',
@@ -25,18 +32,28 @@ const ChatList = styled(List)({
   margin: '0',
   maxHeight: '100%',
   overflowY: 'scroll',
+  width: '20vw',
+  borderRadius: '10px',
 });
 
-const ChatItem = styled(ListItem)(({ theme }) => ({
-  borderBottom: '1px solid #ccc',
+const ChatItem = styled(ListItem)(({ theme, even }) => ({
   padding: '10px',
+  borderRadius: '10px',
+  marginBottom: '10px',
+  backgroundColor: even ? '#9499c8' : '#d2d7fd', // Use the desired colors
   '&:last-child': {
     borderBottom: 'none',
   },
 }));
 
 const AuthorText = styled(Typography)(({ theme }) => ({
-  fontSize: '12px',
+  fontSize: '200px',
+  marginBottom: '5px',
+  marginRight: '7px',
+}));
+
+const TimeText = styled(Typography)(({ theme }) => ({
+  fontSize: '10px',
   marginBottom: '5px',
   marginRight: '7px',
 }));
@@ -45,18 +62,9 @@ const AuthorText = styled(Typography)(({ theme }) => ({
 
 const Wrapper = styled(Container)`
   display: flex;
-  height: 55vh;
+  height: 51vh;
   justify-content: center;
   align-items: center;
-`;
-
-const CreateRoomContainer = styled.div`
-  height: 900vh;
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 `;
 
 const TextTitle = styled.label`
@@ -65,15 +73,7 @@ const TextTitle = styled.label`
   font-weight: bold;
   display: block;
   text-align: center;
-  margin-top: 5vh;
-`;
-
-const TextSubtitle = styled.label`
-  font-size: 15px;
-  color: #262626;
-  padding: 1.5em 0;
-  display: block;
-  text-align: center;
+  margin-top: 4vh;
 `;
 
 // 날짜 입력 필드
@@ -282,71 +282,84 @@ const Reservation = () => {
           </div> */}
       <TextTitle>예약 목록</TextTitle>
       <Wrapper>
-        <CreateRoomContainer>
-          {console.log(resClicked, 'clicked')}
-          {resClicked ? (
-            // <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-            <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-              {/* 제목 입력 필드 */}
-              <CommonTextValidator
-                islogininput="true"
-                size="small"
-                type="title"
-                label="제목을 입력하세요"
-                onChange={(e) => setTitle(e.target.value)}
-                name="title"
-                value={title}
-                validators={['required']}
-                errorMessages={['회의 제목을 입력하세요']}
-                variant="outlined"
-              />
-              {/* 날짜 입력 필드 */}
-              <CommonTextValidator
-                size="small"
-                label=""
-                onChange={(e) => {
-                  setReservationTime(e.target.value);
-                }}
-                // inputProps={{ min: reservationTime }}
-                value={reservationTime}
-                validators={['required']}
-                name="date"
-                type="datetime-local"
-                variant="outlined"
-              />
-              <CommonButton green="true" onClick={changeReservation}>
-                예약 수정
-              </CommonButton>
-              {/* <br /> */}
-              <CommonButton red="true" onClick={deleteReservation}>
-                예약 삭제
-              </CommonButton>
-              <CommonButton green="true" onClick={backToReserList}>
-                뒤로가기
-              </CommonButton>
-            </ValidatorForm>
-          ) : (
-            <div>
-              {/* 이거는 그냥 전체 예약 리스트들 보여주는거 */}
-              <Box display="flex" justifyContent="center" alignItems="center" height="40vh">
-                <ChatContainer elevation={3}>
-                  <ChatList>
-                    {reservations.map(
-                      (reservation, index) => (
-                        // reservation.startTime >= date ?
-                        <ChatItem key={index} onClick={() => reserList(reservation)}>
-                          <ListItemText primary={reservation.title} />
-                          <AuthorText>{reservation.startTime}</AuthorText>
-                        </ChatItem>
-                      )
-                      // : null
-                    )}
-                  </ChatList>
-                </ChatContainer>
-              </Box>
-            </div>
-          )}
-        </CreateRoomContainer>
+        {console.log(resClicked, 'clicked')}
+        {resClicked ? (
+          // <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
+          <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
+            {/* 제목 입력 필드 */}
+            <CommonTextValidator
+              islogininput="true"
+              size="small"
+              type="title"
+              label="제목을 입력하세요"
+              onChange={(e) => setTitle(e.target.value)}
+              name="title"
+              value={title}
+              validators={['required']}
+              errorMessages={['회의 제목을 입력하세요']}
+              variant="outlined"
+            />
+            {/* 날짜 입력 필드 */}
+            <CommonTextValidator
+              size="small"
+              label=""
+              onChange={(e) => {
+                setReservationTime(e.target.value);
+              }}
+              // inputProps={{ min: reservationTime }}
+              value={reservationTime}
+              validators={['required']}
+              name="date"
+              type="datetime-local"
+              variant="outlined"
+            />
+            <CommonButton green="true" onClick={changeReservation}>
+              예약 수정
+            </CommonButton>
+            {/* <br /> */}
+            <CommonButton red="true" onClick={deleteReservation}>
+              예약 삭제
+            </CommonButton>
+            <CommonButton green="true" onClick={backToReserList}>
+              뒤로가기
+            </CommonButton>
+          </ValidatorForm>
+        ) : (
+          <div>
+            {/* 이거는 그냥 전체 예약 리스트들 보여주는거 */}
+            <Box display="flex" justifyContent="center" alignItems="center" height="40vh">
+              <ChatContainer style={{ borderRadius: '10px' }} elevation={3}>
+                <ChatList>
+                  {reservations.map(
+                    (reservation, index) => (
+                      // reservation.startTime >= date ?
+                      <ChatItem key={index} onClick={() => reserList(reservation)} even={index % 2 === 0}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '1.5vw',
+                          }}
+                        >
+                          <CustomListItemText>{reservation.title}</CustomListItemText>
+                          <div
+                            style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', width: '8vw' }}
+                          >
+                            <AuthorText style={{ fontSize: '14px' }}>{reservation.startTime.slice(0, -8)}</AuthorText>
+                            <TimeText style={{ fontSize: '12px' }}>{reservation.startTime.slice(10, -3)}</TimeText>
+                          </div>
+                        </div>
+                      </ChatItem>
+                    )
+                    // : null
+                  )}
+                </ChatList>
+              </ChatContainer>
+            </Box>
+          </div>
+        )}
       </Wrapper>
     </div>
   );

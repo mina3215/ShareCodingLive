@@ -91,4 +91,3 @@ function ModalBasic(props) {
   );
 }
 export default ModalBasic;
-
