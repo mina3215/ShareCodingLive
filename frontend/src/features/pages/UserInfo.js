@@ -59,7 +59,7 @@ const EmailContainer = styled(Container)`
 `;
 
 const IconContainer = styled.div`
-	margin-top: 5px
+	margin-top: 5px;
   margin-right: 10px;
 `;
 
@@ -98,7 +98,6 @@ const NickButton = styled(Button)`
     ${(props) => (props.green ? '#3C6EBF' : '#D9D9D9')},
     ${(props) => (props.green ? '#3F3998' : '#D9D9D9')}
   );
-  col
   color: ${(props) => (props.grey ? '#262626' : 'white')};
   display: block;
   margin-left: auto;

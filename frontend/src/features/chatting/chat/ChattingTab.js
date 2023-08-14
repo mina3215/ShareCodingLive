@@ -77,11 +77,13 @@ const ChattingTab = (props) => {
           message.type === 'TALK' ? (
             <div className="message" key={index}>
               <MessageContainerWithIcon>
-                <SenderIcon>박{/* <p className="sender">{message.sender[0]}</p> */}</SenderIcon>
+                <SenderIcon>
+                  <p className="sender">{message.sender[0]}</p>
+                </SenderIcon>
                 <MessageContainer>
                   {/* sender : 보낸사람 */}
-                  {/* <p className="sender">{message.sender}</p> */}
-                  <Sender className="sender">비단박</Sender>
+                  <Sender className="sender">{message.sender}</Sender>
+                  {/* <Sender className="sender">비단박</Sender> */}
                   <MessageContent>
                     <CustomMessages>
                       {/* message : 메시지 본문 */}

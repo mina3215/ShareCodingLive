@@ -6,11 +6,15 @@ import React, { useState, useEffect } from 'react';
 import TabContainer from './TabContainer';
 import Members from './Members';
 
+// import axios from '../../common/api/http-common';
+
 // socket 통신을 위한 변수
 // let sock = new SockJS('https://i9d109.p.ssafy.io:8094/api/ws/chat');
-let sock = new SockJS('http://192.168.100.132:8080/ws/chat');
+
+let sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
 console.log(sock);
 let ws = Stomp.over(sock);
+console.log(ws);
 let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
@@ -92,7 +96,7 @@ const Socket = (props) => {
         setTimeout(() => {
           console.log('Connection reconnect');
           // const newsock = new SockJS('https://i9d109.p.ssafy.io:8094/api/ws/chat');
-          const newsock = new SockJS('http://192.168.100.132:8080/ws/chat');
+          const newsock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
           const newws = Stomp.over(newsock);
           connectWebSocket(newws);
           // sock = new SockJS('https://i9d109.p.ssafy.io:8094/api/ws/chat');

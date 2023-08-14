@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const TabContainerWrapper = styled.div`
-  height: 83vh; /* Set a specific height for the chat container */
+  height: 82.5vh; /* Set a specific height for the chat container */
   margin: 0 auto;
   padding: 20px;
   border: none;
@@ -63,7 +63,7 @@ const TextInputWrapper = styled.div`
   display: flex;
   // margin-top: 10px;
   // margin-bottom: 0px;
-  height: 9vh;
+  height: 9.5vh;
 `;
 
 const TextInput = styled.input`

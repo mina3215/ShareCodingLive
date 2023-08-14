@@ -301,6 +301,7 @@ class VideoRoomComponent extends Component {
     if (mySession) {
       mySession.disconnect();
     }
+    // TODO: 호스트 나간거 알려주기 
     // Empty all properties...
     this.OV = null;
     this.setState({

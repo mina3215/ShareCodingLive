@@ -52,7 +52,7 @@ function App() {
             {/* 경로 매핑 되지 않을 시 404 오류 페이지 */}
             <Route path="*" element={<Error404 />} />
             {/* 음.. */}
-            <Route path="/meeting" element={<MeetingPage />} />
+            <Route path="/meeting/:uuid" element={<MeetingPage />} />
           </Routes>
         </BrowserRouter>
         <StyledToastContainer

@@ -102,6 +102,7 @@ const MyPage = (props) => {
     props.ToHistory(true);
     props.ToMyPage(false);
     props.ToUserInfo(false);
+
   };
   return (
     <Wrapper>

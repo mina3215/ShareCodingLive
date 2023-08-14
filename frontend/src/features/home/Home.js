@@ -13,7 +13,7 @@ import Promotion from '../pages/Promotion';
 import MyPage from '../pages/MyPage';
 import UserInfo from '../pages/UserInfo';
 import ConferenceHistory from '../pages/ConferenceHistory';
-// import LeftConference from '../pages/LeftConference';
+import LeftConference from '../pages/LeftConference';
 
 // style
 import { Container, Grid } from '@material-ui/core';
@@ -31,7 +31,7 @@ const FullScreenContainer = styled(Container)`
 
 const PromotionContainer = styled(Container)`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   height: 80vh;
   align-items: center;
   background-color: white;
@@ -151,7 +151,7 @@ function Home() {
                   <div
                     className="child"
                     style={{
-                      width: '28vw',
+                      width: '35vw',
                       top: '20vh',
                       display: 'flex',
                       position: 'absolute',
@@ -171,8 +171,8 @@ function Home() {
                         setHistoryToggle(!historyToggle);
                       }}
                     />
-                    {/* <LeftConference /> */}
                   </div>
+                  <LeftConference />
                 </div>
               )}
               {!authenticated && <Promotion />}

@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import AuthReducer from '../features/auth/authSlice';
 import MeetingReducer from '../features/meeting/meetingSlice';
-import PagesReducer from '../features/pages/pagesSlice';
+import PagesReducer from '../features/pages/pagesSlice/pagesSlice';
 
 const rootPersistConfig = {
   key: 'root',
@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
   // 리듀서 합
   auth: AuthReducer,
   meeting: MeetingReducer,
-  page: PagesReducer,
+  pages: PagesReducer,
 });
 const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 

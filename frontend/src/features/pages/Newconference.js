@@ -6,6 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
 import { getUUIDLink } from '../meeting/meetingSlice';
+import { toast } from 'react-toastify';
+
+// import axios from 'axios';
+import axios from '../../common/api/http-common';
+
+// 복사 이모티콘
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -114,6 +121,8 @@ const NewConference = (props) => {
   const [uuid, setUUID] = useState(null);
   const [link, setLink] = useState(null);
 
+  const [reserved, setReserved] = useState(false);
+
   // 방 생성 양식 제출 : uuid, link 저장
   function handleSubmit(e) {
     const data = {
@@ -130,15 +139,50 @@ const NewConference = (props) => {
       .catch((err) => console.log(err));
   }
 
+  // 방 예약 양식 제출 :
+  function reserHandleSubmit(e) {
+    console.log(date, '날짜');
+    axios({
+      method: 'post',
+      url: 'reservation/create',
+      data: { title: title, reservationTime: date },
+      headers: {
+        // 'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        // 예약 하고 나서 모달 창 끄기 해야 함.
+        setReserved(!reserved);
+        setUUID('reserved');
+        setLink('reserved');
+      })
+      .catch((err) => {
+        if (err.status === 403) {
+          toast.error('예약되었습니다.');
+        }
+      });
+  }
+
   // 시작 -> uuid, isAdmin 값을 라우팅과 함께 전달
   function goTomeetingPage() {
-    Navigate('/meeting', {
+    Navigate(`/meeting/${uuid}`, {
       state: {
-        uuid: uuid,
         isHost: true,
       },
     });
   }
+
+  // 링크 복사하는 함수
+  const handleCopy = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  };
 
   return (
     <Wrapper>
@@ -176,14 +220,34 @@ const NewConference = (props) => {
               생성
             </CommonButton>
             <br />
-            <CommonButton grey="true">예약</CommonButton>
+            <CommonButton grey="true" onClick={reserHandleSubmit}>
+              예약
+            </CommonButton>
           </ValidatorForm>
-        ) : (
+        ) : !reserved ? (
           <div>
+            {/* 복사 버튼 */}
+            <ContentCopyIcon
+              size="small"
+              variant="outlined"
+              onClick={() => handleCopy(link)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                padding: '2px',
+                minWidth: '5px', // 원하는 크기로 조절
+                minHeight: '5px',
+              }}
+            />
             <h3>{link}</h3>
             <CommonButton green="true" onClick={goTomeetingPage}>
               시작
             </CommonButton>
+          </div>
+        ) : (
+          <div>
+            <h3>회의가 예약 되었습니다.</h3>
           </div>
         )}
       </CreateRoomContainer>

@@ -24,7 +24,7 @@ const TabContainerWrapper = styled.div`
 `;
 
 function MeetingPage(props) {
-  const { state } = useLocation();
+  const { pathname, state } = useLocation();
   const [configRef, setConfigRef] = useState('');
   const [showChat, setShowChat] = useState(false);
   const [showMember, setShowMember] = useState(false);
@@ -32,6 +32,9 @@ function MeetingPage(props) {
   const [ocrResult, setOcrResult] = useState('');
 
   const divRef = useRef(null);
+
+  const uuid = pathname.slice(9);
+  const isHost = state ? state.isHost : false;
 
   const handleChildRef = (ref) => {
     setConfigRef(ref);
@@ -106,8 +109,8 @@ function MeetingPage(props) {
     <Wrapper>
       <VideoRoomWrapper showChat={showChat} showMember={showMember} ref={divRef}>
         <VideoRoomComponent
-          uuid={state.uuid}
-          isHost={state.isHost}
+          uuid={uuid}
+          isHost={isHost}
           handleToggleChat={handleToggleChat}
           handleToggleMember={handleToggleMember}
           handleHandUp={handleHandUp}
@@ -116,7 +119,7 @@ function MeetingPage(props) {
         />
       </VideoRoomWrapper>
       <TabContainerWrapper showChat={showChat} showMember={showMember}>
-        <Socket showChat={showChat} showMember={showMember} handUp={handUp} />
+        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp} />
       </TabContainerWrapper>
       {/* <button onClick={handleDownload}>다운로드</button> */}
     </Wrapper>
