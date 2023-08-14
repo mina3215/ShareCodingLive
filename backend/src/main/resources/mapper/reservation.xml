@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codragon.sclive.mapper.ReservationMapper">
+    <resultMap id="conference" type="com.codragon.sclive.dto.ReservationListResDto">
+        <result column="course_id" property="courseId"></result>
+        <result column="start_time" property="startTime"></result>
+        <result column="title" property="title"></result>
+    </resultMap>
+
+    <insert id="create" parameterType="ReservationCreateDao">
+        INSERT INTO conference (`course_id`, `start_time`, `title`, `is_active`, `owner_email`)
+        VALUES (#{uuid}, #{reservationTime}, #{title}, 2, #{ownerEmail})
+    </insert>
+
+    <select id="list" parameterType="String" resultMap="conference">
+        select `course_id`, `start_time`, `title`
+        from conference
+        where owner_email = #{email}
+          and is_active = 2
+          and start_time >= now()
+        order by start_time asc
+    </select>
+
+    <update id="update">
+        update conference set start_time = #{reservationTime}, title = #{title} where course_id = #{uuid}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        update conference
+        set is_active = 3
+        where course_id = #{uuid}
+    </delete>
+
+    <update id="save" parameterType="String">
+        update user
+        set fcm_access_token = #{fcm_access_token}
+        where email = #{email}
+    </update>
+</mapper>

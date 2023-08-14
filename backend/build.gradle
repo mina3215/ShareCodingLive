@@ -66,6 +66,9 @@ dependencies {
     //restTemplate
     compileOnly 'org.apache.httpcomponents:httpcore:4.4.13'
 
+    //Firebase Admin SDK
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
