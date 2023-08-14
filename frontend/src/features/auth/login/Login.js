@@ -198,11 +198,12 @@ export default function Login(props) {
 
         axios({
           method: 'post',
-          url: 'http://192.168.100.210:8080/reservation/token',
-          data:{FCM_ACCESS_TOKEN:FCM_Token},
+          url: 'http://192.168.100.210:8080/api/reservation/token',
+          // data:{FCM_ACCESS_TOKEN:FCM_Token},
+          data:{fcm_ACCESS_TOKEN:FCM_Token},
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE3NTkwMjUsImlhdCI6MTY5MTc1OTAyNSwiZW1haWwiOiJkQHNzYWZ5LmNvbSIsIm5pY2tuYW1lIjoiZCJ9.FO9zv4L6ckPSO_qDYLg-_fwJnHREau8f3IbZYcJ_Ato',
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
           }
         })
           .then((response) => {

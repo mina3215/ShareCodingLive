@@ -153,6 +153,14 @@ export const CommonButton = styled(Button)`
 const Reservation = () => {
   const classes = useStyles();
 
+  // 날짜 디폴트 값 오늘 날짜, 시간
+  const dateNow = new Date();
+  const currentTime = 'T' + dateNow.toTimeString().slice(0, 5);
+  const today = dateNow.toISOString().slice(0, 10);
+  const now = today + currentTime;
+
+  const [date, setDate] = useState(now);
+
   // 예약 리스트 담기
   const [reservations, setReservations] = useState([])
 
@@ -191,12 +199,12 @@ const Reservation = () => {
   function getReservation(e) {
     axios({
       method: 'get',
-      url: 'http://119.56.161.229:7777/reservation/list',
+      url: 'http://192.168.100.210:8080/api/reservation/list',
       headers: {
         'Content-Type': 'application/json',
         // Authorization: `Bearer ${token}`, '' 붙이기, 액세스 토큰 이상했음!!!!
         // 'Authorization': `Bearer ${token}`,
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE5NDY1MzYsImlhdCI6MTY5MTk0NjUzNiwiZW1haWwiOiJwYXJrMUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6IuuwleuwleuwlSJ9.U5jvMgplOv6YNd_WEq5PMkTrVa7Nlo5eYAIWEMt-m5Q',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
       }
     })
       .then((response) => {
@@ -214,12 +222,12 @@ const Reservation = () => {
     console.log("uuid : ", uuid)
     axios({
       method: 'post',
-      url: 'http://119.56.161.229:7777/reservation/update',
+      url: 'http://192.168.100.210:8080/api/reservation/update',
       data:{title:title, reservationTime:reservationTime, uuid:uuid},
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization': `Bearer ${token}`,
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE5NDY1MzYsImlhdCI6MTY5MTk0NjUzNiwiZW1haWwiOiJwYXJrMUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6IuuwleuwleuwlSJ9.U5jvMgplOv6YNd_WEq5PMkTrVa7Nlo5eYAIWEMt-m5Q',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
       }
     })
       .then((response) => {
@@ -235,17 +243,17 @@ const Reservation = () => {
   function deleteReservation(e) {
     axios({
       method: 'delete',
-      url: 'http://119.56.161.229:7777/reservation/delete',
+      url: 'http://192.168.100.210:8080/api/reservation/delete',
       params:{uuid:uuid},
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE5NDY1MzYsImlhdCI6MTY5MTk0NjUzNiwiZW1haWwiOiJwYXJrMUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6IuuwleuwleuwlSJ9.U5jvMgplOv6YNd_WEq5PMkTrVa7Nlo5eYAIWEMt-m5Q',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
       }
     })
       .then((response) => {
           console.log(response);
           setResClicked(!resClicked)
-          setDeleted(!deleted)
+          // setDeleted(!deleted)
           getReservation()
       });
   }
@@ -327,10 +335,12 @@ const Reservation = () => {
                     <ChatContainer elevation={3}>
                     <ChatList>
                       {reservations.map((reservation, index) => 
+                        reservation.startTime >= date ? 
                         <ChatItem key={index} onClick={()=>reserList(reservation)}>
                           <ListItemText primary={reservation.title} />
                           <AuthorText>{reservation.startTime}</AuthorText>
                         </ChatItem>
+                        : null
                       )}
                     </ChatList>
                   </ChatContainer>
