@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import axios from '../../common/api/http-common';
-// import { getToken } from '../../../common/api/JWT-common';
-import axios from 'axios';
+import axios from '../../../common/api/http-common';
+import { getToken } from '../../../common/api/JWT-common';
+// import axios from 'axios';
 
 // const token = getToken()
 // createAsyncThunk를 이용한 비동기 처리
@@ -10,10 +10,10 @@ export const getCodeData = createAsyncThunk('GET_CODE_DATA', async (data, { reje
   console.log(DataTransferItemList);
   console.log(data.token,'하하하호호호');
   try {
-    const response = await axios.get('http://192.168.100.132:8080/user/history/code/', { 
+    const response = await axios.get('user/history/code/', { 
       headers: {
-        Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE3NDYzNjgsImlhdCI6MTY5MTc0NjM2OCwiZW1haWwiOiJtaW5zdUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6Im1pbnN1In0.69qW0KTqDLyVUx9bldG7DtJC-CC8HX8Qa8T72XcrOsA',
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${data.token}`,
+        // 'Content-Type': 'application/json',
       },
       },
     );

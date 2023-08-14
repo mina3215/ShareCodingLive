@@ -8,8 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Pagination from 'react-bootstrap/Pagination';
 
-import left_code_data from './LeftCodeData';
+// import left_code_data from './LeftCodeData';
 import styled from 'styled-components';
+
+import { getToken } from '../../common/api/JWT-common';
 
 
 const ClassAccordionContainer = styled.div`
@@ -150,7 +152,7 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   );
 };
 
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE3NDE1MTYsImlhdCI6MTY5MTc0MTUxNiwiZW1haWwiOiJtaW5zdUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6Im1pbnN1In0.dvqrXC1sH3YWvpwdCZsxwxu144E7E5PSIRrUiOhG_BI';
+const token = getToken();
 
 
 const LeftConference = () => {

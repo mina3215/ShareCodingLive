@@ -7,7 +7,9 @@ import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
 import { getUUIDLink } from '../meeting/meetingSlice';
 
-import axios from 'axios';
+import axios from '../../common/api/http-common';
+
+// import axios from 'axios';
 
 // 복사 이모티콘
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -141,11 +143,10 @@ const NewConference = (props) => {
   function reserHandleSubmit(e) {
     axios({
       method: 'post',
-      url: 'http://192.168.100.210:8080/api/reservation/create',
+      url: 'reservation/create',
       data:{title:title, reservationTime:date},
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
+        'Authorization': `Bearer ${token}`,
       }
     })
       .then((response) => {

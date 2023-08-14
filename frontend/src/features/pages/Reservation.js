@@ -7,7 +7,8 @@ import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/mater
 import styled from 'styled-components';
 import { Container, Button, makeStyles } from '@material-ui/core';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import axios from 'axios'
+// import axios from 'axios'
+import axios from '../../common/api/http-common';
 
 // 여기부터는 예약 리스트 보여주는 css
 
@@ -199,12 +200,12 @@ const Reservation = () => {
   function getReservation(e) {
     axios({
       method: 'get',
-      url: 'http://192.168.100.210:8080/api/reservation/list',
+      url: 'reservation/list',
       headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         // Authorization: `Bearer ${token}`, '' 붙이기, 액세스 토큰 이상했음!!!!
-        // 'Authorization': `Bearer ${token}`,
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
+        'Authorization': `Bearer ${token}`,
+        // 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
       }
     })
       .then((response) => {
@@ -222,12 +223,12 @@ const Reservation = () => {
     console.log("uuid : ", uuid)
     axios({
       method: 'post',
-      url: 'http://192.168.100.210:8080/api/reservation/update',
+      url: 'reservation/update',
       data:{title:title, reservationTime:reservationTime, uuid:uuid},
       headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${token}`,
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
+        // 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        // 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
       }
     })
       .then((response) => {
@@ -243,11 +244,12 @@ const Reservation = () => {
   function deleteReservation(e) {
     axios({
       method: 'delete',
-      url: 'http://192.168.100.210:8080/api/reservation/delete',
+      url: 'reservation/delete',
       params:{uuid:uuid},
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
+        // 'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        // 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
       }
     })
       .then((response) => {
