@@ -111,7 +111,7 @@ const CorseContainerIndividual = styled.div`
 `;
 
 const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) => {
-  const [dActiveIndex, setDActiveIndex] = useState(0);
+  const [dActiveIndex, setDActiveIndex] = useState(sectionIndex===1?0:null);
   const toggleSection = (date) => {
     const nextIndex = isActiveSection ? null : sectionIndex;
     setActiveIndex(nextIndex);
@@ -163,12 +163,11 @@ const LeftConference = () => {
       token: token
     }
     dispatch(getCodeData(data)).unwrap()
-    .then((res)=>{setCourses(res); console.log(res)}
+    .then((res)=>{setCourses(res)}
     ).catch();
-    
   }
   
-  const [leftactiveindex, setLeftActiveIndex] = useState(0);
+  const [activeIndex, setactiveIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
   const indexOfLastCode = currentPage * codesPerPage;
@@ -185,8 +184,8 @@ const LeftConference = () => {
         <DateAccordian
           date={date}
           key={index}
-          isActiveSection={index === leftactiveindex}
-          setActiveIndex={setLeftActiveIndex}
+          isActiveSection={index === activeIndex}
+          setActiveIndex={setactiveIndex}
           sectionIndex={index}
         />
       ))}
