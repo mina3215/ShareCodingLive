@@ -18,6 +18,7 @@
         from conference
         where owner_email = #{email}
           and is_active = 2
+          and start_time >= now()
         order by start_time asc
     </select>
 

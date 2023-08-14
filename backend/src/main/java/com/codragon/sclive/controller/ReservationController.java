@@ -4,6 +4,7 @@ import com.codragon.sclive.dao.FCMNoticeReqDao;
 import com.codragon.sclive.dao.ReservationCreateDao;
 import com.codragon.sclive.domain.HttpResult;
 import com.codragon.sclive.domain.UserEntity;
+import com.codragon.sclive.dto.FCMAccessTokenDto;
 import com.codragon.sclive.dto.ReservationCreateReqDto;
 import com.codragon.sclive.dto.ReservationListResDto;
 import com.codragon.sclive.dto.ReservationUpdateReqDto;
@@ -50,7 +51,7 @@ public class ReservationController {
         ReservationCreateDao reservationCreateDao = reservationCreateReqDto.reqToDto();
         reservationCreateDao.setOwnerEmail(email);
         reservationService.create(reservationCreateDao);
-        String token = user.getFcmToken();
+        String token = user.getFcm_access_token();
         if (token == null) {
             HttpResult result;
             result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "fcm 토큰이 없습니다.");
@@ -63,6 +64,7 @@ public class ReservationController {
         dao.setTargetEmail(email);
         dao.setReservationTime(localtime);
         dao.setToken(token);
+        log.debug("예약 생성 객체 : {}", dao.toString());
 
         long delay = ChronoUnit.MILLIS.between(LocalTime.now(),
                 LocalTime.of(
@@ -72,11 +74,15 @@ public class ReservationController {
         long minutesof10half = 1000 * 6 * 105; //10.5분
         delay = Math.max(1000, delay - minutesof10half); // 예약 시간 10분30초 전에 알람을 설정한다.
 
+
+        log.debug("예약 생성 접수");
+        StringBuilder sb = new StringBuilder();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                fcmNoticeService.sendNotificationByToken(dao);
+                String res = fcmNoticeService.sendNotificationByToken(dao);
+                log.debug("send alert result : {}",res);
             }
         }, delay);
         HttpResult result = HttpResult.getSuccess();
@@ -140,9 +146,9 @@ public class ReservationController {
 
     @ApiOperation(value = "FCM에서 발급해주는 Token 받기")
     @PostMapping("/token")
-    public ResponseEntity<HttpResult> getFCMAccessToken(@ApiIgnore @AuthenticationPrincipal UserEntity user, @RequestBody String FCM_ACCESS_TOKEN) {
-        log.info("FCM-Access-Token: {}", FCM_ACCESS_TOKEN);
-        reservationService.save(user.getUserEmail(), FCM_ACCESS_TOKEN);
+    public ResponseEntity<HttpResult> getFCMAccessToken(@ApiIgnore @AuthenticationPrincipal UserEntity user, @RequestBody FCMAccessTokenDto fcmAccessTokenDto) {
+        log.info("FCM-Access-Token: {}", fcmAccessTokenDto.getFCM_ACCESS_TOKEN());
+        reservationService.save(user.getUserEmail(), fcmAccessTokenDto.getFCM_ACCESS_TOKEN());
         HttpResult result = HttpResult.getSuccess();
         return ResponseEntity.status(result.getStatus()).body(result);
     }

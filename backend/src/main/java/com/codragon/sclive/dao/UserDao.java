@@ -20,7 +20,7 @@ public class UserDao {
 
     private String role;
 
-    private String fcmToken;
+    private String fcm_access_token;
 
     public UserResDto getUserdaoToDto() {
         UserResDto userResDto = new UserResDto();
