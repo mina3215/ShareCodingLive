@@ -51,17 +51,27 @@ public class ReservationController {
         reservationCreateDao.setOwnerEmail(email);
         reservationService.create(reservationCreateDao);
         String token = user.getFcmToken();
+        if (token == null) {
+            HttpResult result;
+            result = new HttpResult(HttpStatus.FORBIDDEN, HttpResult.Result.ERROR, "fcm 토큰이 없습니다.");
+            return ResponseEntity.status(result.getStatus()).body(result);
+        }
+
         String reservationTime = reservationCreateReqDto.getReservationTime(); // 설정할 시간을 가져온다.
         LocalDateTime localtime = LocalDateTime.parse(reservationTime);
         FCMNoticeReqDao dao = new FCMNoticeReqDao();
         dao.setTargetEmail(email);
         dao.setReservationTime(localtime);
         dao.setToken(token);
-        log.debug(reservationTime.toString());
-        long delay = ChronoUnit.MILLIS.between(LocalTime.now(), LocalTime.of(localtime.getHour(), localtime.getMinute(), localtime.getSecond())); // 현재시각으로 부터 몇초뒤에 실행할지 계산한다.
-        log.debug(String.valueOf(delay));
+
+        long delay = ChronoUnit.MILLIS.between(LocalTime.now(),
+                LocalTime.of(
+                        localtime.getHour(),
+                        localtime.getMinute(),
+                        localtime.getSecond())); // 현재시각으로 부터 몇초뒤에 실행할지 계산한다.
         long minutesof10half = 1000 * 6 * 105; //10.5분
         delay = Math.max(1000, delay - minutesof10half); // 예약 시간 10분30초 전에 알람을 설정한다.
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
