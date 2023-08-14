@@ -27,7 +27,8 @@ public class ChatGPTUtil {
 
     @Async
     public CompletableFuture<ResponseEntity<ChatGptResponse>> getTitle(String code) {
-        StringBuilder question = new StringBuilder("Could you please make a title for the code snippet below?\n");
+//        StringBuilder question = new StringBuilder("Could you please make a title for the code snippet below?\n");
+        StringBuilder question = new StringBuilder("아래 코드에 제목 붙여줘 \n");
         question.append(code);
         QuestionRequest request = new QuestionRequest();
         request.setQuestion(question.toString());
@@ -39,7 +40,8 @@ public class ChatGPTUtil {
     @Async
     public CompletableFuture<ResponseEntity<ChatGptResponse>> addComment(String code) {
 //        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 코드 스니펫으로 사용언어를 표기하여 보내주세요. \n");
-        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 그리고 앞에 어느 언어인지 표기해줘. \n");
+        StringBuilder question = new StringBuilder("아래 코드에 주석을 달아주고, 코드 스니펫으로 감싸서 보내줘 \n");
+//        StringBuilder question = new StringBuilder("이 코드에 주석을 달아주세요. 그리고 앞에 어느 언어인지 표기해줘. \n");
         question.append(code);
         QuestionRequest request = new QuestionRequest();
         request.setQuestion(question.toString());

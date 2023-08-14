@@ -11,4 +11,6 @@ public class UserLoginResDto {
     private int httpStatusCode;
 
     private String message;
+
+    private String nickname;
 }

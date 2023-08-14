@@ -1,5 +1,6 @@
 package com.codragon.sclive.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 
@@ -11,10 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 public class Code {
 
-    // 수업 
+    // 수업
+    @JsonIgnore
     private String course_id;
 
     // Code Domain Unique ID
+    @JsonIgnore
     private String id;
 
     // Code 제목
@@ -24,6 +27,7 @@ public class Code {
     private String content;
 
     // Code 생성 시각
+    @JsonIgnore
     private String created_time;
 
     // Code 한 줄 요약
