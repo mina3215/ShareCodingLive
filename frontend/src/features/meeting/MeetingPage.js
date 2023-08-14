@@ -118,9 +118,9 @@ function MeetingPage(props) {
           setCapture={setCapture} 
         />
       </VideoRoomWrapper>
-      <TabContainerWrapper showChat={showChat} showMember={showMember}>
+      {/* <TabContainerWrapper showChat={showChat} showMember={showMember}>
         <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp}/>
-      </TabContainerWrapper>
+      </TabContainerWrapper> */}
     </Wrapper>
   );
 }

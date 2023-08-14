@@ -10,9 +10,11 @@ import Members from './Members';
 
 // socket 통신을 위한 변수
 // let sock = new SockJS('https://i9d109.p.ssafy.io:8094/api/ws/chat');
-let sock = new SockJS('http://i9d109.p.ssafy.io:8094/api/ws/chat');
+
+let sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
 console.log(sock);
 let ws = Stomp.over(sock);
+console.log(ws)
 let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
@@ -20,6 +22,7 @@ const roomId = localStorage.getItem('wschat.roomId');
 const sender = localStorage.getItem('wschat.sender');
 
 const Socket = (props) => {
+  
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
@@ -94,7 +97,7 @@ const Socket = (props) => {
         setTimeout(() => {
           console.log('Connection reconnect');
           // const newsock = new SockJS('https://i9d109.p.ssafy.io:8094/api/ws/chat');
-          const newsock = new SockJS('http://i9d109.p.ssafy.io:8094/api/ws/chat');
+          const newsock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
           const newws = Stomp.over(newsock);
           connectWebSocket(newws);
           // sock = new SockJS('https://i9d109.p.ssafy.io:8094/api/ws/chat');
