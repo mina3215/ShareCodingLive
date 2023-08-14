@@ -99,25 +99,6 @@ public class UserController {
         return ResponseEntity.status(responseDto.getHttpStatusCode()).body(responseDto);
     }
 
-
-    @GetMapping("/cookie")
-    public String getCookie(HttpServletResponse response){
-//        ResponseCookie cookie1 = ResponseCookie.from("hcookie", "hello")
-//                .path("/")
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .build();
-//        response.addHeader("Set-Cookie", cookie1.toString());
-//        HttpResult result =  HttpResult.getSuccess();
-
-
-        Cookie cookie = new Cookie("hello", "hicookie");
-        cookie.setMaxAge(10000);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        return "Cookie";
-    }
-
     @ApiOperation(value = "로그아웃", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
     @GetMapping("/logout")
     public ResponseEntity<HttpResult> logout(
