@@ -1,12 +1,75 @@
 import React, { Component } from 'react';
+import * as handpose from "@tensorflow-models/handpose";
+import '@tensorflow/tfjs-backend-webgl';
 
 export default class OvVideoComponent extends Component {
   constructor(props) {
     super(props);
     this.videoRef = React.createRef();
     this.decideHeight = this.decideHeight.bind(this);
+    this.runHandpose = this.runHandpose.bind(this);
+    this.detect = this.detect.bind(this);
   }
 
+
+  detect = async (net) => {
+    // Check data is available
+    if (
+      typeof this.videoRef.current !== "undefined" &&
+      this.videoRef.current !== null
+    ) {
+      // Get Video Properties
+      const video = this.videoRef.current;
+      console.log('느어어어',this.videoRef.current);
+      // Make Detections
+      const hand = await net.estimateHands(video);
+
+      if(hand[0]){
+        const landmarks = hand[0].landmarks;
+
+        const thumbTip = landmarks[4];
+        const thumbMiddle = landmarks[3]; 
+      
+        const indexTip = landmarks[8];
+        const indexMiddle = landmarks[7]; 
+      
+        const middleTip = landmarks[12];
+        const middleMiddle = landmarks[11];
+      
+        const ringTip = landmarks[16];
+        const ringMiddle = landmarks[15]; 
+      
+        const pinkyTip = landmarks[20];
+        const pinkyMiddle = landmarks[19]; 
+      
+        // 각 손가락의 끝 부분과 중간 관절의 y좌표 비교
+        const isThumbOpen = thumbTip[1] < thumbMiddle[1];
+        const isIndexOpen = indexTip[1] < indexMiddle[1];
+        const isMiddleOpen = middleTip[1] < middleMiddle[1];
+        const isRingOpen = ringTip[1] < ringMiddle[1];
+        const isPinkyOpen = pinkyTip[1] < pinkyMiddle[1];
+
+        if (isThumbOpen&&isIndexOpen&&isMiddleOpen&&isRingOpen&&isPinkyOpen){
+            this.props.user.setReaction('hand')
+        }
+        else{
+          this.props.user.setReaction();
+        }
+      }
+    }
+};
+
+runHandpose = async() => {
+const net = await handpose.load();
+console.log('handpose model loaded');
+
+setInterval(()=> {
+    this.detect(net);
+}, 2000);
+}
+  
+
+  
   componentDidMount() {
     console.log('사용자 상태 확인', this.props.user);
     if (this.props && this.props.user.streamManager && !!this.videoRef) {
