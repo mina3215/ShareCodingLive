@@ -7,7 +7,7 @@ import TabContainer from './TabContainer';
 import Members from './Members';
 
 // socket 통신을 위한 변수
-let sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+let sock = new SockJS('https://www.sclive.link/api/ws/chat');
 let ws = Stomp.over(sock);
 let reconnect = 0;
 
@@ -34,7 +34,7 @@ const Socket = (props) => {
 
   // 화면 처음 랜더링 되면 소켓 연결
   useEffect(() => {
-    sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+    sock = new SockJS('https://www.sclive.link/api/ws/chat');
     ws = Stomp.over(sock);
     connectWebSocket();
   }, []);
@@ -82,7 +82,7 @@ const Socket = (props) => {
       if (reconnect++ <= 5) {
         setTimeout(() => {
           console.log('Connection reconnect');
-          const newsock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+          const newsock = new SockJS('https://www.sclive.link/api/ws/chat');
           const newws = Stomp.over(newsock);
           connectWebSocket(newws);
         }, 10 * 1000);

@@ -13,7 +13,6 @@ export const getCodeData = createAsyncThunk('GET_CODE_DATA', async (data, { reje
     const response = await axios.get('/user/history/code', { 
       headers: {
         Authorization: `Bearer ${data.token}`,
-        'Content-Type': 'application/json',
       },
       },
     );
