@@ -1,14 +1,13 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 
-import saveAs from 'file-saver';
-import Socket from '../chatting/chat/Socket';
-import styled from 'styled-components';
-
-import VideoRoomComponent from './VideoRoomComponent';
-import html2canvas from 'html2canvas';
+import React, { useState, useCallback, useRef } from 'react';
 import Tesseract from 'tesseract.js';
+import html2canvas from 'html2canvas';
+import saveAs from 'file-saver';
+import VideoRoomComponent from './VideoRoomComponent';
+import styled from 'styled-components';
+// import TabContainer from '../chatting/chat/TabContainer';
+import Socket from '../chatting/chat/Socket';
+import { useLocation } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,6 +23,7 @@ const TabContainerWrapper = styled.div`
   width: ${({ showChat, showMember }) => (showChat || showMember ? '25%' : '0%')};
   transition: width 0.3s ease-in-out;
 `;
+
 function MeetingPage(props) {
   const { pathname, state } = useLocation();
   const [configRef, setConfigRef] = useState('');
@@ -31,11 +31,13 @@ function MeetingPage(props) {
   const [showMember, setShowMember] = useState(false);
   const [handUp, sethandUp] = useState(false);
   const [ocrResult, setOcrResult] = useState('');
+
+
   const divRef = useRef(null);
-  // props 
+
   const uuid = pathname.slice(9);
-  const isHost = state? state.isHost : false;
-  
+  const isHost = state ? state.isHost : false;
+
   const handleChildRef = (ref) => {
     setConfigRef(ref);
     // 이제 this.childRef를 사용하여 자식 컴포넌트의 ref를 조작할 수 있습니다.
@@ -107,20 +109,21 @@ function MeetingPage(props) {
 
   return (
     <Wrapper>
-      <VideoRoomWrapper showChat={showChat}>
-        <VideoRoomComponent 
-          uuid={uuid} 
-          isHost={isHost} 
+      <VideoRoomWrapper showChat={showChat} showMember={showMember} ref={divRef}>
+        <VideoRoomComponent
+          uuid={uuid}
+          isHost={isHost}
           handleToggleChat={handleToggleChat}
           handleToggleMember={handleToggleMember}
           handleHandUp={handleHandUp}
           handleChildRef={handleChildRef}
-          setCapture={setCapture} 
+          setCapture={setCapture}
         />
       </VideoRoomWrapper>
       <TabContainerWrapper showChat={showChat} showMember={showMember}>
-        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp}/>
+        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp} />
       </TabContainerWrapper>
+      {/* <button onClick={handleDownload}>다운로드</button> */}
     </Wrapper>
   );
 }

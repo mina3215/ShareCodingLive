@@ -31,7 +31,7 @@ const FullScreenContainer = styled(Container)`
 
 const PromotionContainer = styled(Container)`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   height: 80vh;
   align-items: center;
   background-color: white;

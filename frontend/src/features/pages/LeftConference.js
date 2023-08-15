@@ -7,8 +7,8 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Pagination from 'react-bootstrap/Pagination';
+import { getToken } from '../../common/api/JWT-common';
 
-import left_code_data from './LeftCodeData';
 import styled from 'styled-components';
 
 
@@ -111,7 +111,7 @@ const CorseContainerIndividual = styled.div`
 `;
 
 const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) => {
-  const [dActiveIndex, setDActiveIndex] = useState(sectionIndex===1?0:null);
+  const [dActiveIndex, setDActiveIndex] = useState(0);
   const toggleSection = (date) => {
     const nextIndex = isActiveSection ? null : sectionIndex;
     setActiveIndex(nextIndex);
@@ -150,8 +150,7 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   );
 };
 
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTE3NDE1MTYsImlhdCI6MTY5MTc0MTUxNiwiZW1haWwiOiJtaW5zdUBzc2FmeS5jb20iLCJuaWNrbmFtZSI6Im1pbnN1In0.dvqrXC1sH3YWvpwdCZsxwxu144E7E5PSIRrUiOhG_BI';
-
+const token = getToken();
 
 const LeftConference = () => {
   const dispatch = useDispatch();
@@ -163,11 +162,12 @@ const LeftConference = () => {
       token: token
     }
     dispatch(getCodeData(data)).unwrap()
-    .then((res)=>{setCourses(res)}
+    .then((res)=>{setCourses(res); console.log(res)}
     ).catch();
+    
   }
   
-  const [activeIndex, setactiveIndex] = useState(0);
+  const [leftactiveindex, setLeftActiveIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
   const indexOfLastCode = currentPage * codesPerPage;
@@ -184,8 +184,8 @@ const LeftConference = () => {
         <DateAccordian
           date={date}
           key={index}
-          isActiveSection={index === activeIndex}
-          setActiveIndex={setactiveIndex}
+          isActiveSection={index === leftactiveindex}
+          setActiveIndex={setLeftActiveIndex}
           sectionIndex={index}
         />
       ))}

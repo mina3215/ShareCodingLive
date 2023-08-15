@@ -90,3 +90,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - npm install react-bootstrap bootstrap
 - npm install html2canvas
 - npm install file-saver --save
+- npm i sockjs-client
+- npm i stompjs
+- npm i net
+- npm i react-syntax-highlighter
+- npm i --save @fortawesome/fontawesome-svg-core
+- npm install --save @fortawesome/free-solid-svg-icons
+- npm install --save @fortawesome/react-fontawesome
+- npm install moment react-moment use-interval
+- npm install react-moment
+- npm i react-calendar
