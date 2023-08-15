@@ -82,6 +82,13 @@ const Socket = (props) => {
   }, [props.handUp]);
 
   const connectWebSocket = () => {
+
+    let sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+    console.log(sock);
+    let ws = Stomp.over(sock);
+    console.log(ws)
+    let reconnect = 0;
+    
     const onConnect = () => {
       console.log('roomId ready? : ', roomId);
       ws.subscribe(`/topic/chat/room/${roomId}`, (message) => {

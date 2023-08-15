@@ -13,7 +13,11 @@ import { saveToken } from '../../../common/api/JWT-common';
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
-import axios from 'axios'
+// import axios from 'axios'
+
+import axios from '../../../common/api/http-common';
+
+// import { getToken } as tokenget from '../../common/api/JWT-common';/
 
 const Wrapper = styled(Container)`
   display: flex;
@@ -198,12 +202,12 @@ export default function Login(props) {
 
         axios({
           method: 'post',
-          url: 'http://192.168.100.210:8080/api/reservation/token',
+          url: '/reservation/token',
           // data:{FCM_ACCESS_TOKEN:FCM_Token},
           data:{fcm_ACCESS_TOKEN:FCM_Token},
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
+            // 'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           }
         })
           .then((response) => {

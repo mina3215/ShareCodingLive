@@ -146,7 +146,7 @@ const NewConference = (props) => {
       url: 'reservation/create',
       data:{title:title, reservationTime:date},
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     })
       .then((response) => {
