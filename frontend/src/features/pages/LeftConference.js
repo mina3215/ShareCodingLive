@@ -150,9 +150,9 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   );
 };
 
-const token = getToken();
 
 const LeftConference = () => {
+  const token = getToken();
   const dispatch = useDispatch();
   const [courses, setCourses] = useState('');
   useEffect(()=>{getcode()},[])

@@ -8,12 +8,13 @@ import axios from '../../../common/api/http-common';
 // 기록 data 가져오기.
 export const getCodeData = createAsyncThunk('GET_CODE_DATA', async (data, { rejectWithValue }) => {
   console.log(DataTransferItemList);
+  console.log(data.token);
   try {
-    const response = await axios.get('/user/history/code', { 
+    const response = await axios.get('user/history/code', { 
       headers: {
         Authorization: `Bearer ${data.token}`,
       },
-      },
+      }
     );
     return response.data;
   } catch (err) {
