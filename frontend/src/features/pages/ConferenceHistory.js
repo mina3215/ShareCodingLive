@@ -21,7 +21,6 @@ const AccordionTitleStyles = styled.div`
   cursor: pointer;
   width: 100%;
   background: none;
-  border-radius: 5px;
   font-weight: bold;
   font-size: larger;
 `;
@@ -31,6 +30,8 @@ const CourseTitleContainer = styled.div`
   width : 100%;
   border-bottom: 0px;
   align-items: center;
+  border-radius: 5px;
+  border: 2px solid #4454AB;
   `;
 
 const CourseTitleIcon = styled.div`
@@ -141,11 +142,9 @@ const CodeAccordion = ({ code, isActiveSection, setActiveIndex, sectionIndex }) 
 };
 
 const FullWrapper = styled.div`
+  display: flex;
   width: 100%;
-  border-radius: 5px;
-  border: 2px solid #4454AB;
-
-
+  height : 100%;
 `
 
 const ConferenceHistory = () => {
@@ -154,12 +153,12 @@ const ConferenceHistory = () => {
   const codes = course? course.codes:null;
   const title = course?course.title:null;
   const [activeIndex, setActiveIndex] = useState();
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const codesPerPage = 2;
+  const [currentPage, setCurrentPage] = useState(1);
+  const codesPerPage = 2;
 
   // const indexOfLastCode = currentPage * codesPerPage;
   // const indexOfFirstCode = indexOfLastCode - codesPerPage;
-  // // const currentCodes = courses.slice(indexOfFirstCode, indexOfLastCode);
+  // const currentCodes = courses.slice(indexOfFirstCode, indexOfLastCode);
 
   // const handlePageChange = (pageNumber) => {
   //   setCurrentPage(pageNumber);

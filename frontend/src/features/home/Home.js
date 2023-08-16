@@ -151,7 +151,7 @@ function Home() {
                   <div
                     className="child"
                     style={{
-                      width: '35vw',
+                      width: '55vh',
                       top: '20vh',
                       display: 'flex',
                       position: 'absolute',
