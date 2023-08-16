@@ -17,11 +17,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect } from 'react';
 const Wrapper = styled.div`
   position: relative;
-  z-index: 9999;s
+  z-index: 9999;
 `;
 
 const TabContainerWrapper = styled.div`
-  height: 83vh; /* Set a specific height for the chat container */
+  height: 82.7vh; /* Set a specific height for the chat container */
   margin: 0 auto;
   padding: 20px;
   border: none;
@@ -63,17 +63,19 @@ const TextInputWrapper = styled.div`
   display: flex;
   // margin-top: 10px;
   // margin-bottom: 0px;
-  height: 9vh;
+  height: 9.3vh;
 `;
 
 const TextInput = styled.input`
   flex: 1;
+  border-radius: 0;
   padding: 10px;
   font-size: 16px;
   background-color: #323232;
   border: none;
   outline: none;
   color: white;
+  font-family: none;
 `;
 
 const SendButton = styled.button`

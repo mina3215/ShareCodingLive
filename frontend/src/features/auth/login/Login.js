@@ -10,8 +10,8 @@ import { login } from '../authSlice';
 // import logo from '../../../assets/logo.png';
 import { saveToken } from '../../../common/api/JWT-common';
 
-import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 // import axios from 'axios'
 
@@ -127,18 +127,17 @@ export const CommonButton = styled(Button)`
 
 // 로그인 컴포넌트
 export default function Login(props) {
-
   // 알림 받기 위한 변수들
   const firebaseConfig = {
     apiKey: process.env.REACT_APP_API_KEY,
-    authDomain: "share-coding-live.firebaseapp.com",
-    projectId: "share-coding-live",
-    storageBucket: "share-coding-live.appspot.com",
+    authDomain: 'share-coding-live.firebaseapp.com',
+    projectId: 'share-coding-live',
+    storageBucket: 'share-coding-live.appspot.com',
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
     appId: process.env.REACT_APP_APP_ID,
     measurementId: process.env.REACT_APP_MEASUREMENT_ID,
   };
-  
+
   // 이거도 알람
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
@@ -178,25 +177,25 @@ export default function Login(props) {
         props.ChangeSignUp(false);
         props.ToUserInfo(false);
 
-        console.log("권한 요청 중...");
+        console.log('권한 요청 중...');
 
         const permission = await Notification.requestPermission();
-        if (permission === "denied") {
-          console.log("알림 권한 허용 안됨");
+        if (permission === 'denied') {
+          console.log('알림 권한 허용 안됨');
           return;
         }
 
-        console.log("알림 권한이 허용됨");
+        console.log('알림 권한이 허용됨');
 
         const FCM_Token = await getToken(messaging, {
           vapidKey: process.env.REACT_APP_VAPID_KEY,
         });
-      
-        if (FCM_Token) console.log("token: ", FCM_Token);
-        else console.log("Can not get Token");
+
+        if (FCM_Token) console.log('token: ', FCM_Token);
+        else console.log('Can not get Token');
 
         onMessage(messaging, (payload) => {
-          console.log("메시지가 도착했습니다.", payload);
+          console.log('메시지가 도착했습니다.', payload);
           // ...
         });
 
@@ -204,16 +203,14 @@ export default function Login(props) {
           method: 'post',
           url: '/reservation/token',
           // data:{FCM_ACCESS_TOKEN:FCM_Token},
-          data:{fcm_ACCESS_TOKEN:FCM_Token},
+          data: { fcm_ACCESS_TOKEN: FCM_Token },
           headers: {
             // 'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          }
-        })
-          .then((response) => {
-              console.log(response);
-          });
-
+            Authorization: `Bearer ${token}`,
+          },
+        }).then((response) => {
+          console.log(response);
+        });
       })
       .catch((err) => {
         if (err.status === 400) {

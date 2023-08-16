@@ -25,17 +25,16 @@ export const getUUIDLink = createAsyncThunk('GET_UUID_LINK', async (data, { reje
   }
 });
 
-export const createRoom = createAsyncThunk('CREATE_ROOM', async (data, {rejectWithValue}) => {
+export const createRoom = createAsyncThunk('CREATE_ROOM', async (data, { rejectWithValue }) => {
   const params = new URLSearchParams();
   params.append('roomId', data.uuid);
   try {
-    const response = await axios.post('/ws/chat', params)
-    console.log(response.data);  
-  }catch(err){
-      console.log('에렁레어ㅔ러에러ㅔ어레어',err)
-    }
+    const response = await axios.post('/ws/chat', params);
+    console.log(response.data);
+  } catch (err) {
+    console.log('에렁레어ㅔ러에러ㅔ어레어', err);
+  }
 });
-
 
 // 초기 값
 const initialState = {

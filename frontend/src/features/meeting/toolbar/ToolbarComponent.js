@@ -80,6 +80,7 @@ export default class ToolbarComponent extends Component {
   constructor(props) {
     super(props);
     this.toggleChat = this.toggleChat.bind(this);
+    this.toggleMember = this.toggleMember.bind(this);
     this.state = {
       mouseover: false,
     };
@@ -89,6 +90,7 @@ export default class ToolbarComponent extends Component {
     this.stopScreenShare = this.stopScreenShare.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
     this.handsUp = this.handsUp.bind(this);
+    this.toggleCapture = this.toggleCapture.bind(this);
   }
 
   handsUp() {
@@ -111,8 +113,8 @@ export default class ToolbarComponent extends Component {
     this.props.stopScreenShare();
   }
 
-  toggleFullscreen() {
-    alert('고쳐야 함!');
+  toggleCapture() {
+    this.props.setCapture();
   }
 
   toggleChat() {
@@ -121,6 +123,11 @@ export default class ToolbarComponent extends Component {
 
     // Call the handleToggleChat function passed from the parent component
     this.props.handleToggleChat();
+  }
+
+  toggleMember() {
+    console.log(this.props.handleToggleMember);
+    this.props.handleToggleMember();
   }
 
   leaveSession() {
@@ -158,7 +165,8 @@ export default class ToolbarComponent extends Component {
                 </Icon>
               )}
 
-              <Icon>
+              <Icon onClick={this.toggleMember}>
+
                 <AccountCircleIcon />
               </Icon>
 
@@ -171,7 +179,7 @@ export default class ToolbarComponent extends Component {
                 <BackHandIcon />
               </Icon>
 
-              <Icon onClick={this.toggleFullscreen}>
+              <Icon onClick={this.toggleCapture}>
                 {localUser !== undefined && this.state.fullscreen ? <FullscreenExit /> : <Fullscreen />}
               </Icon>
             </UnderBarMid>

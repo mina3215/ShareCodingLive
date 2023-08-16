@@ -7,11 +7,9 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import Pagination from 'react-bootstrap/Pagination';
-
-// import left_code_data from './LeftCodeData';
-import styled from 'styled-components';
-
 import { getToken } from '../../common/api/JWT-common';
+
+import styled from 'styled-components';
 
 
 const ClassAccordionContainer = styled.div`
@@ -153,7 +151,6 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
 };
 
 const token = getToken();
-
 
 const LeftConference = () => {
   const dispatch = useDispatch();

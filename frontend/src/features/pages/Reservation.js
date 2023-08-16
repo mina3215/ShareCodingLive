@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 import { getToken } from '../../common/api/JWT-common';
 
-
 import { Box, List, ListItem, ListItemText, Paper, Typography } from '@mui/material';
 import styled from 'styled-components';
 import { Container, Button, makeStyles } from '@material-ui/core';
@@ -10,15 +9,25 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 // import axios from 'axios'
 import axios from '../../common/api/http-common';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setReservationFalse } from './pagesSlice/pagesSlice';
+
 // 여기부터는 예약 리스트 보여주는 css
 
 const ChatContainer = styled(Paper)(({ theme }) => ({
-  // width: '300px',
   height: '350px',
-  border: '1px solid #ccc',
-  borderRadius: '5px',
+  // border: 'px solid #2d2f42',
+  borderRadius: '10px',
+  padding: '10px',
   overflow: 'hidden',
+  // Add min-height property here
+  minHeight: '350px', // Adjust this value to your preference
 }));
+
+const CustomListItemText = styled(ListItemText)({
+  fontsize: '30px',
+  width: '8vw',
+});
 
 const ChatList = styled(List)({
   padding: '0',
@@ -26,38 +35,39 @@ const ChatList = styled(List)({
   margin: '0',
   maxHeight: '100%',
   overflowY: 'scroll',
+  width: '20vw',
+  borderRadius: '10px',
 });
 
-const ChatItem = styled(ListItem)(({ theme }) => ({
-  borderBottom: '1px solid #ccc',
+const ChatItem = styled(ListItem)(({ theme, even }) => ({
   padding: '10px',
+  borderRadius: '10px',
+  marginBottom: '10px',
+  backgroundColor: even ? '#9499c8' : '#d2d7fd', // Use the desired colors
   '&:last-child': {
     borderBottom: 'none',
   },
 }));
 
 const AuthorText = styled(Typography)(({ theme }) => ({
-  fontSize: '12px',
+  fontSize: '200px',
   marginBottom: '5px',
-  marginRight: '7px'
+  marginRight: '7px',
+}));
+
+const TimeText = styled(Typography)(({ theme }) => ({
+  fontSize: '10px',
+  marginBottom: '5px',
+  marginRight: '7px',
 }));
 
 // 여기부터는 예약 수정 모달 관련 css
 
 const Wrapper = styled(Container)`
   display: flex;
-  height: 55vh;
+  height: 51vh;
   justify-content: center;
   align-items: center;
-`;
-
-const CreateRoomContainer = styled.div`
-  height: 900vh;
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 `;
 
 const TextTitle = styled.label`
@@ -66,15 +76,7 @@ const TextTitle = styled.label`
   font-weight: bold;
   display: block;
   text-align: center;
-  margin-top: 5vh
-`;
-
-const TextSubtitle = styled.label`
-  font-size: 15px;
-  color: #262626;
-  padding: 1.5em 0;
-  display: block;
-  text-align: center;
+  margin-top: 4vh;
 `;
 
 // 날짜 입력 필드
@@ -153,6 +155,7 @@ export const CommonButton = styled(Button)`
 
 const Reservation = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   // 날짜 디폴트 값 오늘 날짜, 시간
   const dateNow = new Date();
@@ -163,17 +166,19 @@ const Reservation = () => {
   const [date, setDate] = useState(now);
 
   // 예약 리스트 담기
-  const [reservations, setReservations] = useState([])
+  const [reservations, setReservations] = useState([]);
 
   // 각 예약 선택하면 true 값 주고, 수정이나 삭제 누르면 false 줘서 예약 리스트 보이고, 예약 수정 모달 보이게 하기
-  const [resClicked, setResClicked] = useState(false)
+  const [resClicked, setResClicked] = useState(false);
 
   // 각 예약 클릭하면 set 해서 그 값들을 모달창에 띄울거임
-  const [reservationTime, setReservationTime] = useState('')
-  const [title, setTitle] = useState('')
-  const [uuid, setUuid] = useState('')
+  const [reservationTime, setReservationTime] = useState('');
+  const [title, setTitle] = useState('');
+  const [uuid, setUuid] = useState('');
 
-  const [deleted, setDeleted] = useState(false)
+  const [deleted, setDeleted] = useState(false);
+
+  const isLoadReservation = useSelector((state) => state.pages.isLoadReservation);
 
   // 헤더에 넣게 토큰 받아오셈
   const token = getToken();
@@ -189,14 +194,11 @@ const Reservation = () => {
   useEffect(() => {
     // Scroll to the bottom when messages are updated
     getReservation();
-  }, [title, reservationTime]);
+  }, [title, reservationTime, reservations.length, isLoadReservation]);
 
-  function handleSubmit(e) {
+  function handleSubmit(e) {}
 
-  }
-
-
-  // 방 예약 조회 
+  // 방 예약 조회
   function getReservation(e) {
     axios({
       method: 'get',
@@ -204,73 +206,72 @@ const Reservation = () => {
       headers: {
         // 'Content-Type': 'application/json',
         // Authorization: `Bearer ${token}`, '' 붙이기, 액세스 토큰 이상했음!!!!
-        'Authorization': `Bearer ${token}`,
-        // 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
-      }
-    })
-      .then((response) => {
-          console.log(response);
-          setReservations(response.data.data)
-          console.log(reservations)
-          console.log('클릭 여부: ' , resClicked)
-      });
+        // 'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      console.log(response);
+      // dispatch(setReservationFalse());
+      setReservations(response.data.data);
+      console.log(reservations);
+      console.log('클릭 여부: ', resClicked);
+    });
   }
 
   // 예약 수정 (수정하셈!!!)
   function changeReservation(e) {
-    console.log("title : ", title)
-    console.log("reservationTime : ", reservationTime)
-    console.log("uuid : ", uuid)
+    console.log('title : ', title);
+    console.log('reservationTime : ', reservationTime);
+    console.log('uuid : ', uuid);
     axios({
       method: 'post',
       url: 'reservation/update',
-      data:{title:title, reservationTime:reservationTime, uuid:uuid},
+      data: { title: title, reservationTime: reservationTime, uuid: uuid },
       headers: {
-        // 'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        // 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
-      }
-    })
-      .then((response) => {
-          console.log(response.data.data);
-          setResClicked(!resClicked)
-          getReservation()
+        'Content-Type': 'application/json',
+        // 'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      console.log(response.data.data);
+      setResClicked(!resClicked);
+      dispatch(setReservationFalse());
+      getReservation();
 
-          // setReservations(response.data.data)
-      });
+      // setReservations(response.data.data)
+    });
   }
 
-  // 예약 삭제(수정하셈!!!!) 
+  // 예약 삭제(수정하셈!!!!)
   function deleteReservation(e) {
     axios({
       method: 'delete',
       url: 'reservation/delete',
-      params:{uuid:uuid},
+      params: { uuid: uuid },
       headers: {
-        // 'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        // 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTIyNzUwMTgsImlhdCI6MTY5MjI3NTAxOCwiZW1haWwiOiJkZEBzc2FmeS5jb20iLCJuaWNrbmFtZSI6ImRkYW4ifQ.U918Eo5NC58Cj4ls28ZgBEvXaGDz7orhaXA1M03KzNA',
-      }
-    })
-      .then((response) => {
-          console.log(response);
-          setResClicked(!resClicked)
-          // setDeleted(!deleted)
-          getReservation()
-      });
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      console.log(response);
+      setResClicked(!resClicked);
+      // setDeleted(!deleted)
+      dispatch(setReservationFalse());
+      getReservation();
+    });
   }
 
   // 예약리스트에서 항목 하나 선택하면 isClicked 바꿔주고, uuid, reservationTime, title set 하기
   const reserList = (reservation) => {
-    console.log(reservation.uuid)
-    setResClicked(!resClicked)
-    setReservationTime(reservation.startTime)
-    setTitle(reservation.title)
-    setUuid(reservation.courseId)
+    console.log(reservation.uuid);
+    setResClicked(!resClicked);
+    setReservationTime(reservation.startTime);
+    setTitle(reservation.title);
+    setUuid(reservation.courseId);
   };
 
   function backToReserList() {
-    setResClicked(!resClicked)
+    setResClicked(!resClicked);
   }
 
   return (
@@ -288,75 +289,88 @@ const Reservation = () => {
           <div>
             {reservations.startTime}
           </div> */}
-          <TextTitle>예약 목록</TextTitle>
-          <Wrapper>
-            <CreateRoomContainer>
-              
-              {console.log(resClicked, 'clicked')}
-              { resClicked ? (
-                // <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-                <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
-                  {/* 제목 입력 필드 */}
-                  <CommonTextValidator
-                    islogininput="true"
-                    size="small"
-                    type="title"
-                    label="제목을 입력하세요"
-                    onChange={(e) => setTitle(e.target.value)}
-                    name="title"
-                    value={title}
-                    validators={['required']}
-                    errorMessages={['회의 제목을 입력하세요']}
-                    variant="outlined"
-                  />
-                  {/* 날짜 입력 필드 */}
-                  <CommonTextValidator
-                    size="small"
-                    label=""
-                    onChange={(e) => {
-                      setReservationTime(e.target.value);
-                    }}
-                    // inputProps={{ min: reservationTime }}
-                    value={ reservationTime }
-                    validators={['required']}
-                    name="date"
-                    type="datetime-local"
-                    variant="outlined"
-                  />
-                  <CommonButton green="true" onClick={changeReservation}>
-                    예약 수정
-                  </CommonButton>
-                  {/* <br /> */}
-                  <CommonButton red="true" onClick={deleteReservation}>예약 삭제</CommonButton>
-                  <CommonButton green="true" onClick={backToReserList}>뒤로가기</CommonButton>
-                </ValidatorForm>
-              ) : (
-                <div>
-                  {/* 이거는 그냥 전체 예약 리스트들 보여주는거 */}
-                  <Box display="flex" justifyContent="center" alignItems="center" height="40vh">
-                    <ChatContainer elevation={3}>
-                    <ChatList>
-                      {reservations.map((reservation, index) => 
-                        // reservation.startTime >= date ? 
-                        <ChatItem key={index} onClick={()=>reserList(reservation)}>
-                          <ListItemText primary={reservation.title} />
-                          <AuthorText>{reservation.startTime}</AuthorText>
-                        </ChatItem>
-                        // : null
-                      )}
-                    </ChatList>
-                  </ChatContainer>
-                  
-                </Box>
-              </div>
-              )}
-            </CreateRoomContainer>
-          </Wrapper>
-
-
+      <TextTitle>예약 목록</TextTitle>
+      <Wrapper>
+        {console.log(resClicked, 'clicked')}
+        {resClicked ? (
+          // <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
+          <ValidatorForm onSubmit={handleSubmit} className={classes.validatorForm}>
+            {/* 제목 입력 필드 */}
+            <CommonTextValidator
+              islogininput="true"
+              size="small"
+              type="title"
+              label="제목을 입력하세요"
+              onChange={(e) => setTitle(e.target.value)}
+              name="title"
+              value={title}
+              validators={['required']}
+              errorMessages={['회의 제목을 입력하세요']}
+              variant="outlined"
+            />
+            {/* 날짜 입력 필드 */}
+            <CommonTextValidator
+              size="small"
+              label=""
+              onChange={(e) => {
+                setReservationTime(e.target.value);
+              }}
+              // inputProps={{ min: reservationTime }}
+              value={reservationTime}
+              validators={['required']}
+              name="date"
+              type="datetime-local"
+              variant="outlined"
+            />
+            <CommonButton green="true" onClick={changeReservation}>
+              예약 수정
+            </CommonButton>
+            {/* <br /> */}
+            <CommonButton red="true" onClick={deleteReservation}>
+              예약 삭제
+            </CommonButton>
+            <CommonButton green="true" onClick={backToReserList}>
+              뒤로가기
+            </CommonButton>
+          </ValidatorForm>
+        ) : (
+          <div>
+            {/* 이거는 그냥 전체 예약 리스트들 보여주는거 */}
+            <Box display="flex" justifyContent="center" alignItems="center" height="40vh">
+              <ChatContainer style={{ borderRadius: '10px' }} elevation={3}>
+                <ChatList>
+                  {reservations.map(
+                    (reservation, index) => (
+                      // reservation.startTime >= date ?
+                      <ChatItem key={index} onClick={() => reserList(reservation)} even={index % 2?"false":"true"}>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '1.5vw',
+                          }}
+                        >
+                          <CustomListItemText>{reservation.title}</CustomListItemText>
+                          <div
+                            style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column', width: '8vw' }}
+                          >
+                            <AuthorText style={{ fontSize: '14px' }}>{reservation.startTime.slice(0, -8)}</AuthorText>
+                            <TimeText style={{ fontSize: '12px' }}>{reservation.startTime.slice(10, -3)}</TimeText>
+                          </div>
+                        </div>
+                      </ChatItem>
+                    )
+                    // : null
+                  )}
+                </ChatList>
+              </ChatContainer>
+            </Box>
+          </div>
+        )}
+      </Wrapper>
     </div>
-    
-  )
-  ;
+  );
 };
 export default Reservation;
