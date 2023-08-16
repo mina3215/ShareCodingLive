@@ -211,7 +211,7 @@ const Reservation = () => {
       },
     }).then((response) => {
       console.log(response);
-      dispatch(setReservationFalse());
+      // dispatch(setReservationFalse());
       setReservations(response.data.data);
       console.log(reservations);
       console.log('클릭 여부: ', resClicked);
@@ -342,7 +342,7 @@ const Reservation = () => {
                   {reservations.map(
                     (reservation, index) => (
                       // reservation.startTime >= date ?
-                      <ChatItem key={index} onClick={() => reserList(reservation)} even={index % 2 === 0}>
+                      <ChatItem key={index} onClick={() => reserList(reservation)} even={index % 2?"false":"true"}>
                         <div
                           style={{
                             display: 'flex',

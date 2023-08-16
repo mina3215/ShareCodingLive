@@ -670,7 +670,7 @@ class VideoRoomComponent extends Component {
       if (err.response.status === 403) {
         alert('없는 회의방입니다.');
         // 뒤로 보내기
-        window.history.back();
+        this.props.setIsExit(true);
       }
       console.log(err);
     }
