@@ -36,6 +36,11 @@ const MemberNameDiv = styled.div`
 
 // 손 안든 나머지 참가자들
 const Member = (props) => {
+  // 원격을 위한
+  const handleOpenNewTab = (url) => {
+    window.open(url, "_blank", "noopener, noreferrer")
+  };
+
   return (
     <div>
       {/* <div>전체 참가자 컨텐츠</div> */}
@@ -47,6 +52,7 @@ const Member = (props) => {
           <MemberList key={index}>
             <SenderIcon>{member[0]}</SenderIcon>
             <MemberNameDiv>{member}</MemberNameDiv>
+            <button onClick={() => handleOpenNewTab("https://www.naver.com/")}>원격</button>
           </MemberList>
         ))}
       </ul>
