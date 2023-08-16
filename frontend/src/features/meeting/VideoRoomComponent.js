@@ -523,17 +523,19 @@ class VideoRoomComponent extends Component {
     });
   }
 
+
   // 손 들기 감지
   handsUp() {
     if (localUser.isReaction() === 'hand') {
-      localUser.setReaction(null);
+      localUser.setReaction('none');
       this.sendSignalUserChanged({ reaction: 'none' });
     } else {
       localUser.setReaction('hand');
-      console.log();
       this.sendSignalUserChanged({ reaction: localUser.isReaction() });
     }
     this.setState({ localUser: localUser });
+    this.props.handleHandUp();
+
   }
 
   detectMic() {
@@ -564,7 +566,7 @@ class VideoRoomComponent extends Component {
               <ParticipantCams>
                 {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
                   <Cam>
-                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} />
+                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} handsUp = {this.handsUp}/>
                   </Cam>
                 )}
 
@@ -579,6 +581,7 @@ class VideoRoomComponent extends Component {
                           cam={this.state.showCam}
                           user={sub}
                           streamId={sub.streamManager.stream.streamId}
+                          handsUp = {this.handsUp}
                         />
                       </IndividualCam>
                     ) : null
@@ -598,6 +601,7 @@ class VideoRoomComponent extends Component {
                     // handleChildRef={this.props.handleChildRef}
                     cam={this.state.showCam}
                     user={hostUser}
+                    handsUp = {this.handsUp}
                   />
                 )}
               </HostCam>
@@ -618,7 +622,6 @@ class VideoRoomComponent extends Component {
               handsUp={this.handsUp}
               handleToggleChat={this.props.handleToggleChat}
               handleToggleMember={this.props.handleToggleMember}
-              handleHandUp={this.props.handleHandUp}
               setCapture={this.props.setCapture}
             />
             {/* </Toolbar> */}

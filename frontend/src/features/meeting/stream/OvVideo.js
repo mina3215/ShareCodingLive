@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as handpose from "@tensorflow-models/handpose";
 import '@tensorflow/tfjs-backend-webgl';
+import * as fp from "fingerpose";
 
 export default class OvVideoComponent extends Component {
   constructor(props) {
@@ -23,6 +24,8 @@ export default class OvVideoComponent extends Component {
       console.log('느어어어',this.videoRef.current);
       // Make Detections
       const hand = await net.estimateHands(video);
+
+      console.log(hand);
 
       if(hand[0]){
         const landmarks = hand[0].landmarks;
@@ -49,11 +52,19 @@ export default class OvVideoComponent extends Component {
         const isRingOpen = ringTip[1] < ringMiddle[1];
         const isPinkyOpen = pinkyTip[1] < pinkyMiddle[1];
 
-        if (isThumbOpen&&isIndexOpen&&isMiddleOpen&&isRingOpen&&isPinkyOpen){
-            this.props.user.setReaction('hand')
+        console.log(isThumbOpen, isIndexOpen, isMiddleOpen, isRingOpen, isPinkyOpen);
+        console.log(this.props.user.isReaction(), '손');
+
+        console.log(this.props.handsUp);
+
+        if (isThumbOpen&&isIndexOpen&&isMiddleOpen&&isRingOpen&&isPinkyOpen&&this.props.user.isReaction()!=='hand'){
+            this.props.handsUp();
+            console.log('손 들었음');
+            console.log(this.props.user.isReaction(), '손 들은거 넣었당');
         }
         else{
-          this.props.user.setReaction();
+          console.log('손 내릴거임'); // 시간
+
         }
       }
     }
@@ -75,6 +86,7 @@ setInterval(()=> {
     if (this.props && this.props.user.streamManager && !!this.videoRef) {
       console.log('PROPS: ', this.props);
       this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
+      this.runHandpose();
     }
 
     if (this.props && this.props.user.streamManager.session && this.props.user && !!this.videoRef) {

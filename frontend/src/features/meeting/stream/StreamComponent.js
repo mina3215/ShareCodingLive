@@ -92,7 +92,7 @@ export default class StreamComponent extends Component {
             </HandDiv>
             <div>
               {/* <div ref={(ref) => this.props.handleChildRef(ref)}> */}
-              <OvVideoComponent cam={this.props.cam} user={this.props.user} mutedSound={this.state.mutedSound} />
+              <OvVideoComponent cam={this.props.cam} user={this.props.user} mutedSound={this.state.mutedSound} handsUp={this.props.handsUp}/>
             </div>
           </CamOff>
         ) : null}

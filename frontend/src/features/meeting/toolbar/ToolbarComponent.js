@@ -95,7 +95,6 @@ export default class ToolbarComponent extends Component {
 
   handsUp() {
     this.props.handsUp();
-    this.props.handleHandUp();
   }
 
   micStatusChanged() {
