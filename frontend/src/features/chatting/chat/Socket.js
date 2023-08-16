@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 import TabContainer from './TabContainer';
 import Members from './Members';
 
+import { useNavigate } from 'react-router-dom';
+
 // socket 통신을 위한 변수
 let sock = new SockJS('https://www.sclive.link/api/ws/chat');
 let ws = Stomp.over(sock);
@@ -21,6 +23,11 @@ const Socket = (props) => {
   const [messages, setMessages] = useState([]);
   const roomId = props.uuid;
   const handUp = props.handUp;
+
+  // 나갔는지 받아오는 변수
+  const isExit = props.isExit;
+
+  const Navigate = useNavigate();
   // // 손 든 정보를 props로 받아옴.
   // const hand = props.hand
 
@@ -51,6 +58,11 @@ const Socket = (props) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
+
+  // isExit 변수 바뀌면 연결 끊기. 미팅 페이지에서 나가기 누르면 isExit 변수 값 바꾸고 이거 props로 줘서 이 변수 바뀌면 채팅 소켓 끊어버림
+  useEffect(() => {
+    offConnect();
+  }, [isExit])
 
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
@@ -119,6 +131,7 @@ const Socket = (props) => {
   const offConnect = () => {
     ws.send('/app/chat/message', {}, JSON.stringify({ type: 'QUIT', roomId, sender, message: '' }));
     ws.disconnect();
+    Navigate('/');
     console.log('socket 끊김');
   };
 

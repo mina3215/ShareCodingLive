@@ -82,7 +82,6 @@ export default class StreamComponent extends Component {
   render() {
     return (
       <div>
-        {console.log(this.props.user.isReaction(), '어이이이', this.props.user)};
         {this.props.user && this.props.user.getStreamManager() ? (
           <CamOff>
             {!this.props.user.isVideoActive() ? <Name>{this.props.user.getNickname()}</Name> : null}

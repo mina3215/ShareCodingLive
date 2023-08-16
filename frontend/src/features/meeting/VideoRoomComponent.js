@@ -369,7 +369,6 @@ class VideoRoomComponent extends Component {
       const clientdata = event.stream.connection.data.split('%')[0];
       newUser.setNickname(JSON.parse(clientdata).clientData);
       newUser.setRole(JSON.parse(clientdata).host);
-      console.log('ㅁㄴㅇㄹㄴㅇㅁㄹㄴㅁㅇㄹㄴ',event.stream);
       newUser.setReaction(JSON.parse(clientdata).reaction);
 
       // 구독자 중 호스트가 있으면 hostUser에 넣습니다.

@@ -151,10 +151,8 @@ const FullWrapper = styled.div`
 const ConferenceHistory = () => {
   console.log(useSelector((state)=>state.pages))
   const course = useSelector((state) => state.pages.course);
-  console.log('날 괴롭히지마',course);
   const codes = course? course.codes:null;
   const title = course?course.title:null;
-  console.log('여기서 받았다',course,);
   const [activeIndex, setActiveIndex] = useState();
   // const [currentPage, setCurrentPage] = useState(1);
   // const codesPerPage = 2;
