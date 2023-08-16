@@ -31,7 +31,7 @@ public class ConferenceServiceImpl implements ConferenceService {
 
         ConferenceCreateResDto conferenceCreateResDto = new ConferenceCreateResDto();
         conferenceCreateResDto.setUuid(uuid);
-        String link = "https://localhost:3000/meeting/" + uuid;
+        String link = "https://www.sclive.link/meeting/" + uuid;
         conferenceCreateResDto.setLink(link);
         return conferenceCreateResDto;
     }
