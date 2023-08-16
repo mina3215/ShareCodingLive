@@ -63,7 +63,7 @@ export default class OvVideoComponent extends Component {
             console.log(this.props.user.isReaction(), '손 들은거 넣었당');
         }
         else{
-          console.log('손 내릴거임'); // 시간
+          console.log('손 안들었음 '); // 시간
 
         }
       }
@@ -86,7 +86,9 @@ setInterval(()=> {
     if (this.props && this.props.user.streamManager && !!this.videoRef) {
       console.log('PROPS: ', this.props);
       this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
-      this.runHandpose();
+      if(this.props.handsUp&&this.props.user.isReaction()!=='hand'){
+        this.runHandpose();
+      }
     }
 
     if (this.props && this.props.user.streamManager.session && this.props.user && !!this.videoRef) {

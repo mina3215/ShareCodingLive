@@ -369,6 +369,8 @@ class VideoRoomComponent extends Component {
       const clientdata = event.stream.connection.data.split('%')[0];
       newUser.setNickname(JSON.parse(clientdata).clientData);
       newUser.setRole(JSON.parse(clientdata).host);
+      console.log('ㅁㄴㅇㄹㄴㅇㅁㄹㄴㅁㅇㄹㄴ',event.stream);
+      newUser.setReaction(JSON.parse(clientdata).reaction);
 
       // 구독자 중 호스트가 있으면 hostUser에 넣습니다.
       if (newUser.isHost()) {
@@ -532,10 +534,12 @@ class VideoRoomComponent extends Component {
     } else {
       localUser.setReaction('hand');
       this.sendSignalUserChanged({ reaction: localUser.isReaction() });
+      setTimeout(()=>{
+        this.handsUp()
+      },100000);
     }
     this.setState({ localUser: localUser });
     this.props.handleHandUp();
-
   }
 
   detectMic() {
@@ -581,7 +585,6 @@ class VideoRoomComponent extends Component {
                           cam={this.state.showCam}
                           user={sub}
                           streamId={sub.streamManager.stream.streamId}
-                          handsUp = {this.handsUp}
                         />
                       </IndividualCam>
                     ) : null
@@ -601,7 +604,6 @@ class VideoRoomComponent extends Component {
                     // handleChildRef={this.props.handleChildRef}
                     cam={this.state.showCam}
                     user={hostUser}
-                    handsUp = {this.handsUp}
                   />
                 )}
               </HostCam>
