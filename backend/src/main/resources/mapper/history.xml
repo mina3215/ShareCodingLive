@@ -20,12 +20,12 @@
 
     <select id="getUserConferenceHistory" parameterType="String" resultMap="dateOfCourseResultMap">
         SELECT DATE(c.start_time) AS dateOfCourse,
-            c.conference_uuid AS courseUUID,
+            c.course_id AS courseUUID,
             c.title AS title,
             (SELECT nickname FROM `user` WHERE email = c.owner_email) AS teacher
         FROM conference_history ch
             JOIN `user` u ON ch.user_email = u.email
-            JOIN conference c ON ch.conference_uuid = c.conference_uuid
+            JOIN conference c ON ch.course_id = c.course_id
         WHERE ch.user_email = #{userEmail};
     </select>
 
