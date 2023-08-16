@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
     public List<UserHistoryCourse> getCodeHistoryFromCourses(String userEmail) {
 
         List<UserHistoryCourse> userHistoryCourses
-                = conferenceHistoryMapper.getUserConferenceHistory("minsu@ssafy.com");
+                = conferenceHistoryMapper.getUserConferenceHistory(userEmail);
 
         for (UserHistoryCourse userHistoryCourse : userHistoryCourses) {
 
