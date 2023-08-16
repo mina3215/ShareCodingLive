@@ -26,6 +26,7 @@ const Socket = (props) => {
 
   // 나갔는지 받아오는 변수
   const isExit = props.isExit;
+  const isHost = props.isHost;
 
   const Navigate = useNavigate();
   useEffect(() => {
@@ -57,7 +58,7 @@ const Socket = (props) => {
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
     if (ws.connected) {
-      if (handUp) {
+      if (handUp && !isHost) {
         console.log('hand is true: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag: '' }));
       } else if (!handUp) {
