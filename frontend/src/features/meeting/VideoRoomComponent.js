@@ -296,7 +296,7 @@ class VideoRoomComponent extends Component {
     );
   }
 
-  leaveSession() {
+  async leaveSession() {
     const mySession = this.state.session;
     if (mySession) {
       mySession.disconnect();
@@ -304,6 +304,17 @@ class VideoRoomComponent extends Component {
     // TODO: 호스트 나간거 알려주기 
     // Empty all properties...
     this.OV = null;
+    if(localUser.isHost()&& this.state.mySessionId!=='SessionA'){
+      try{
+        const response = await axios.get(`/conference/end?uuid=${this.state.mySessionId}`,{
+          headers: {
+            Authorization: `Bearer ${this.state.userToken}`,
+          }
+        });
+      }catch(err){
+        console.log(err, '방종료 에러');
+      }
+    }
     this.setState({
       session: undefined,
       subscribers: [],
@@ -313,17 +324,6 @@ class VideoRoomComponent extends Component {
       isHost: false,
       isReact : false,
     });  
-
-    // try{
-    //   const response = axios.get('',{},{
-      
-    //     headers: {
-    //       Authorization: `Bearer ${this.state.userToken}`,
-    //     },
-    //   });
-    // }catch(err){
-    //   console.log(err, '방종료 에러');
-    // }
     //  종료 로직 넣을거니까 건들지 않기.
     this.props.setIsExit(true);
 
@@ -670,7 +670,8 @@ class VideoRoomComponent extends Component {
       if (err.response.status === 403) {
         alert('없는 회의방입니다.');
         // 뒤로 보내기
-        this.props.setIsExit(true);
+        window.history.back();
+
       }
       console.log(err);
     }
