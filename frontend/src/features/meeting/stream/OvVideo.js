@@ -21,7 +21,6 @@ export default class OvVideoComponent extends Component {
     ) {
       // Get Video Properties
       const video = this.videoRef.current;
-      console.log('느어어어',this.videoRef.current);
       // Make Detections
       const hand = await net.estimateHands(video);
 
@@ -52,19 +51,11 @@ export default class OvVideoComponent extends Component {
         const isRingOpen = ringTip[1] < ringMiddle[1];
         const isPinkyOpen = pinkyTip[1] < pinkyMiddle[1];
 
-        console.log(isThumbOpen, isIndexOpen, isMiddleOpen, isRingOpen, isPinkyOpen);
-        console.log(this.props.user.isReaction(), '손');
-
-        console.log(this.props.handsUp);
-
         if (isThumbOpen&&isIndexOpen&&isMiddleOpen&&isRingOpen&&isPinkyOpen&&this.props.user.isReaction()!=='hand'){
             this.props.handsUp();
-            console.log('손 들었음');
-            console.log(this.props.user.isReaction(), '손 들은거 넣었당');
         }
         else{
-          console.log('손 안들었음 '); // 시간
-
+          console.log('hands down');
         }
       }
     }
@@ -82,9 +73,7 @@ setInterval(()=> {
 
   
   componentDidMount() {
-    console.log('사용자 상태 확인', this.props.user);
     if (this.props && this.props.user.streamManager && !!this.videoRef) {
-      console.log('PROPS: ', this.props);
       this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
       if(this.props.handsUp&&this.props.user.isReaction()!=='hand'){
         this.runHandpose();

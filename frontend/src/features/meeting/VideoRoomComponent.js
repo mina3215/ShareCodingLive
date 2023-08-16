@@ -530,13 +530,10 @@ class VideoRoomComponent extends Component {
   handsUp() {
     if (localUser.isReaction() === 'hand') {
       localUser.setReaction('none');
-      this.sendSignalUserChanged({ reaction: 'none' });
+      this.sendSignalUserChanged({ reaction: localUser.isReaction() });
     } else {
       localUser.setReaction('hand');
       this.sendSignalUserChanged({ reaction: localUser.isReaction() });
-      setTimeout(()=>{
-        this.handsUp()
-      },100000);
     }
     this.setState({ localUser: localUser });
     this.props.handleHandUp();

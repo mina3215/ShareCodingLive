@@ -75,6 +75,7 @@ const TextInput = styled.input`
   border: none;
   outline: none;
   color: white;
+  font-family: none;
 `;
 
 const SendButton = styled.button`
