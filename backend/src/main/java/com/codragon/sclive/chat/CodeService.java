@@ -1,5 +1,6 @@
 package com.codragon.sclive.chat;
 
+import com.codragon.sclive.domain.ChatMessage;
 import com.codragon.sclive.domain.Code;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
 
 
 @Slf4j
@@ -16,6 +18,23 @@ import java.util.Map;
 public class CodeService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+
+    public Code generateCodeByAnswerMessage(ChatMessage answerMessage) {
+
+        Code code = Code.builder()
+                .title(answerMessage.getTitle())
+                .language(answerMessage.getLanguage())
+                .content(answerMessage.getMessage())
+                .summarization(answerMessage.getSummarization())
+                .created_time(answerMessage.getSendTime())
+                .course_id(answerMessage.getRoomId())
+                .id(UUID.randomUUID().toString())
+                .build();
+
+        log.info("generate Code to be Saved in Redis From AnswerMessage: {}", code);
+
+        return code;
+    }
 
     /**
      * 강의 중에 나온 Code 저장

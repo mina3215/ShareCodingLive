@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class AsyncConfig {
 
-    @Bean(name = "task-executor", destroyMethod = "shutdown")
+    @Bean(name = "taskExecutor", destroyMethod = "shutdown")
     public ThreadPoolTaskExecutor taskExecutor() {
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

@@ -235,6 +235,12 @@ public class UserController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
+    @ApiOperation(value = "지난 회의 코드 조회", notes = "Authorization : Bearer eyJ0eXAiOiJKV1QiLCJhb...형식으로")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "성공"),
+            @ApiResponse(code = 401, message = "회원 정보 조회 실패"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
     @GetMapping("/history/code")
     public List<UserHistoryCourse> getCodeHistory(@ApiIgnore @AuthenticationPrincipal UserEntity user) {
         return userService.getCodeHistoryFromCourses(user.getUserEmail());

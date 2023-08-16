@@ -26,6 +26,8 @@ public class Code {
     // Code 내용 + 주석 포함
     private String content;
 
+    private String language;
+
     // Code 생성 시각
     @JsonIgnore
     private String created_time;

@@ -2,6 +2,7 @@ package com.codragon.sclive.service;
 
 import com.codragon.sclive.chat.*;
 import com.codragon.sclive.domain.ChatMessage;
+import com.codragon.sclive.domain.Code;
 import io.netty.handler.codec.UnsupportedMessageTypeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import static com.codragon.sclive.chat.MessageType.*;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageUtil messageUtil;
+    private final CodeService codeService;
 
     private static final String CODE_PREFIX = "```";
     private static final String QUESTION_PREFIX = "?";
@@ -83,6 +85,13 @@ public class MessageServiceImpl implements MessageService {
                 break;
             case CODE:
                 answerMessage = messageUtil.code(messageFromClient, answerMessage);
+
+                String roomId = messageFromClient.getRoomId();
+                String codeTitle = answerMessage.getTitle();
+
+                Code savedCode = codeService.generateCodeByAnswerMessage(answerMessage);
+
+                codeService.saveCode(roomId, codeTitle, savedCode);
                 break;
             case QUESTION:
                 answerMessage = messageUtil.question(messageFromClient, answerMessage);
