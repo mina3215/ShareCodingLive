@@ -25,6 +25,7 @@ const TabContainerWrapper = styled.div`
 `;
 
 function MeetingPage(props) {
+
   const { pathname, state } = useLocation();
   const [configRef, setConfigRef] = useState('');
   const [showChat, setShowChat] = useState(false);

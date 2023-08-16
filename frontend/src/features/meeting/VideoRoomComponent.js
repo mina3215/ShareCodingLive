@@ -310,12 +310,23 @@ class VideoRoomComponent extends Component {
       mySessionId: 'SessionA',
       myUserName: 'OpenVidu_User' + Math.floor(Math.random() * 100),
       localUser: undefined,
-    });
+      isHost: false,
+      isReact : false,
+    });  
 
-    if (this.props.leaveSession) {
-      this.props.leaveSession();
-    }
-    window.history.back();
+    // try{
+    //   const response = axios.get('',{},{
+      
+    //     headers: {
+    //       Authorization: `Bearer ${this.state.userToken}`,
+    //     },
+    //   });
+    // }catch(err){
+    //   console.log(err, '방종료 에러');
+    // }
+    //  종료 로직 넣을거니까 건들지 않기.
+    this.props.setIsExit(true);
+
   }
 
   camStatusChanged() {
@@ -627,8 +638,8 @@ class VideoRoomComponent extends Component {
           </div>
         ) : (
           // 비디오 안 불러왔으면 아무것도 안보이게 해놓음
-          <div class="loading-container">
-            <div class="loading"></div>
+          <div className="loading-container">
+            <div className="loading"></div>
             <div id="loading-text">입장 중</div>
           </div>
         )}

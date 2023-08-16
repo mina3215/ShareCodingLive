@@ -28,18 +28,6 @@ const Socket = (props) => {
   const isExit = props.isExit;
 
   const Navigate = useNavigate();
-  // // 손 든 정보를 props로 받아옴.
-  // const hand = props.hand
-
-  // 손들기 테스트용
-  // const [hand, setHand] = useState(false)
-
-  // // 이거도 손들기 테스트용
-  // const changeHand = () => {
-  //   setHand(!hand)
-  // }
-
-  // 화면 처음 랜더링 되면 소켓 연결
   useEffect(() => {
     sock = new SockJS('https://www.sclive.link/api/ws/chat');
     ws = Stomp.over(sock);
@@ -61,14 +49,15 @@ const Socket = (props) => {
 
   // isExit 변수 바뀌면 연결 끊기. 미팅 페이지에서 나가기 누르면 isExit 변수 값 바꾸고 이거 props로 줘서 이 변수 바뀌면 채팅 소켓 끊어버림
   useEffect(() => {
+    if(isExit){
     offConnect();
+    }
   }, [isExit])
 
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
     if (ws.connected) {
       if (handUp) {
-        console.log('손 들었오~');
         console.log('hand is true: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag: '' }));
       } else if (!handUp) {
@@ -79,7 +68,6 @@ const Socket = (props) => {
   }, [handUp]);
 
   const connectWebSocket = () => {
-    console.log('변경변경');
     const onConnect = () => {
       console.log('roomId ready? : ', roomId);
       ws.subscribe(`/topic/chat/room/${roomId}`, (message) => {
