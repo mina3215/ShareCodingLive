@@ -15,10 +15,10 @@ let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
 
-const sender = localStorage.getItem('nick')
 
 const Socket = (props) => {
   console.log('손들기 확인', props.handUp);
+  const sender = localStorage.getItem('nick')
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const roomId = props.uuid;
@@ -60,10 +60,10 @@ const Socket = (props) => {
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
     if (ws.connected) {
-      if (handUp && !isHost) {
+      if (handUp) {
         console.log('hand is true: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag: '' }));
-      } else if (!handUp && !isHost) {
+      } else if (!handUp) {
         console.log('hand is false: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_DOWN', roomId, sender, messag: '' }));
       }
@@ -103,6 +103,7 @@ const Socket = (props) => {
 
   // 채팅 받기
   const recvMessage = (recv) => {
+    console.log('채팅 받음', recv)
     setMessages((prevMessages) => [
       ...prevMessages,
       {
