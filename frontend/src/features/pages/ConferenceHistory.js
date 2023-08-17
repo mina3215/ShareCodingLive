@@ -26,10 +26,11 @@ const AccordionTitleStyles = styled.div`
 `;
 
 const CourseTitleContainer = styled.div`
-  display: block flex;
+  display: flex;
   width : 100%;
+  flex-direction: column;
+  justify-content: space-between;
   border-bottom: 0px;
-  align-items: center;
   border-radius: 5px;
   border: 2px solid #4454AB;
   `;
@@ -168,24 +169,27 @@ const ConferenceHistory = () => {
     <FullWrapper>
     <AccordionTitleStyles>
       <CourseTitleContainer>
-        <CourseTitleIcon>
-          <Arrows>
-            <FontAwesomeIcon icon={faAngleDown} />
-          </Arrows>
-        </CourseTitleIcon>
 
-        <div style={{marginRight: '2vw'}}>{title}</div>
+        <div style={{marginRight: '2vw', width: '100%', display:'flex', alignItems:'center'}}> 
+          <CourseTitleIcon>
+            <Arrows>
+              <FontAwesomeIcon icon={faAngleDown} />
+            </Arrows>
+          </CourseTitleIcon>
+          <div styled={{width:'100%'}}>{title}</div>
+        </div>
+        {codes && codes.map((code, index) => (
+          <CodeAccordion
+            code={code}
+            key={index}
+            isActiveSection={index === activeIndex}
+            setActiveIndex={setActiveIndex}
+            sectionIndex={index}
+          />
+       ))}
       </CourseTitleContainer>
     </AccordionTitleStyles>
-    {codes && codes.map((code, index) => (
-      <CodeAccordion
-        code={code}
-        key={index}
-        isActiveSection={index === activeIndex}
-        setActiveIndex={setActiveIndex}
-        sectionIndex={index}
-    />
-    ))}
+
       {/* <PageNumberContainer>
         <Pagination>
           {Array.from({ length: Math.ceil(courses.length / codesPerPage) }).map((_, index) => (
