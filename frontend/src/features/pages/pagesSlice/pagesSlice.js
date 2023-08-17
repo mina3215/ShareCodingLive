@@ -9,12 +9,13 @@ import axios from '../../../common/api/http-common';
 export const getCodeData = createAsyncThunk('GET_CODE_DATA', async (data, { rejectWithValue }) => {
   console.log(DataTransferItemList);
   try {
-    const response = await axios.get('/user/history/code', { 
+    const response = await axios.get('user/history/code', { 
       headers: {
         Authorization: `Bearer ${data.token}`,
       },
       },
     );
+    console.log(response)
     return response.data;
   } catch (err) {
     return rejectWithValue(err.response);
