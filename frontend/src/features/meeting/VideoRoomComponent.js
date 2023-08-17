@@ -108,7 +108,8 @@ class VideoRoomComponent extends Component {
     this.hasBeenUpdated = false;
     const uuid = this.props.uuid;
     const isHost = this.props.isHost;
-    let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
+    // let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
+    let userName = localStorage.getItem('nick')
     this.remotes = [];
     this.localUserAccessAllowed = false;
     const userToken = getLocalToken(); // 주소가 쉐코라랑 달라서 잠깐 보류

@@ -111,7 +111,7 @@ const CodeTab = (props) => {
                       marginLeft: '5px',
                     }}
                   >
-                    <span style={{ fontSize: '14px', color: '#748aaa' }}>단비씌</span>
+                    <span style={{ fontSize: '14px', color: '#748aaa' }}>{message.sender}</span>
                     <span style={{ color: '#c6d2e3', fontSize: '14px', marginLeft: '20px' }}>{message.time}</span>
                   </div>
                 </div>

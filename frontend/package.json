@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "proxy": "https://i9d109.p.ssafy.io",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",

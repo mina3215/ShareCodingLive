@@ -101,7 +101,8 @@ const EnterConference = (props) => {
 
   function handleSubmit(e) {
     const len = url.length;
-    const uuid = url.slice(31, len);
+    const uuid = url.slice(len-36, len);
+    console.log(uuid);
     console.log('넘길 uuid', uuid);
     Navigate(`/meeting/${uuid}`, {
       state: {

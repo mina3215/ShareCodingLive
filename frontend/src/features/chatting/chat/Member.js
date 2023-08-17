@@ -50,7 +50,7 @@ const NameContainer = styled.div`
 // 손 안든 나머지 참가자들
 const Member = (props) => {
   const openNewWindow = () => {
-    window.open('http://192.168.100.210:3000/', '_blank');
+    window.open('http://192.168.100.132:3000/remote', '_blank');
   };
   return (
     <div>

@@ -15,7 +15,7 @@ let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
 
-const sender = 'nickname' + Math.floor(Math.random() * 100);
+const sender = localStorage.getItem('nick')
 
 const Socket = (props) => {
   console.log('손들기 확인', props.handUp);
@@ -26,7 +26,9 @@ const Socket = (props) => {
 
   // 나갔는지 받아오는 변수
   const isExit = props.isExit;
-  const isHost = props.isHost;
+
+  // 내가 호스트 인지 아닌지 판별하는 변수
+  const isHost = props.isHost
 
   const Navigate = useNavigate();
   useEffect(() => {
@@ -61,7 +63,7 @@ const Socket = (props) => {
       if (handUp && !isHost) {
         console.log('hand is true: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag: '' }));
-      } else if (!handUp) {
+      } else if (!handUp && !isHost) {
         console.log('hand is false: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_DOWN', roomId, sender, messag: '' }));
       }

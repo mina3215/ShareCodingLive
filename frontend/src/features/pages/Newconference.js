@@ -236,15 +236,17 @@ const NewConference = (props) => {
               variant="outlined"
               onClick={() => handleCopy(link)}
               style={{
-                position: 'absolute',
+
                 top: '12px',
                 right: '12px',
                 padding: '2px',
+                marginLeft: '520px',
                 minWidth: '5px', // 원하는 크기로 조절
                 minHeight: '5px',
               }}
             />
             <h3>{link}</h3>
+            
             <CommonButton green="true" onClick={goTomeetingPage}>
               시작
             </CommonButton>

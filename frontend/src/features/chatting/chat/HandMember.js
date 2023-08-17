@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import remote from '../../../assets/remote_access.png';
 
 export const SenderIcon = styled.div`
   // margin-top: 20px;
@@ -21,7 +22,7 @@ export const SenderIcon = styled.div`
 const MemberList = styled.li`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-direction: row;
   border: 3px solid red;
   border-radius: 10px;
@@ -36,10 +37,22 @@ const MemberNameDiv = styled.div`
   font-weight: bold;
 `;
 
+const CustomImg = styled.img`
+  width: 60px;
+  height: 60px;
+  margin: auto;
+`;
+
+const NameContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
 // 손 든 사람들. 여기에 하이라이트 주시면 됩니다
 const HandMember = (props) => {
-  const handleOpenNewTab = (url) => {
-    window.open(url, "_blank", "noopener, noreferrer")
+  const openNewWindow = () => {
+    window.open('http://192.168.100.132:3000/remote', '_blank');
   };
 
   return (
@@ -49,9 +62,13 @@ const HandMember = (props) => {
         {console.log(props.members)}
         {props.handmembers.map((member, index) => (
           <MemberList key={index}>
-            <SenderIcon>{member[0]}</SenderIcon>
-            <MemberNameDiv>{member}</MemberNameDiv>
-            <button onClick={() => handleOpenNewTab("https://www.naver.com/")}>원격</button>
+            <NameContainer>
+              <SenderIcon>{member[0]}</SenderIcon>
+              <MemberNameDiv>{member}</MemberNameDiv>
+            </NameContainer>
+            <button onClick={openNewWindow}>
+              <CustomImg src={remote} alt="remote" />
+            </button>
           </MemberList>
         ))}
       </ul>

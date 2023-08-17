@@ -7,6 +7,9 @@ import Pagination from 'react-bootstrap/Pagination';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
+// 복사 이모티콘
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 const ClassAccordionContainer = styled.div`
   max-width: 1000px;
   width: 100%;
@@ -116,33 +119,63 @@ const CodeAccordion = ({ code, isActiveSection, setActiveIndex, sectionIndex }) 
     setActiveIndex(nextIndex);
   };
 
+  // 코드 복사하는 함수
+  const handleCopy = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  };
+
   return (
     <div>
-      <CorseContainerIndividual>
-        <AccordionTitleStyles onClick={toggleSection}>
-          <div>{code.title}</div>
-          <FontAwesomeIcon icon={isActiveSection ? faAngleDown : faAngleRight} />
-        </AccordionTitleStyles>
-      </CorseContainerIndividual>
-      {isActiveSection && (
-        <div>
-          <CodeContainer>
-            <SyntaxHighlighter
-              style={vscDarkPlus}
-              customStyle={{ background: '#2a2d52', borderRadius: '5px', margin: '10px', padding: '15px' }}
-            >
-              {code.content}
-            </SyntaxHighlighter>
-          </CodeContainer>
-          <SummaryContainer>
-            <div
-              style={{ background: '#2a2d52', borderRadius: '5px', margin: '10px', padding: '15px', color: 'white' }}
-            >
-              {code.summarization}
-            </div>
-          </SummaryContainer>
-        </div>
-      )}
+    <CorseContainerIndividual>
+      <AccordionTitleStyles onClick={toggleSection}>
+        <div>{code.title}</div>
+        <FontAwesomeIcon icon={isActiveSection? faAngleDown: faAngleRight} />
+      </AccordionTitleStyles>
+    </CorseContainerIndividual>
+    {isActiveSection &&(
+      <div
+        style={{
+          position: 'relative'
+        }}
+      >
+        <CodeContainer>
+          {/* 복사 버튼 */}
+          <ContentCopyIcon
+            size="small"
+            variant="outlined"
+            onClick={() => handleCopy(code.content)}
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '20px',
+              // left: '12px',
+              padding: '2px',
+              minWidth: '5px', // 원하는 크기로 조절
+              minHeight: '5px',
+              color: 'yellow',
+            }}
+          />
+
+          <SyntaxHighlighter
+            style={vscDarkPlus}
+            customStyle={{ background: '#2a2d52', borderRadius: '5px', margin: '10px', padding: '15px' }}
+          >
+            {code.content}
+          </SyntaxHighlighter>
+        </CodeContainer>
+        <SummaryContainer>
+          <div
+            style={{ background: '#2a2d52', borderRadius: '5px', margin: '10px', padding: '15px', color: 'white' }}
+          >
+            {code.summarization}
+          </div>
+        </SummaryContainer>
+      </div>)}
     </div>
   );
 };
