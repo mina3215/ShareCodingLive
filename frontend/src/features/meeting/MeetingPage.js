@@ -124,7 +124,7 @@ function MeetingPage(props) {
         />
       </VideoRoomWrapper>
       <TabContainerWrapper showChat={showChat} showMember={showMember}>
-        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp} isExit={isExit} isHost={isHost} />
+        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp} isExit={isExit} />
       </TabContainerWrapper>
       {/* <button onClick={handleDownload}>다운로드</button> */}
     </Wrapper>
