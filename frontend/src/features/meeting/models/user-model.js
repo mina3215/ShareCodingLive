@@ -7,7 +7,7 @@ class UserModel {
   streamManager;
   role; // "host | user "
   type; // 'remote' | 'local'
-  reaction; // hand
+  reaction; // hand.
 
   constructor() {
     this.connectionId = '';
@@ -85,6 +85,8 @@ class UserModel {
   setRole(isHost) {
     if (isHost) {
       this.role = 'host';
+    } else {
+      this.role = 'user';
     }
   }
   setReaction(reaction) {
