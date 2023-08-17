@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect } from 'react';
 const Wrapper = styled.div`
   position: relative;
-  z-index: 9999;s
+  z-index: 9999;
 `;
 
 const TabContainerWrapper = styled.div`
@@ -75,6 +75,7 @@ const TextInput = styled.input`
   border: none;
   outline: none;
   color: white;
+  font-family: none;
 `;
 
 const SendButton = styled.button`

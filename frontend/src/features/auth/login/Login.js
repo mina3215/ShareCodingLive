@@ -9,6 +9,7 @@ import { deleteToken } from '../../../common/api/JWT-common';
 import { login } from '../authSlice';
 // import logo from '../../../assets/logo.png';
 import { saveToken } from '../../../common/api/JWT-common';
+import { saveNickname } from '../../../common/api/JWT-common';
 
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
@@ -168,10 +169,14 @@ export default function Login(props) {
       .unwrap()
       .then(async (response) => {
         const token = response.headers['access-token'];
-        console.log(token, 'tokenview');
-        console.log(response.headers, 'Login response headers');
+        const nickname = response.data.nickname;
+        console.log(response.data.nickname, 'login_response');
+        // console.log(response.headers, 'Login response headers');
         if (token !== undefined) {
           saveToken(token);
+          if (nickname !== undefined) {
+            saveNickname(nickname);
+          }
         }
         props.ChangeLogin(token);
         props.ChangeSignUp(false);

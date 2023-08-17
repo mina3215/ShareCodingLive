@@ -296,7 +296,7 @@ class VideoRoomComponent extends Component {
     );
   }
 
-  leaveSession() {
+  async leaveSession() {
     const mySession = this.state.session;
     if (mySession) {
       mySession.disconnect();
@@ -304,18 +304,29 @@ class VideoRoomComponent extends Component {
     // TODO: 호스트 나간거 알려주기 
     // Empty all properties...
     this.OV = null;
+    if(localUser.isHost()&& this.state.mySessionId!=='SessionA'){
+      try{
+        const response = await axios.get(`/conference/end?uuid=${this.state.mySessionId}`,{
+          headers: {
+            Authorization: `Bearer ${this.state.userToken}`,
+          }
+        });
+      }catch(err){
+        console.log(err, '방종료 에러');
+      }
+    }
     this.setState({
       session: undefined,
       subscribers: [],
       mySessionId: 'SessionA',
       myUserName: 'OpenVidu_User' + Math.floor(Math.random() * 100),
       localUser: undefined,
-    });
+      isHost: false,
+      isReact : false,
+    });  
+    //  종료 로직 넣을거니까 건들지 않기.
+    this.props.setIsExit(true);
 
-    if (this.props.leaveSession) {
-      this.props.leaveSession();
-    }
-    window.history.back();
   }
 
   camStatusChanged() {
@@ -369,6 +380,7 @@ class VideoRoomComponent extends Component {
       const clientdata = event.stream.connection.data.split('%')[0];
       newUser.setNickname(JSON.parse(clientdata).clientData);
       newUser.setRole(JSON.parse(clientdata).host);
+      newUser.setReaction(JSON.parse(clientdata).reaction);
 
       // 구독자 중 호스트가 있으면 hostUser에 넣습니다.
       if (newUser.isHost()) {
@@ -523,17 +535,18 @@ class VideoRoomComponent extends Component {
     });
   }
 
+
   // 손 들기 감지
   handsUp() {
     if (localUser.isReaction() === 'hand') {
-      localUser.setReaction(null);
-      this.sendSignalUserChanged({ reaction: 'none' });
+      localUser.setReaction('none');
+      this.sendSignalUserChanged({ reaction: localUser.isReaction() });
     } else {
       localUser.setReaction('hand');
-      console.log();
       this.sendSignalUserChanged({ reaction: localUser.isReaction() });
     }
     this.setState({ localUser: localUser });
+    this.props.handleHandUp();
   }
 
   detectMic() {
@@ -564,7 +577,7 @@ class VideoRoomComponent extends Component {
               <ParticipantCams>
                 {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
                   <Cam>
-                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} />
+                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} handsUp = {this.handsUp}/>
                   </Cam>
                 )}
 
@@ -618,7 +631,6 @@ class VideoRoomComponent extends Component {
               handsUp={this.handsUp}
               handleToggleChat={this.props.handleToggleChat}
               handleToggleMember={this.props.handleToggleMember}
-              handleHandUp={this.props.handleHandUp}
               setCapture={this.props.setCapture}
             />
             {/* </Toolbar> */}
@@ -626,8 +638,8 @@ class VideoRoomComponent extends Component {
           </div>
         ) : (
           // 비디오 안 불러왔으면 아무것도 안보이게 해놓음
-          <div class="loading-container">
-            <div class="loading"></div>
+          <div className="loading-container">
+            <div className="loading"></div>
             <div id="loading-text">입장 중</div>
           </div>
         )}
@@ -659,6 +671,7 @@ class VideoRoomComponent extends Component {
         alert('없는 회의방입니다.');
         // 뒤로 보내기
         window.history.back();
+
       }
       console.log(err);
     }

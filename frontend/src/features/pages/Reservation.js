@@ -9,6 +9,9 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 // import axios from 'axios'
 import axios from '../../common/api/http-common';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setReservationFalse } from './pagesSlice/pagesSlice';
+
 // 여기부터는 예약 리스트 보여주는 css
 
 const ChatContainer = styled(Paper)(({ theme }) => ({
@@ -40,7 +43,7 @@ const ChatItem = styled(ListItem)(({ theme, even }) => ({
   padding: '10px',
   borderRadius: '10px',
   marginBottom: '10px',
-  backgroundColor: even ? '#9499c8' : '#d2d7fd', // Use the desired colors
+  backgroundColor: even==="true" ? '#9499c8' : '#d2d7fd', // Use the desired colors
   '&:last-child': {
     borderBottom: 'none',
   },
@@ -152,6 +155,7 @@ export const CommonButton = styled(Button)`
 
 const Reservation = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   // 날짜 디폴트 값 오늘 날짜, 시간
   const dateNow = new Date();
@@ -174,6 +178,8 @@ const Reservation = () => {
 
   const [deleted, setDeleted] = useState(false);
 
+  const isLoadReservation = useSelector((state) => state.pages.isLoadReservation);
+
   // 헤더에 넣게 토큰 받아오셈
   const token = getToken();
 
@@ -188,7 +194,7 @@ const Reservation = () => {
   useEffect(() => {
     // Scroll to the bottom when messages are updated
     getReservation();
-  }, [title, reservationTime, reservations.length]);
+  }, [title, reservationTime, reservations.length, isLoadReservation]);
 
   function handleSubmit(e) {}
 
@@ -205,6 +211,7 @@ const Reservation = () => {
       },
     }).then((response) => {
       console.log(response);
+      // dispatch(setReservationFalse());
       setReservations(response.data.data);
       console.log(reservations);
       console.log('클릭 여부: ', resClicked);
@@ -228,6 +235,7 @@ const Reservation = () => {
     }).then((response) => {
       console.log(response.data.data);
       setResClicked(!resClicked);
+      dispatch(setReservationFalse());
       getReservation();
 
       // setReservations(response.data.data)
@@ -248,6 +256,7 @@ const Reservation = () => {
       console.log(response);
       setResClicked(!resClicked);
       // setDeleted(!deleted)
+      dispatch(setReservationFalse());
       getReservation();
     });
   }
@@ -333,7 +342,7 @@ const Reservation = () => {
                   {reservations.map(
                     (reservation, index) => (
                       // reservation.startTime >= date ?
-                      <ChatItem key={index} onClick={() => reserList(reservation)} even={index % 2 === 0}>
+                      <ChatItem key={index} onClick={() => reserList(reservation)} even={index % 2?"false":"true"}>
                         <div
                           style={{
                             display: 'flex',

@@ -9,6 +9,7 @@ import { deleteToken } from '../../../common/api/JWT-common';
 import { CommonButton, CommonTextValidator } from '../login/Login';
 import { checkNickname, modifyNickname, setNicknameCheckedFalse } from '../authSlice';
 import { getToken } from '../../../common/api/JWT-common';
+import { saveNickname } from '../../../common/api/JWT-common';
 
 // style
 const Wrapper = styled.div`
@@ -126,6 +127,7 @@ export default function ModifyUserNickName(props) {
       .unwrap()
       .then(() => {
         // props.ToMypage(true);
+        saveNickname(newNickname);
         props.ToUserInfo(false);
         props.modNick(false);
         toast.success('😀 닉네임 변경이 완료되었습니다');

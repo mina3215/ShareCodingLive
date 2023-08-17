@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from 'react';
 import Tesseract from 'tesseract.js';
 import html2canvas from 'html2canvas';
@@ -24,12 +25,15 @@ const TabContainerWrapper = styled.div`
 `;
 
 function MeetingPage(props) {
+
   const { pathname, state } = useLocation();
   const [configRef, setConfigRef] = useState('');
   const [showChat, setShowChat] = useState(false);
   const [showMember, setShowMember] = useState(false);
   const [handUp, sethandUp] = useState(false);
   const [ocrResult, setOcrResult] = useState('');
+  const [isExit, setIsExit] = useState(false);
+
 
   const divRef = useRef(null);
 
@@ -116,10 +120,11 @@ function MeetingPage(props) {
           handleHandUp={handleHandUp}
           handleChildRef={handleChildRef}
           setCapture={setCapture}
+          setIsExit={setIsExit}
         />
       </VideoRoomWrapper>
       <TabContainerWrapper showChat={showChat} showMember={showMember}>
-        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp} />
+        <Socket uuid={uuid} showChat={showChat} showMember={showMember} handUp={handUp} isExit={isExit} isHost={isHost} />
       </TabContainerWrapper>
       {/* <button onClick={handleDownload}>다운로드</button> */}
     </Wrapper>

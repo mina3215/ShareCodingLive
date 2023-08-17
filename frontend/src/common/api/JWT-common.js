@@ -12,6 +12,14 @@ export const getToken = () => {
 export const deleteToken = () => {
   window.localStorage.removeItem('token'); // 로컬 스토리지에서 token 값 삭제
 };
+
+export const saveNickname = (nickname) => {
+  window.localStorage.setItem('nick', nickname); // 로컬 스토리지에서 token 값 삭제
+};
+
+export const deleteNickname = () => {
+  window.localStorage.removeItem('nick'); // 로컬 스토리지에서 token 값 삭제
+};
 // export const expireToken = () => {
 //   window.localStorage.setItem('expiresAt', moment().add(20, 'second').format('yyyy-MM-DD HH:mm:ss'));
 // };

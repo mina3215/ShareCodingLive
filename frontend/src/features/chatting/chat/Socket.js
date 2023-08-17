@@ -6,12 +6,15 @@ import React, { useState, useEffect } from 'react';
 import TabContainer from './TabContainer';
 import Members from './Members';
 
+import { useNavigate } from 'react-router-dom';
+
 // socket 통신을 위한 변수
-let sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+let sock = new SockJS('https://www.sclive.link/api/ws/chat');
 let ws = Stomp.over(sock);
 let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
+
 const sender = 'nickname' + Math.floor(Math.random() * 100);
 
 const Socket = (props) => {
@@ -20,20 +23,14 @@ const Socket = (props) => {
   const [messages, setMessages] = useState([]);
   const roomId = props.uuid;
   const handUp = props.handUp;
-  // // 손 든 정보를 props로 받아옴.
-  // const hand = props.hand
 
-  // 손들기 테스트용
-  // const [hand, setHand] = useState(false)
+  // 나갔는지 받아오는 변수
+  const isExit = props.isExit;
+  const isHost = props.isHost;
 
-  // // 이거도 손들기 테스트용
-  // const changeHand = () => {
-  //   setHand(!hand)
-  // }
-
-  // 화면 처음 랜더링 되면 소켓 연결
+  const Navigate = useNavigate();
   useEffect(() => {
-    sock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+    sock = new SockJS('https://www.sclive.link/api/ws/chat');
     ws = Stomp.over(sock);
     connectWebSocket();
   }, []);
@@ -51,11 +48,17 @@ const Socket = (props) => {
     };
   }, []);
 
+  // isExit 변수 바뀌면 연결 끊기. 미팅 페이지에서 나가기 누르면 isExit 변수 값 바꾸고 이거 props로 줘서 이 변수 바뀌면 채팅 소켓 끊어버림
+  useEffect(() => {
+    if(isExit){
+    offConnect();
+    }
+  }, [isExit])
+
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
     if (ws.connected) {
-      if (handUp) {
-        console.log('손 들었오~');
+      if (handUp && !isHost) {
         console.log('hand is true: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag: '' }));
       } else if (!handUp) {
@@ -66,7 +69,6 @@ const Socket = (props) => {
   }, [handUp]);
 
   const connectWebSocket = () => {
-    console.log('변경변경');
     const onConnect = () => {
       console.log('roomId ready? : ', roomId);
       ws.subscribe(`/topic/chat/room/${roomId}`, (message) => {
@@ -81,7 +83,7 @@ const Socket = (props) => {
       if (reconnect++ <= 5) {
         setTimeout(() => {
           console.log('Connection reconnect');
-          const newsock = new SockJS('https://i9d109.p.ssafy.io/api/ws/chat');
+          const newsock = new SockJS('https://www.sclive.link/api/ws/chat');
           const newws = Stomp.over(newsock);
           connectWebSocket(newws);
         }, 10 * 1000);
@@ -118,6 +120,7 @@ const Socket = (props) => {
   const offConnect = () => {
     ws.send('/app/chat/message', {}, JSON.stringify({ type: 'QUIT', roomId, sender, message: '' }));
     ws.disconnect();
+    Navigate('/');
     console.log('socket 끊김');
   };
 

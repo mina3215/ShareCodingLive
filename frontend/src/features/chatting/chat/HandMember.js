@@ -38,17 +38,20 @@ const MemberNameDiv = styled.div`
 
 // 손 든 사람들. 여기에 하이라이트 주시면 됩니다
 const HandMember = (props) => {
+  const handleOpenNewTab = (url) => {
+    window.open(url, "_blank", "noopener, noreferrer")
+  };
+
   return (
     <div>
       {/* <div>손 든 참가자 컨텐츠</div> */}
-      {/* {console.log("채팅탭 컨텐츠: ", props)} */}
-      {/* {console.log("채팅탭")} */}
       <ul className="list-group">
         {console.log(props.members)}
         {props.handmembers.map((member, index) => (
           <MemberList key={index}>
             <SenderIcon>{member[0]}</SenderIcon>
             <MemberNameDiv>{member}</MemberNameDiv>
+            <button onClick={() => handleOpenNewTab("https://www.naver.com/")}>원격</button>
           </MemberList>
         ))}
       </ul>

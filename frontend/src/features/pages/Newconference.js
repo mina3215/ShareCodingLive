@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { getToken } from '../../common/api/JWT-common';
 import { getUUIDLink } from '../meeting/meetingSlice';
+import { setReservationFalse } from './pagesSlice/pagesSlice';
+
 import { toast } from 'react-toastify';
 
 // import axios from 'axios';
@@ -157,6 +159,7 @@ const NewConference = (props) => {
         setReserved(!reserved);
         setUUID('reserved');
         setLink('reserved');
+        dispatch(setReservationFalse());
       })
       .catch((err) => {
         if (err.status === 403) {
@@ -220,6 +223,7 @@ const NewConference = (props) => {
               생성
             </CommonButton>
             <br />
+
             <CommonButton grey="true" onClick={reserHandleSubmit}>
               예약
             </CommonButton>
