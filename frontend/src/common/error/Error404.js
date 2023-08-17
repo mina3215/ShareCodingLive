@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/logo.png';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -60,7 +59,6 @@ export const CommonButton = styled(Button)`
 export default function Error404() {
   return (
     <Wrapper>
-      <Logo src={logo} width="60vh" alt="logo" />
       <TitleWrapper>
         <Title>페이지를 이용할 수 없습니다</Title>
       </TitleWrapper>

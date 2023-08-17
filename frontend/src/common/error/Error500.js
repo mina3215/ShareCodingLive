@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import logo from '../../assets/logo.png';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -60,7 +59,6 @@ export const CommonButton = styled(Button)`
 export default function Error500() {
   return (
     <Wrapper>
-      <Logo src={logo} width="60vh" alt="logo" />
       <TitleWrapper>
         <Title>알 수 없는 에러가 발생하였습니다</Title>
       </TitleWrapper>
