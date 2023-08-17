@@ -52,7 +52,7 @@ const NameContainer = styled.div`
 // 손 든 사람들. 여기에 하이라이트 주시면 됩니다
 const HandMember = (props) => {
   const openNewWindow = () => {
-    window.open('http://192.168.100.132:3000/remote', '_blank');
+    window.open('http://192.168.100.210:3000/', '_blank');
   };
 
   return (
