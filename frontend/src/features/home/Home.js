@@ -147,7 +147,16 @@ function Home() {
               )}
               {/* 예약 왼쪽 */}
               {authenticated && !userInfoToggle && historyToggle && !myPageToggle && !signupToggle && (
-                <div style={{ width: '100%', height:'100%', display:'flex', paddingTop: '10%', flexDirection:'column', justifyContent:'space-between'  }}>
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    marginTop: '8%',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start',
+                  }}
+                >
                   <div
                     style={{
                       width: '100%',
@@ -170,7 +179,7 @@ function Home() {
                     />
                   </div>
                   <LeftConference />
-                  <div style={{height:'5%'}}></div>
+                  <div style={{ height: '5%' }}></div>
                 </div>
               )}
               {!authenticated && <Promotion />}

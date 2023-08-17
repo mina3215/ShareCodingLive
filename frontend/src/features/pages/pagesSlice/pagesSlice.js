@@ -10,12 +10,11 @@ export const getCodeData = createAsyncThunk('GET_CODE_DATA', async (data, { reje
   console.log(DataTransferItemList);
   console.log(data.token);
   try {
-    const response = await axios.get('user/history/code', { 
+    const response = await axios.get('user/history/code', {
       headers: {
         Authorization: `Bearer ${data.token}`,
       },
-      }
-    );
+    });
     return response.data;
   } catch (err) {
     return rejectWithValue(err.response);
@@ -34,7 +33,7 @@ const pagesSlice = createSlice({
   initialState,
   reducers: {
     resetCodeData: (state) => {
-      state.course = [];   
+      state.course = [];
     },
     setCourse: (state, action) => {
       state.course = action.payload;
@@ -47,12 +46,12 @@ const pagesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCodeData.fulfilled, (state, actions) => {
-        state.course = actions.payload[0]?actions.payload[0].courses[0]:null;
+        state.course = actions.payload[0] ? actions.payload[0].courses[0] : null;
       })
-      .addCase(getCodeData.rejected, (state)=>{
+      .addCase(getCodeData.rejected, (state) => {
         state.course = null;
       });
-    }
+  },
 });
 
 export const { resetCodeData, setCourse, setReservationFalse } = pagesSlice.actions;

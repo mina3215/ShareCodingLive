@@ -11,17 +11,16 @@ import { getToken } from '../../common/api/JWT-common';
 
 import styled from 'styled-components';
 
-
 const ClassAccordionContainer = styled.div`
   max-width: 1000px;
-  margin-top: 5vh;
+  // margin-top: 5vh;
   width: 100%;
-  padding : 3vw;
+  padding: 3vw;
 `;
 
 const AccordionTitleStyles = styled.div`
   display: flex;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
   cursor: pointer;
   background: none;
@@ -29,7 +28,6 @@ const AccordionTitleStyles = styled.div`
   font-weight: bold;
   font-size: larger;
 `;
-
 
 const CourseTitleContainer = styled.div`
   display: flex;
@@ -72,8 +70,8 @@ const SummaryContainer = styled.div`
 const Arrows = styled.div`
   /* background-color: #124686;
    */
-  /* background : ${props => props.isActive? 'linear-gradient(0deg, #3C6EBF, #3F3998 )' : '#40409D'}; */
-  background: linear-gradient(0deg, #3C6EBF, #3F3998 ); 
+  /* background : ${(props) => (props.isActive ? 'linear-gradient(0deg, #3C6EBF, #3F3998 )' : '#40409D')}; */
+  background: linear-gradient(0deg, #3c6ebf, #3f3998);
   padding: 20px;
   width: 56.8px;
 `;
@@ -91,21 +89,26 @@ const PageNumberContainer = styled.div`
 const CourseSection = ({ course, isDActiveSection, setDActiveIndex, sectionIndex }) => {
   const dispatch = useDispatch();
   const toggleSection = (course) => {
-    setDActiveIndex(isDActiveSection? null: sectionIndex);
+    setDActiveIndex(isDActiveSection ? null : sectionIndex);
     dispatch(setCourse(course));
-  }
+  };
   return (
     <div>
-      <CourseStyle style={{ backgroundColor:`${isDActiveSection? '#C2CFE0':'white'}`}} onClick={()=>{toggleSection(course)}}>
+      <CourseStyle
+        style={{ backgroundColor: `${isDActiveSection ? '#C2CFE0' : 'white'}` }}
+        onClick={() => {
+          toggleSection(course);
+        }}
+      >
         <div>{course.title}</div>
-        <div style={{fontSize: '11px', marginTop:'5px'}}>{course.teacher}</div>
+        <div style={{ fontSize: '11px', marginTop: '5px' }}>{course.teacher}</div>
       </CourseStyle>
     </div>
   );
 };
 
 const CorseContainerIndividual = styled.div`
-  border-radius:5px;
+  border-radius: 5px;
   margin-bottom: 10px;
   overflow: hidden;
 `;
@@ -118,13 +121,15 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
     setDActiveIndex();
   };
   return (
-    <CorseContainerIndividual style={{  border: `2px solid ${ isActiveSection ? '#40409C' : '#2a2d52'}`}}>
+    <CorseContainerIndividual style={{ width: '100%', border: `2px solid ${isActiveSection ? '#40409C' : '#2a2d52'}` }}>
       <AccordionTitleStyles
         style={{
           borderBottomLeftRadius: isActiveSection ? '0' : '5px',
           borderBottomRightRadius: isActiveSection ? '0' : '5px',
         }}
-        onClick={()=>{toggleSection(date.dateOfCourse)}}
+        onClick={() => {
+          toggleSection(date.dateOfCourse);
+        }}
       >
         <CourseTitleContainer>
           <div> </div>
@@ -150,29 +155,33 @@ const DateAccordian = ({ date, isActiveSection, setActiveIndex, sectionIndex }) 
   );
 };
 
-
 const LeftConference = () => {
   const token = getToken();
   const dispatch = useDispatch();
   const [courses, setCourses] = useState('');
-  useEffect(()=>{getcode()},[])
+  useEffect(() => {
+    getcode();
+  }, []);
 
-  const getcode = ()=>{
+  const getcode = () => {
     const data = {
-      token: token
-    }
-    dispatch(getCodeData(data)).unwrap()
-    .then((res)=>{setCourses(res); console.log(res)}
-    ).catch();
-    
-  }
-  
+      token: token,
+    };
+    dispatch(getCodeData(data))
+      .unwrap()
+      .then((res) => {
+        setCourses(res);
+        console.log(res);
+      })
+      .catch();
+  };
+
   const [leftactiveindex, setLeftActiveIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const codesPerPage = 2;
   const indexOfLastCode = currentPage * codesPerPage;
   const indexOfFirstCode = indexOfLastCode - codesPerPage;
-  const currentCodes = courses ? courses.slice(indexOfFirstCode, indexOfLastCode):'';
+  const currentCodes = courses ? courses.slice(indexOfFirstCode, indexOfLastCode) : '';
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -180,15 +189,16 @@ const LeftConference = () => {
 
   return (
     <ClassAccordionContainer>
-      {courses&&currentCodes.map((date, index) => (
-        <DateAccordian
-          date={date}
-          key={index}
-          isActiveSection={index === leftactiveindex}
-          setActiveIndex={setLeftActiveIndex}
-          sectionIndex={index}
-        />
-      ))}
+      {courses &&
+        currentCodes.map((date, index) => (
+          <DateAccordian
+            date={date}
+            key={index}
+            isActiveSection={index === leftactiveindex}
+            setActiveIndex={setLeftActiveIndex}
+            sectionIndex={index}
+          />
+        ))}
       <PageNumberContainer>
         <Pagination>
           {Array.from({ length: Math.ceil(courses.length / codesPerPage) }).map((_, index) => (
