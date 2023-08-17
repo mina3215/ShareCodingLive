@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { deleteToken } from '../../common/api/JWT-common';
+import { deleteNickname } from '../../common/api/JWT-common';
 import axios from '../../common/api/http-common';
 
 // createAsyncThunk를 이용한 비동기 처리
@@ -17,7 +18,7 @@ export const signup = createAsyncThunk('SIGNUP', async (userInfo, { rejectWithVa
 export const login = createAsyncThunk('LOGIN', async (userInfo, { rejectWithValue }) => {
   try {
     const response = await axios.post('/user/login', userInfo);
-    console.log(response);
+    // console.log(response.data);
     return response;
   } catch (err) {
     return rejectWithValue(err.response);
@@ -28,6 +29,7 @@ export const login = createAsyncThunk('LOGIN', async (userInfo, { rejectWithValu
 export const logout = createAsyncThunk('LOGOUT', async (arg, { rejectWithValue }) => {
   try {
     deleteToken();
+    deleteNickname();
   } catch (err) {
     return rejectWithValue(err.response);
   }

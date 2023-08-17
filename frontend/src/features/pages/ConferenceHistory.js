@@ -7,6 +7,9 @@ import Pagination from 'react-bootstrap/Pagination';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 
+// 복사 이모티콘
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 const ClassAccordionContainer = styled.div`
   max-width: 1000px;
   width: 100%;
@@ -16,22 +19,28 @@ const ClassAccordionContainer = styled.div`
 
 const AccordionTitleStyles = styled.div`
   display: flex;
+  margin-top: 3vh;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   width: 100%;
   background: none;
-  border-radius: 5px;
   font-weight: bold;
   font-size: larger;
 `;
 
 const CourseTitleContainer = styled.div`
-  display: block flex;
-  width : 100%;
+  display: flex;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-direction: column;
+  max-height: 54vh;
+  justify-content: space-between;
   border-bottom: 0px;
-  align-items: center;
-  `;
+  border-radius: 5px;
+  border: 2px solid #4454ab;
+`;
 
 const CourseTitleIcon = styled.div`
   margin-right: 10px;
@@ -50,7 +59,7 @@ const CodeStyles = styled.div`
 const CodeContainer = styled.div`
   overflow: auto;
   max-height: 12vh;
-  max-width: 22.6vw;
+  max-width: 26vw;
   background: #2a2d52;
   border-radius: 5px;
   margin: 10px;
@@ -59,14 +68,14 @@ const CodeContainer = styled.div`
 const SummaryContainer = styled.div`
   overflow: auto;
   max-height: 7vh;
-  max-width: 22.6vw;
+  max-width: 26vw;
   background: #2a2d52;
   border-radius: 5px;
   margin: 10px;
 `;
 
 const Arrows = styled.div`
-  background-color: #4454AB;
+  background-color: #4454ab;
   padding: 20px;
 `;
 
@@ -96,18 +105,28 @@ const PageNumberContainer = styled.div`
 const CorseContainerIndividual = styled.div`
   /* border: 2px solid #2a2d52; */
   display: flex;
+  font-size: 15px;
   justify-content: space-between;
   border-radius: 5px;
   padding: 1vw;
-  font-weight: bold;  
+  font-weight: bold;
 `;
-
 
 const CodeAccordion = ({ code, isActiveSection, setActiveIndex, sectionIndex }) => {
   const [dActiveIndex, setDActiveIndex] = useState();
   const toggleSection = () => {
     const nextIndex = isActiveSection ? null : sectionIndex;
     setActiveIndex(nextIndex);
+  };
+
+  // 코드 복사하는 함수
+  const handleCopy = (text) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
   };
 
   return (
@@ -119,8 +138,29 @@ const CodeAccordion = ({ code, isActiveSection, setActiveIndex, sectionIndex }) 
       </AccordionTitleStyles>
     </CorseContainerIndividual>
     {isActiveSection &&(
-        <div>
+      <div
+        style={{
+          position: 'relative'
+        }}
+      >
         <CodeContainer>
+          {/* 복사 버튼 */}
+          <ContentCopyIcon
+            size="small"
+            variant="outlined"
+            onClick={() => handleCopy(code.content)}
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '20px',
+              // left: '12px',
+              padding: '2px',
+              minWidth: '5px', // 원하는 크기로 조절
+              minHeight: '5px',
+              color: 'yellow',
+            }}
+          />
+
           <SyntaxHighlighter
             style={vscDarkPlus}
             customStyle={{ background: '#2a2d52', borderRadius: '5px', margin: '10px', padding: '15px' }}
@@ -141,27 +181,24 @@ const CodeAccordion = ({ code, isActiveSection, setActiveIndex, sectionIndex }) 
 };
 
 const FullWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  border-radius: 5px;
-  border: 2px solid #4454AB;
-
-
-`
+  height: 100%;
+`;
 
 const ConferenceHistory = () => {
-  console.log(useSelector((state)=>state.pages))
+  console.log(useSelector((state) => state.pages));
   const course = useSelector((state) => state.pages.course);
-  console.log('날 괴롭히지마',course);
-  const codes = course? course.codes:null;
-  const title = course?course.title:null;
-  console.log('여기서 받았다',course,);
+  const codes = course ? course.codes : null;
+  const title = course ? course.title : null;
   const [activeIndex, setActiveIndex] = useState();
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const codesPerPage = 2;
+  const [currentPage, setCurrentPage] = useState(1);
+  const codesPerPage = 2;
 
   // const indexOfLastCode = currentPage * codesPerPage;
   // const indexOfFirstCode = indexOfLastCode - codesPerPage;
-  // // const currentCodes = courses.slice(indexOfFirstCode, indexOfLastCode);
+  // const currentCodes = courses.slice(indexOfFirstCode, indexOfLastCode);
 
   // const handlePageChange = (pageNumber) => {
   //   setCurrentPage(pageNumber);
@@ -169,26 +206,29 @@ const ConferenceHistory = () => {
 
   return (
     <FullWrapper>
-    <AccordionTitleStyles>
-      <CourseTitleContainer>
-        <CourseTitleIcon>
-          <Arrows>
-            <FontAwesomeIcon icon={faAngleDown} />
-          </Arrows>
-        </CourseTitleIcon>
+      <AccordionTitleStyles>
+        <CourseTitleContainer>
+          <div style={{ marginRight: '2vw', width: '100%', display: 'flex', alignItems: 'center' }}>
+            <CourseTitleIcon>
+              <Arrows>
+                <FontAwesomeIcon icon={faAngleDown} />
+              </Arrows>
+            </CourseTitleIcon>
+            <div styled={{ width: '100%' }}>{title}</div>
+          </div>
+          {codes &&
+            codes.map((code, index) => (
+              <CodeAccordion
+                code={code}
+                key={index}
+                isActiveSection={index === activeIndex}
+                setActiveIndex={setActiveIndex}
+                sectionIndex={index}
+              />
+            ))}
+        </CourseTitleContainer>
+      </AccordionTitleStyles>
 
-        <div style={{marginRight: '2vw'}}>{title}</div>
-      </CourseTitleContainer>
-    </AccordionTitleStyles>
-    {codes && codes.map((code, index) => (
-      <CodeAccordion
-        code={code}
-        key={index}
-        isActiveSection={index === activeIndex}
-        setActiveIndex={setActiveIndex}
-        sectionIndex={index}
-    />
-    ))}
       {/* <PageNumberContainer>
         <Pagination>
           {Array.from({ length: Math.ceil(courses.length / codesPerPage) }).map((_, index) => (

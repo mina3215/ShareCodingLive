@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as handpose from "@tensorflow-models/handpose";
 import '@tensorflow/tfjs-backend-webgl';
-import * as fp from "fingerpose";
 
 export default class OvVideoComponent extends Component {
   constructor(props) {
@@ -21,7 +20,6 @@ export default class OvVideoComponent extends Component {
     ) {
       // Get Video Properties
       const video = this.videoRef.current;
-      console.log('느어어어',this.videoRef.current);
       // Make Detections
       const hand = await net.estimateHands(video);
 
@@ -52,39 +50,33 @@ export default class OvVideoComponent extends Component {
         const isRingOpen = ringTip[1] < ringMiddle[1];
         const isPinkyOpen = pinkyTip[1] < pinkyMiddle[1];
 
-        console.log(isThumbOpen, isIndexOpen, isMiddleOpen, isRingOpen, isPinkyOpen);
-        console.log(this.props.user.isReaction(), '손');
-
-        console.log(this.props.handsUp);
-
         if (isThumbOpen&&isIndexOpen&&isMiddleOpen&&isRingOpen&&isPinkyOpen&&this.props.user.isReaction()!=='hand'){
             this.props.handsUp();
-            console.log('손 들었음');
-            console.log(this.props.user.isReaction(), '손 들은거 넣었당');
         }
         else{
-          console.log('손 안들었음 '); // 시간
-
+          console.log('hands down');
         }
       }
     }
 };
 
 runHandpose = async() => {
-const net = await handpose.load();
-console.log('handpose model loaded');
-
-setInterval(()=> {
+  try{
+  const net = await handpose.load('https://storage.googleapis.com/tfhub-tfjs-modules/mediapipe/tfjs-model/handskeleton/1/default/1/model.json', { mode: 'no-cors' });
+  console.log('handpose model loaded');
+  setInterval(()=> {
     this.detect(net);
-}, 2000);
+  }, 2000);
+  }catch(err){
+    console.log(err);
+  }
+
 }
   
 
   
   componentDidMount() {
-    console.log('사용자 상태 확인', this.props.user);
     if (this.props && this.props.user.streamManager && !!this.videoRef) {
-      console.log('PROPS: ', this.props);
       this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
       if(this.props.handsUp&&this.props.user.isReaction()!=='hand'){
         this.runHandpose();

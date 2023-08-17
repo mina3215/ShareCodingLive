@@ -6,6 +6,8 @@ import React, { useState, useEffect } from 'react';
 import TabContainer from './TabContainer';
 import Members from './Members';
 
+import { useNavigate } from 'react-router-dom';
+
 // socket 통신을 위한 변수
 let sock = new SockJS('https://www.sclive.link/api/ws/chat');
 let ws = Stomp.over(sock);
@@ -13,7 +15,7 @@ let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
 
-const sender = 'nickname' + Math.floor(Math.random() * 100);
+const sender = localStorage.getItem('nick')
 
 const Socket = (props) => {
   console.log('손들기 확인', props.handUp);
@@ -21,18 +23,14 @@ const Socket = (props) => {
   const [messages, setMessages] = useState([]);
   const roomId = props.uuid;
   const handUp = props.handUp;
-  // // 손 든 정보를 props로 받아옴.
-  // const hand = props.hand
 
-  // 손들기 테스트용
-  // const [hand, setHand] = useState(false)
+  // 나갔는지 받아오는 변수
+  const isExit = props.isExit;
 
-  // // 이거도 손들기 테스트용
-  // const changeHand = () => {
-  //   setHand(!hand)
-  // }
+  // 내가 호스트 인지 아닌지 판별하는 변수
+  const isHost = props.isHost
 
-  // 화면 처음 랜더링 되면 소켓 연결
+  const Navigate = useNavigate();
   useEffect(() => {
     sock = new SockJS('https://www.sclive.link/api/ws/chat');
     ws = Stomp.over(sock);
@@ -52,14 +50,20 @@ const Socket = (props) => {
     };
   }, []);
 
+  // isExit 변수 바뀌면 연결 끊기. 미팅 페이지에서 나가기 누르면 isExit 변수 값 바꾸고 이거 props로 줘서 이 변수 바뀌면 채팅 소켓 끊어버림
+  useEffect(() => {
+    if(isExit){
+    offConnect();
+    }
+  }, [isExit])
+
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
     if (ws.connected) {
-      if (handUp) {
-        console.log('손 들었오~');
+      if (handUp && !isHost) {
         console.log('hand is true: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_UP', roomId, sender, messag: '' }));
-      } else if (!handUp) {
+      } else if (!handUp && !isHost) {
         console.log('hand is false: ', ws);
         ws.send('/app/chat/message', {}, JSON.stringify({ type: 'HAND_DOWN', roomId, sender, messag: '' }));
       }
@@ -67,7 +71,6 @@ const Socket = (props) => {
   }, [handUp]);
 
   const connectWebSocket = () => {
-    console.log('변경변경');
     const onConnect = () => {
       console.log('roomId ready? : ', roomId);
       ws.subscribe(`/topic/chat/room/${roomId}`, (message) => {
@@ -119,6 +122,7 @@ const Socket = (props) => {
   const offConnect = () => {
     ws.send('/app/chat/message', {}, JSON.stringify({ type: 'QUIT', roomId, sender, message: '' }));
     ws.disconnect();
+    Navigate('/');
     console.log('socket 끊김');
   };
 

@@ -81,6 +81,7 @@ const Cam = styled.div`
 `;
 
 const ParticipantCam = styled.div`
+  overflow-y: hidden;
   display: flex;
   overflow-x: auto;
   gap: 12px; /* 참가자 화면 사이의 간격 설정 */
@@ -108,7 +109,8 @@ class VideoRoomComponent extends Component {
     this.hasBeenUpdated = false;
     const uuid = this.props.uuid;
     const isHost = this.props.isHost;
-    let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
+    // let userName = this.props.user ? this.props.user : 'OpenVidu_User' + Math.floor(Math.random() * 100);
+    let userName = localStorage.getItem('nick');
     this.remotes = [];
     this.localUserAccessAllowed = false;
     const userToken = getLocalToken(); // 주소가 쉐코라랑 달라서 잠깐 보류
@@ -296,26 +298,36 @@ class VideoRoomComponent extends Component {
     );
   }
 
-  leaveSession() {
+  async leaveSession() {
     const mySession = this.state.session;
     if (mySession) {
       mySession.disconnect();
     }
-    // TODO: 호스트 나간거 알려주기 
+    // TODO: 호스트 나간거 알려주기
     // Empty all properties...
     this.OV = null;
+    if (localUser.isHost() && this.state.mySessionId !== 'SessionA') {
+      try {
+        const response = await axios.get(`/conference/end?uuid=${this.state.mySessionId}`, {
+          headers: {
+            Authorization: `Bearer ${this.state.userToken}`,
+          },
+        });
+      } catch (err) {
+        console.log(err, '방종료 에러');
+      }
+    }
     this.setState({
       session: undefined,
       subscribers: [],
       mySessionId: 'SessionA',
       myUserName: 'OpenVidu_User' + Math.floor(Math.random() * 100),
       localUser: undefined,
+      isHost: false,
+      isReact: false,
     });
-
-    if (this.props.leaveSession) {
-      this.props.leaveSession();
-    }
-    window.history.back();
+    //  종료 로직 넣을거니까 건들지 않기.
+    this.props.setIsExit(true);
   }
 
   camStatusChanged() {
@@ -369,7 +381,6 @@ class VideoRoomComponent extends Component {
       const clientdata = event.stream.connection.data.split('%')[0];
       newUser.setNickname(JSON.parse(clientdata).clientData);
       newUser.setRole(JSON.parse(clientdata).host);
-      console.log('ㅁㄴㅇㄹㄴㅇㅁㄹㄴㅁㅇㄹㄴ',event.stream);
       newUser.setReaction(JSON.parse(clientdata).reaction);
 
       // 구독자 중 호스트가 있으면 hostUser에 넣습니다.
@@ -525,18 +536,14 @@ class VideoRoomComponent extends Component {
     });
   }
 
-
   // 손 들기 감지
   handsUp() {
     if (localUser.isReaction() === 'hand') {
       localUser.setReaction('none');
-      this.sendSignalUserChanged({ reaction: 'none' });
+      this.sendSignalUserChanged({ reaction: localUser.isReaction() });
     } else {
       localUser.setReaction('hand');
       this.sendSignalUserChanged({ reaction: localUser.isReaction() });
-      setTimeout(()=>{
-        this.handsUp()
-      },100000);
     }
     this.setState({ localUser: localUser });
     this.props.handleHandUp();
@@ -570,7 +577,12 @@ class VideoRoomComponent extends Component {
               <ParticipantCams>
                 {localUser !== undefined && !localUser.isHost() && localUser.getStreamManager() !== undefined && (
                   <Cam>
-                    <StreamComponent cam={this.state.showCam} user={localUser} handleNickname={this.nicknameChanged} handsUp = {this.handsUp}/>
+                    <StreamComponent
+                      cam={this.state.showCam}
+                      user={localUser}
+                      handleNickname={this.nicknameChanged}
+                      handsUp={this.handsUp}
+                    />
                   </Cam>
                 )}
 
@@ -631,8 +643,8 @@ class VideoRoomComponent extends Component {
           </div>
         ) : (
           // 비디오 안 불러왔으면 아무것도 안보이게 해놓음
-          <div class="loading-container">
-            <div class="loading"></div>
+          <div className="loading-container">
+            <div className="loading"></div>
             <div id="loading-text">입장 중</div>
           </div>
         )}
