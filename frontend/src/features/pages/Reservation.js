@@ -43,7 +43,7 @@ const ChatItem = styled(ListItem)(({ theme, even }) => ({
   padding: '10px',
   borderRadius: '10px',
   marginBottom: '10px',
-  backgroundColor: even ==="true" ? '#9499c8' : '#d2d7fd', // Use the desired colors
+  backgroundColor: even==="true" ? '#9499c8' : '#d2d7fd', // Use the desired colors
   '&:last-child': {
     borderBottom: 'none',
   },

@@ -15,7 +15,7 @@ let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
 
-const sender = 'nickname' + Math.floor(Math.random() * 100);
+const sender = localStorage.getItem('nick')
 
 const Socket = (props) => {
   console.log('손들기 확인', props.handUp);

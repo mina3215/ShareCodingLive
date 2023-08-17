@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as handpose from "@tensorflow-models/handpose";
 import '@tensorflow/tfjs-backend-webgl';
-import * as fp from "fingerpose";
 
 export default class OvVideoComponent extends Component {
   constructor(props) {
@@ -62,12 +61,16 @@ export default class OvVideoComponent extends Component {
 };
 
 runHandpose = async() => {
-const net = await handpose.load();
-console.log('handpose model loaded');
-
-setInterval(()=> {
+  try{
+  const net = await handpose.load('https://storage.googleapis.com/tfhub-tfjs-modules/mediapipe/tfjs-model/handskeleton/1/default/1/model.json', { mode: 'no-cors' });
+  console.log('handpose model loaded');
+  setInterval(()=> {
     this.detect(net);
-}, 2000);
+  }, 2000);
+  }catch(err){
+    console.log(err);
+  }
+
 }
   
 
