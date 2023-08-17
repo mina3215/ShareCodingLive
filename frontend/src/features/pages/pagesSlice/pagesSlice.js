@@ -47,7 +47,7 @@ const pagesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCodeData.fulfilled, (state, actions) => {
-        state.course = actions.payload[0].courses[0];
+        state.course = actions.payload[0]?actions.payload[0].courses[0]:null;
       })
       .addCase(getCodeData.rejected, (state)=>{
         state.course = null;
