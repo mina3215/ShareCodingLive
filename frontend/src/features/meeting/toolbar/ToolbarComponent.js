@@ -94,7 +94,9 @@ export default class ToolbarComponent extends Component {
   }
 
   handsUp() {
-    this.props.handsUp();
+    if(!this.props.user.isHost()){
+      this.props.handsUp();
+    }
   }
 
   micStatusChanged() {
