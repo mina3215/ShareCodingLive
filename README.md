@@ -13,32 +13,33 @@ https://www.youtube.com/watch?v=od30ifCdaBc
 
 - ### 회원관리
   1. 회원가입
+  ![회원가입](/pictures/sclive_gifs/회원가입.gif)
   2. 로그인
-
+     ![로그인](/pictures/sclive_gifs/로그인.gif)
 - ### 마이페이지
 
   1. 닉네임 변경
-
+     ![닉네임_변경](/pictures/sclive_gifs/닉네임_변경.gif)
   2. 비밀번호 변경
-
+     ![비밀번호_변경](/pictures/sclive_gifs/비밀번호_변경.gif)
   3. 강의 및 코드 기록
-
+     ![강의_기록](/pictures/sclive_gifs/강의_기록.gif)
 
 - ### 회의방
   1. 강의 예약
-  
+     ![회의_예약](/pictures/sclive_gifs/회의_예약.gif)
   2. 강의 생성
-  
+     ![강의_생성](/pictures/sclive_gifs/강의_생성.gif)
   3. 강의 채팅방 (일반채팅, 코드채팅, 질문채팅)
-
+     ![채팅창](/pictures/sclive_gifs/채팅창.gif)
   4. 강의 화면 공유
-
+     ![화면공유](/pictures/sclive_gifs/OCR.gif)
   5. 손들기
-
+![손들기](/pictures/sclive_gifs/화면공유.gif)
   6. OCR
-
+![OCR](/pictures/sclive_gifs/OCR.gif)
   7. 원격 접속
-
+     ![원격](/pictures/sclive_gifs/원격.gif)
 
 - ## 🖥️ 개발 환경
 
@@ -91,6 +92,10 @@ https://www.youtube.com/watch?v=od30ifCdaBc
 
 ---
 
+![아키텍처1](/pictures/아키텍처/아키텍처1.png)
+![아키텍처2](/pictures/아키텍처/아키텍처2.png)
+![아키텍처3](/pictures/아키텍처/아키텍처3.png)
+
 ### ❗ 기술 특이점
 
 ---
@@ -131,9 +136,14 @@ https://www.youtube.com/watch?v=od30ifCdaBc
 - Mattermost
 - Webex
 
-### 💭 기능 명세서
+### API 명세서
 
 ---
+
+![API01](/api/API01.png)
+![API01](/api/API02.png)
+![API01](/api/API03.png)
+![API01](/api/API04.png)
 
 ### ✨코드 컨벤션
 
