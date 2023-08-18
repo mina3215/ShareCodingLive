@@ -324,7 +324,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClase: duplicate-ebsh-block # 스토리지 이름 참조하기 위한 것
+  storageClase: duplicate-ebs-sc # 스토리지 이름 참조하기 위한 것
   resources:
     requests:
       storage: 1Gi
