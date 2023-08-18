@@ -946,7 +946,7 @@ sudo docker run -d -p 8092:80 --name master-frontserver heesom/frontserver:test
 - master_v1
 - master_v2  - 알림기능 + 채팅 추가
 - master_v3- db 쿼리 버그로 인한 업데이트
-- master_v4: - 웹소켓 관련 업데이트
+- master_v4 - 웹소켓 관련 업데이트
 - master_v5 - 웹소켓 버그 픽스
 - master_v6_redis_edit - 레디스 관련 버그 픽스
 
