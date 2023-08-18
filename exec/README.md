@@ -964,6 +964,8 @@ sudo docker run -d -p 8092:80 --name master-frontserver heesom/frontserver:test
 
 <br>
 
+**EC2 포트**
+
 - openvidu
     - **22 TCP**: SSHOpenVidu.
     - **80 TCP**: Let's Encryptgenerate an SSL certificate (일단 두기)
