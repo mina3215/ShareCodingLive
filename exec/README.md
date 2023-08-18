@@ -956,3 +956,38 @@ sudo docker run -d -p 8092:80 --name master-frontserver heesom/frontserver:test
 - test
 - master_v1 - 채팅관련 버그 픽스
 - master_v2
+
+<br>
+
+### 도커 포트 관리
+---
+
+<br>
+
+- openvidu
+    - **22 TCP**: SSHOpenVidu.
+    - **80 TCP**: Let's Encryptgenerate an SSL certificate (일단 두기)
+    - **4443 TCP**: OpenVidu server and application (일단 두기)
+    - **3478 TCP+UDP**: STUN/TURN server
+    - **40000 - 57000 TCP+UDP**: Kurento Media Server
+    - **57001 - 65535 TCP+UDP**: URN server to establish relayed media connections.
+- cAdvisor
+    - 8081
+
+<br>
+
+프론트를 위한 백엔드 컨테이너 네트워크 - **[dev-backserver-net]**
+
+- dev-mysql
+- dev-redis
+- dev-backserver
+    - 8080 export 8094 접속
+    - 8094:8080
+
+<br>
+
+통합 테스트 컨테이너 - **[master-net]**
+
+- master-backserver
+    - 8093
+
