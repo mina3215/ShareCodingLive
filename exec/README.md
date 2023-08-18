@@ -907,3 +907,45 @@ sudo docker run -d --name dev-redis -v dev-redis-volume:/data  redis:latest
 
 sudo docker run -d -p 8092:80 --name master-frontserver heesom/frontserver:test
 ```
+
+<br>
+
+### 도커 태그 관리
+---
+
+<br>
+
+**[dev] - heesom/backserver**
+
+- member 관련
+    - dev_member_v1
+    - dev_member_v2
+    - dev_member_v3
+- webrtc 관련
+    - dev_webrtc_v1
+    - dev_webrtc_v2
+- chatting 관련
+    - dev_chatting_v1
+- total 테스트 관련 태그
+    - dev_total_v2
+    - dev_total_v3
+    - dev_total_v4 - 알림기능 + 채팅 추가
+
+
+<br>
+
+**[master] - heesom/backserver**
+
+- master_v1
+- master_v2  - 알림기능 + 채팅 추가
+- master_v3- db 쿼리 버그로 인한 업데이트
+- master_v4: - 웹소켓 관련 업데이트
+- master_v5 - 웹소켓 버그 픽스
+- master_v6_redis_edit - 레디스 관련 버그 픽스
+
+<br>
+
+**[master] heesom/frontserver**
+- test
+- master_v1 - 채팅관련 버그 픽스
+- master_v2
