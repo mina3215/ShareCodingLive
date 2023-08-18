@@ -732,6 +732,13 @@ kubectl run apache-bench -i --tty --rm --image=httpd -- ab -n 500000 -c 1000 htt
 01-ALB-Ingress-SSL.yml
 
 ```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-ssl-apply
+  labels:
+    app: ingress
+  annotations:
     # Load Balancer Name
     alb.ingress.kubernetes.io/load-balancer-name: ingress-ssl-apply
     #kubernetes.io/ingress.class: "alb" (OLD INGRESS CLASS NOTATION - STILL WORKS BUT RECOMMENDED TO USE IngressClass Resource)
