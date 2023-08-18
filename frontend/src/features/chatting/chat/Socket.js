@@ -15,9 +15,8 @@ let reconnect = 0;
 
 // TODO 추후에 props로 roomId(uuid), nickname(string) 주입해주기.
 
-const sender = localStorage.getItem('nick')
-
 const Socket = (props) => {
+  const sender = localStorage.getItem('nick');
   console.log('손들기 확인', props.handUp);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -28,7 +27,7 @@ const Socket = (props) => {
   const isExit = props.isExit;
 
   // 내가 호스트 인지 아닌지 판별하는 변수
-  const isHost = props.isHost
+  const isHost = props.isHost;
 
   const Navigate = useNavigate();
   useEffect(() => {
@@ -52,10 +51,10 @@ const Socket = (props) => {
 
   // isExit 변수 바뀌면 연결 끊기. 미팅 페이지에서 나가기 누르면 isExit 변수 값 바꾸고 이거 props로 줘서 이 변수 바뀌면 채팅 소켓 끊어버림
   useEffect(() => {
-    if(isExit){
-    offConnect();
+    if (isExit) {
+      offConnect();
     }
-  }, [isExit])
+  }, [isExit]);
 
   // hand 데이터 받아오면 handup인지 handdown인지 채팅 보내기
   useEffect(() => {
